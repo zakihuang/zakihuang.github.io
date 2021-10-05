@@ -103,3 +103,6 @@ If you have any questions or suggestions, you can create an issue on [Jekyll Pap
 [jekyll-paper]: https://github.com/ghosind/Jekyll-Paper
 [jekyll-paper-github]: https://github.com/ghosind/Jekyll-Paper-Github
 [jekyll-paper-issues]: https://github.com/ghosind/Jekyll-Paper/issues
+
+
+bundle exec jekyll serve
