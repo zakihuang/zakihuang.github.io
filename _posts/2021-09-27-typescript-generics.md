@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "泛型（Generics）升级"
+title:  "泛型（Generics）"
 date:   2021-09-27
 #last_modified_at: 2021-09-27
 categories: [typescript]
