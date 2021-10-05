@@ -4,7 +4,7 @@ title:  "void unll undefined"
 date:   2021-09-27
 #last_modified_at: 2021-09-27
 categories: [typescript]
-tags: [void, unll, undefined]
+tags: [void,unll,undefined]
 ---
 #### 空值：
 > JavaScript 没有空值（Void）的概念，在 TypeScript 中，可以用 void 表示没有任何返回值的函数：
