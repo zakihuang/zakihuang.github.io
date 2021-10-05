@@ -52,11 +52,17 @@ sass:
   style: expanded # compressed, compact, expanded or compressed
 
 # Category settings
+# jekyll-archives:
+#   enabled: 
+#     - categories
+#     - tags
+#   layout: archive
+
 jekyll-archives:
-  enabled: 
-    - categories
-    - tags
-  layout: archive
+  enabled: [categories, tags]
+  layouts:
+    category: category
+    tag: tag
   permalinks:
     category: /category/:name/
     tag: /tag/:name/
