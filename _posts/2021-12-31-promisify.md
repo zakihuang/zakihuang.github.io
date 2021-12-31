@@ -37,9 +37,11 @@ fn[util.promisify.custom] = (e, r) => {
   return Promise.resolve('这是自定义返回');
 };
 
+var fnTest = util.promisify(fn)
+
 (async function () {
 
-  const x = await f(1)
+  const x = await fnTest(1)
   console.log(x);
 
 })();
