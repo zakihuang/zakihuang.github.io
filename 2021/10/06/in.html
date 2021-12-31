@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>typescript 类型映射 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="typescript 类型映射" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ts 可以使用泛型来做类型映射，将对象或数组中类型转换为另一个类型。" />
+<meta property="og:description" content="ts 可以使用泛型来做类型映射，将对象或数组中类型转换为另一个类型。" />
+<link rel="canonical" href="/2021/10/06/in" />
+<meta property="og:url" content="/2021/10/06/in" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-10-06T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="typescript 类型映射" />
+<script type="application/ld+json">
+{"description":"ts 可以使用泛型来做类型映射，将对象或数组中类型转换为另一个类型。","mainEntityOfPage":{"@type":"WebPage","@id":"/2021/10/06/in"},"url":"/2021/10/06/in","@type":"BlogPosting","headline":"typescript 类型映射","dateModified":"2021-10-06T00:00:00+00:00","datePublished":"2021-10-06T00:00:00+00:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="type,in" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>typescript 类型映射</h1>
+  </div>
+  <div class="post-author">
+    <span>Your name</span>
+  </div>
+  <div class="post-content">
+    <p>ts 可以使用泛型来做类型映射，将对象或数组中类型转换为另一个类型。</p>
+
+<p>例如：定义一个类型</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Student</span> <span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">age</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>把一个类型的每个属性都变为可空的</li>
+</ol>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Nullable</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="nx">p</span> <span class="k">in</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="p">]:</span> <span class="nx">T</span><span class="p">[</span><span class="nx">P</span><span class="p">]</span> <span class="o">|</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kd">type</span> <span class="nx">NullableStudent</span> <span class="o">=</span> <span class="nx">Nullable</span><span class="o">&lt;</span><span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ol>
+  <li>把一个类型的每个属性都变为只读的</li>
+</ol>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//定义readonly映射</span>
+<span class="kd">type</span> <span class="nb">Readonly</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="k">readonly</span> <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="p">]:</span> <span class="nx">T</span><span class="p">[</span><span class="nx">P</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="kd">type</span> <span class="nx">ReadonlyStudent</span> <span class="o">=</span> <span class="nb">Readonly</span><span class="o">&lt;</span><span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ol>
+  <li>把一个类型的属性都变为可选的</li>
+</ol>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Partical</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="p">]?:</span> <span class="nx">T</span><span class="p">[</span><span class="nx">P</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="kd">type</span> <span class="nx">ParticalStudent</span> <span class="o">=</span> <span class="nx">Partical</span><span class="o">&lt;</span><span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ol>
+  <li>把一个类型的每个项都变为 Promise</li>
+</ol>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//定义toPromise映射</span>
+<span class="kd">type</span> <span class="nx">ToPromise</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="nx">K</span> <span class="k">in</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="p">]:</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">[</span><span class="nx">K</span><span class="p">]</span><span class="o">&gt;</span> <span class="p">};</span>
+
+<span class="kd">type</span> <span class="nx">Coordinate</span> <span class="o">=</span> <span class="p">[</span><span class="kr">number</span><span class="p">,</span> <span class="kr">number</span><span class="p">];</span>
+
+<span class="kd">type</span> <span class="nx">PromiseCoordinate</span> <span class="o">=</span> <span class="nx">ToPromise</span><span class="o">&lt;</span><span class="nx">Coordinate</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// [Promise&lt;number&gt;, Promise&lt;number&gt;]</span>
+</code></pre></div></div>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2021-10-06.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/typescript" class="post-category">typescript</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/type" class="post-tag">type</a>
+      
+      <a href="/tag/in" class="post-tag">in</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      <div>
+        <span>后一篇：</span><a href="/2021/10/06/type">typescript 高级类型总结</a>
+      </div>
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2021/09/27/typescript-void-unll-undefined">void unll undefined</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2021. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
