@@ -10,4 +10,6 @@ zakihuang, the owner of 7hihi.com
 
 > 2016 ~ 2019: worked at bianlifeng.com
 
-> 2019 ~ 202x: working at meicai.cn
+> 2019 ~ 2022: working at meicai.cn
+
+> 2022 ~ 202x: working at aero-credit.com
