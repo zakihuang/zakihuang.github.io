@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>泛型（Generics） | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="泛型（Generics）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="官方定义： 泛型（Generics）是指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性" />
+<meta property="og:description" content="官方定义： 泛型（Generics）是指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性" />
+<link rel="canonical" href="/2021/09/27/typescript-generics" />
+<meta property="og:url" content="/2021/09/27/typescript-generics" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-27T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="泛型（Generics）" />
+<script type="application/ld+json">
+{"url":"/2021/09/27/typescript-generics","headline":"泛型（Generics）","dateModified":"2021-09-27T00:00:00+08:00","datePublished":"2021-09-27T00:00:00+08:00","description":"官方定义： 泛型（Generics）是指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"/2021/09/27/typescript-generics"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="generics" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>泛型（Generics）</h1>
+  </div>
+  <div class="post-author">
+    <span>Your name</span>
+  </div>
+  <div class="post-content">
+    <h4 id="官方定义">官方定义：</h4>
+<blockquote>
+  <p>泛型（Generics）是指在定义函数、接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性</p>
+</blockquote>
+
+<p>官方定义略显生硬，对于没接触过泛型的同学很难一下子就 get 到要点，以下例子通过是否使用泛型，试图解释什么是泛型</p>
+
+<h4 id="不使用泛型">不使用泛型</h4>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">createArray</span><span class="p">(</span><span class="nx">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="kr">string</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="kr">string</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="na">result</span><span class="p">:</span> <span class="kr">string</span><span class="p">[]</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">createArray</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="dl">'</span><span class="s1">string</span><span class="dl">'</span><span class="p">)</span> <span class="p">);</span> <span class="c1">// ['string', 'string', 'string']</span>
+</code></pre></div></div>
+
+<h4 id="使用泛型">使用泛型</h4>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">createArray</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="na">result</span><span class="p">:</span> <span class="nx">T</span><span class="p">[]</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">createArray</span><span class="o">&lt;</span><span class="kr">string</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="dl">'</span><span class="s1">string</span><span class="dl">'</span><span class="p">)</span> <span class="p">);</span> <span class="c1">// ['string', 'string', 'string']</span>
+</code></pre></div></div>
+
+<p>可以看到两段代码的功能是相同的，不同点在于 <code class="language-plaintext highlighter-rouge">不使用泛型</code> 时，createArray函数 的 参数 value 是指定为 string 类型的，返回值同样被指定为 string[] 数组，试想
+如果参数和返回值 只有在使用时才可能确定，这种定义就显得力不从心了，泛型的出现正是为了弥补这种遗憾，换句话说就是定义时不指定具体类型，在使用时才指定。可以看到
+函数定义时引入了 <code class="language-plaintext highlighter-rouge">&lt;T&gt;</code> 符号，放在函数名后面，表示：此函数定义引了了类型 T, 至于 T 是什么类型，当前不确定，调用函数时才能确定，如何确定？调用时在把 <code class="language-plaintext highlighter-rouge">&lt;T&gt;</code> 尖括号里的 T 换
+成具体类型即可, 类似于函数参数，这里是类型参数。</p>
+
+<h4 id="泛型约束">泛型约束</h4>
+<p>在函数内部使用泛型变量的时候，由于事先不知道它是哪种类型，所以不能随意的操作它的属性或方法：</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">loggingIdentity</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">arg</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nx">T</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arg</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// index.ts(2,19): error TS2339: Property 'length' does not exist on type 'T'.</span>
+</code></pre></div></div>
+
+<p>上例中，泛型 <code class="language-plaintext highlighter-rouge">T</code> 不一定包含属性 <code class="language-plaintext highlighter-rouge">length</code>，所以编译的时候报错了。</p>
+
+<p>这时，我们可以对泛型进行约束，只允许这个函数传入那些包含 <code class="language-plaintext highlighter-rouge">length</code> 属性的变量。这就是泛型约束：</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Lengthwise</span> <span class="p">{</span>
+    <span class="nl">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">loggingIdentity</span><span class="o">&lt;</span><span class="nx">T</span> <span class="kd">extends</span> <span class="nx">Lengthwise</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">arg</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nx">T</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arg</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>上例中，我们使用了 <code class="language-plaintext highlighter-rouge">extends</code> 约束了泛型 <code class="language-plaintext highlighter-rouge">T</code> 必须符合接口 <code class="language-plaintext highlighter-rouge">Lengthwise</code> 的形状，也就是必须包含 <code class="language-plaintext highlighter-rouge">length</code> 属性。</p>
+
+<p>此时如果调用 <code class="language-plaintext highlighter-rouge">loggingIdentity</code> 的时候，传入的 <code class="language-plaintext highlighter-rouge">arg</code> 不包含 <code class="language-plaintext highlighter-rouge">length</code>，那么在编译阶段就会报错了：</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Lengthwise</span> <span class="p">{</span>
+    <span class="nl">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">loggingIdentity</span><span class="o">&lt;</span><span class="nx">T</span> <span class="kd">extends</span> <span class="nx">Lengthwise</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">arg</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nx">T</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arg</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">loggingIdentity</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+
+<span class="c1">// index.ts(10,17): error TS2345: Argument of type '7' is not assignable to parameter of type 'Lengthwise'.</span>
+</code></pre></div></div>
+
+<p>多个类型参数之间也可以互相约束：</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">copyFields</span><span class="o">&lt;</span><span class="nx">T</span> <span class="kd">extends</span> <span class="nx">U</span><span class="p">,</span> <span class="nx">U</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="nx">T</span><span class="p">,</span> <span class="nx">source</span><span class="p">:</span> <span class="nx">U</span><span class="p">):</span> <span class="nx">T</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">id</span> <span class="k">in</span> <span class="nx">source</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">target</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="nx">source</span><span class="p">)[</span><span class="nx">id</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">target</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">c</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">d</span><span class="p">:</span> <span class="mi">4</span> <span class="p">};</span>
+
+<span class="nx">copyFields</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="p">{</span> <span class="na">b</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="na">d</span><span class="p">:</span> <span class="mi">20</span> <span class="p">});</span>
+</code></pre></div></div>
+
+<p>上例中，我们使用了两个类型参数，其中要求 T 继承 U，这样就保证了 U 上不会出现 T 中不存在的字段。</p>
+<h4 id="泛型接口">泛型接口</h4>
+
+<p>可以使用接口的方式来定义一个函数需要符合的形状：</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">SearchFunc</span> <span class="p">{</span>
+  <span class="p">(</span><span class="nx">source</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">subString</span><span class="p">:</span> <span class="kr">string</span><span class="p">):</span> <span class="nx">boolean</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">mySearch</span><span class="p">:</span> <span class="nx">SearchFunc</span><span class="p">;</span>
+<span class="nx">mySearch</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">source</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">subString</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">source</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="nx">subString</span><span class="p">)</span> <span class="o">!==</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>也可以使用含有泛型的接口来定义函数的形状：</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">CreateArrayFunc</span> <span class="p">{</span>
+    <span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">createArray</span><span class="p">:</span> <span class="nx">CreateArrayFunc</span><span class="p">;</span>
+<span class="nx">createArray</span> <span class="o">=</span> <span class="kd">function</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="na">result</span><span class="p">:</span> <span class="nx">T</span><span class="p">[]</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">createArray</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="dl">'</span><span class="s1">x</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// ['x', 'x', 'x']</span>
+</code></pre></div></div>
+
+<p>进一步，我们可以把泛型参数提前到接口名上：</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">CreateArrayFunc</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="p">(</span><span class="na">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span> <span class="na">value</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">createArray</span><span class="p">:</span> <span class="nx">CreateArrayFunc</span><span class="o">&lt;</span><span class="kr">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="nx">createArray</span> <span class="o">=</span> <span class="kd">function</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="na">result</span><span class="p">:</span> <span class="nx">T</span><span class="p">[]</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">createArray</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="dl">'</span><span class="s1">x</span><span class="dl">'</span><span class="p">);</span> <span class="c1">// ['x', 'x', 'x']</span>
+</code></pre></div></div>
+
+<p>注意，此时在使用泛型接口的时候，需要定义泛型的类型。</p>
+<h4 id="泛型类">泛型类</h4>
+<p>与泛型接口类似，泛型也可以用于类的类型定义中：</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">GenericNumber</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="na">zeroValue</span><span class="p">:</span> <span class="nx">T</span><span class="p">;</span>
+    <span class="nl">add</span><span class="p">:</span> <span class="p">(</span><span class="na">x</span><span class="p">:</span> <span class="nx">T</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="nx">T</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">T</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">myGenericNumber</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">GenericNumber</span><span class="o">&lt;</span><span class="kr">number</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></div></div>
+<h4 id="泛型参数的默认类型">泛型参数的默认类型</h4>
+<p>在 TypeScript 2.3 以后，我们可以为泛型中的类型参数指定默认类型。当使用泛型时没有在代码中直接指定类型参数，从实际值参数中也无法推测出时，这个默认类型就会起作用。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">createArray</span><span class="o">&lt;</span><span class="nx">T</span> <span class="o">=</span> <span class="kr">string</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">length</span><span class="p">:</span> <span class="kr">number</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nb">Array</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="na">result</span><span class="p">:</span> <span class="nx">T</span><span class="p">[]</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2021-09-27.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/typescript" class="post-category">typescript</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/generics" class="post-tag">generics</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      <div>
+        <span>后一篇：</span><a href="/2021/09/27/typescript-void-unll-undefined">void unll undefined</a>
+      </div>
+      
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>

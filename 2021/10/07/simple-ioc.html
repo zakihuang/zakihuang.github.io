@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>typescript ioc | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="typescript ioc" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="```ts type mapType = { [k: string]: any };" />
+<meta property="og:description" content="```ts type mapType = { [k: string]: any };" />
+<link rel="canonical" href="/2021/10/07/simple-ioc" />
+<meta property="og:url" content="/2021/10/07/simple-ioc" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-10-07T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="typescript ioc" />
+<script type="application/ld+json">
+{"description":"```ts type mapType = { [k: string]: any };","mainEntityOfPage":{"@type":"WebPage","@id":"/2021/10/07/simple-ioc"},"url":"/2021/10/07/simple-ioc","@type":"BlogPosting","headline":"typescript ioc","dateModified":"2021-10-07T00:00:00+00:00","datePublished":"2021-10-07T00:00:00+00:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="ioc" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>typescript ioc</h1>
+  </div>
+  <div class="post-author">
+    <span>Your name</span>
+  </div>
+  <div class="post-content">
+    <div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">mapType</span> <span class="o">=</span> <span class="p">{</span> <span class="p">[</span><span class="na">k</span><span class="p">:</span> <span class="kr">string</span><span class="p">]:</span> <span class="kr">any</span> <span class="p">};</span>
+
+<span class="kd">type</span> <span class="nx">container</span> <span class="o">=</span> <span class="p">(</span><span class="nx">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="kr">any</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">Container</span><span class="p">(</span><span class="nx">provider</span><span class="p">:</span> <span class="nx">mapType</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">cache</span><span class="p">:</span> <span class="nx">mapType</span> <span class="o">=</span> <span class="p">{};</span>
+
+  <span class="kd">const</span> <span class="nx">container</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">cache</span><span class="p">[</span><span class="nx">name</span><span class="p">])</span> <span class="p">{</span>
+      <span class="nx">cache</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">provider</span><span class="p">[</span><span class="nx">name</span><span class="p">](</span><span class="nx">container</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">container</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">UserCache</span> <span class="p">{</span>
+  <span class="nl">desc</span><span class="p">:</span> <span class="kr">string</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">缓存类被依赖哦</span><span class="dl">'</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">UserService</span> <span class="p">{</span>
+  <span class="nl">desc</span><span class="p">:</span> <span class="kr">string</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">我是用户服务类</span><span class="dl">'</span><span class="p">;</span>
+  <span class="kd">constructor</span><span class="p">(</span><span class="k">public</span> <span class="nx">cache</span><span class="p">:</span> <span class="nx">UserCache</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">1111</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kd">const</span> <span class="nx">container</span> <span class="o">=</span> <span class="nx">Container</span><span class="p">({</span>
+  <span class="dl">"</span><span class="s2">cache</span><span class="dl">"</span><span class="p">:</span> <span class="k">async</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">UserCache</span><span class="p">(),</span>
+  <span class="dl">"</span><span class="s2">user-service</span><span class="dl">"</span><span class="p">:</span> <span class="k">async</span> <span class="p">(</span><span class="na">c</span><span class="p">:</span> <span class="nx">container</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">new</span> <span class="nx">UserService</span><span class="p">(</span><span class="k">await</span> <span class="nx">c</span><span class="p">(</span><span class="dl">"</span><span class="s2">cache</span><span class="dl">"</span><span class="p">))</span>
+<span class="p">});</span>
+
+<span class="c1">// and a simple test:</span>
+
+<span class="nx">container</span><span class="p">(</span><span class="dl">"</span><span class="s2">user-service</span><span class="dl">"</span><span class="p">).</span><span class="nx">then</span><span class="p">((</span><span class="nx">service</span><span class="p">:</span> <span class="nx">UserService</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">service</span><span class="p">.</span><span class="nx">cache</span><span class="p">);</span>
+
+  <span class="nx">container</span><span class="p">(</span><span class="dl">"</span><span class="s2">user-service</span><span class="dl">"</span><span class="p">).</span><span class="nx">then</span><span class="p">((</span><span class="na">same_service</span><span class="p">:</span> <span class="nx">object</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">service</span> <span class="o">===</span> <span class="nx">same_service</span><span class="p">);</span> <span class="c1">// true</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2021-10-07.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/typescript" class="post-category">typescript</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/ioc" class="post-tag">ioc</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      <div>
+        <span>后一篇：</span><a href="/2021/10/13/decorator">es6 decorator</a>
+      </div>
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2021/10/06/type">typescript 高级类型总结</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2021. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
