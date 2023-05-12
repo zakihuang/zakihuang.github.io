@@ -11,15 +11,15 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="typescript 里的类型奇巧淫技真是多（也许是不习惯而已），特此总结一番：" />
 <meta property="og:description" content="typescript 里的类型奇巧淫技真是多（也许是不习惯而已），特此总结一番：" />
-<link rel="canonical" href="/2021/10/06/type" />
-<meta property="og:url" content="/2021/10/06/type" />
+<link rel="canonical" href="http://localhost:4000/2021/10/06/type" />
+<meta property="og:url" content="http://localhost:4000/2021/10/06/type" />
 <meta property="og:site_name" content="blog.7hihi.com" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-10-06T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="typescript 高级类型总结" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"/2021/10/06/type"},"url":"/2021/10/06/type","@type":"BlogPosting","description":"typescript 里的类型奇巧淫技真是多（也许是不习惯而已），特此总结一番：","headline":"typescript 高级类型总结","dateModified":"2021-10-06T00:00:00+08:00","datePublished":"2021-10-06T00:00:00+08:00","@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/06/type"},"headline":"typescript 高级类型总结","dateModified":"2021-10-06T00:00:00+08:00","description":"typescript 里的类型奇巧淫技真是多（也许是不习惯而已），特此总结一番：","datePublished":"2021-10-06T00:00:00+08:00","url":"http://localhost:4000/2021/10/06/type","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -187,19 +187,19 @@
 
 <span class="c1">// 这里表示 copy 的参数</span>
 <span class="c1">// 只能是字符串、数字、布尔这几种基础类型, 如果我们传入一个对象就会有问题。</span>
-<span class="kd">function</span> <span class="nx">copy</span><span class="o">&lt;</span><span class="nx">T</span> <span class="kd">extends</span> <span class="nx">BaseType</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">arg</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nx">T</span> <span class="p">{</span>
+<span class="kd">function</span> <span class="nf">copy</span><span class="o">&lt;</span><span class="nx">T</span> <span class="kd">extends</span> <span class="nx">BaseType</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">arg</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nx">T</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
 <p>extends 经常与 keyof 一起使用，例如我们有一个方法专门用来获取对象的值，但是这个对象并不确定，我们就可以使用 extends 和 keyof 进行约束。</p>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">getValue</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">obj</span><span class="p">:</span> <span class="nx">T</span><span class="p">,</span> <span class="nx">key</span><span class="p">:</span> <span class="nx">K</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">getValue</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">obj</span><span class="p">:</span> <span class="nx">T</span><span class="p">,</span> <span class="nx">key</span><span class="p">:</span> <span class="nx">K</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
 <span class="p">}</span>
 
 <span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">1</span> <span class="p">};</span>
-<span class="kd">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">getValue</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="dl">"</span><span class="s2">a</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="nf">getValue</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="dl">"</span><span class="s2">a</span><span class="dl">"</span><span class="p">);</span>
 </code></pre></div></div>
 
 <p>这里的 getValue 方法就能根据传入的参数 obj 来约束 key 的值。</p>
@@ -273,7 +273,7 @@
 
 <p>上面的意思就是，如果 T 是 U 的子集，就是类型 X，否则为类型 Y。下面使用内置的泛型接口 Extract 来举例。</p>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Extract</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">U</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">T</span> <span class="kd">extends</span> <span class="nx">U</span> <span class="p">?</span> <span class="nx">T</span> <span class="p">:</span> <span class="nx">never</span><span class="p">;</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nb">Extract</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">U</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">T</span> <span class="kd">extends</span> <span class="nx">U</span> <span class="p">?</span> <span class="nx">T</span> <span class="p">:</span> <span class="nx">never</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>如果 T 中的类型在 U 存在，则返回，否则抛弃。假设我们两个类，有三个公共的属性，可以通过 Extract 提取这三个公共属性。</p>
@@ -292,7 +292,7 @@
   <span class="nl">grade</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="kd">type</span> <span class="nx">CommonKeys</span> <span class="o">=</span> <span class="nx">Extract</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">Worker</span><span class="p">,</span> <span class="kr">keyof</span> <span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="kd">type</span> <span class="nx">CommonKeys</span> <span class="o">=</span> <span class="nb">Extract</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">Worker</span><span class="p">,</span> <span class="kr">keyof</span> <span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="c1">// 'name' | 'age' | 'email'</span>
 </code></pre></div></div>
 
@@ -328,7 +328,7 @@
     <span class="na">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{},</span>
   <span class="p">};</span>
   <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">baseProps</span><span class="p">,</span> <span class="p">...</span><span class="nx">props</span> <span class="p">};</span>
-  <span class="k">return</span> <span class="p">(</span>
+  <span class="nf">return </span><span class="p">(</span>
     <span class="o">&lt;</span><span class="nx">button</span>
       <span class="kd">type</span><span class="o">=</span><span class="p">{</span><span class="nx">options</span><span class="p">.</span><span class="kd">type</span><span class="p">}</span>
       <span class="nx">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">options</span><span class="p">.</span><span class="nx">disabled</span><span class="p">}</span>
@@ -342,7 +342,7 @@
 
 <h4 id="required">Required</h4>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Required</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nb">Required</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
   <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="p">]</span><span class="o">-</span><span class="p">?:</span> <span class="nx">T</span><span class="p">[</span><span class="nx">P</span><span class="p">];</span>
 <span class="p">};</span>
 </code></pre></div></div>
@@ -368,9 +368,9 @@
 <span class="p">}</span>
 
 <span class="kd">const</span> <span class="nx">goodsMap</span><span class="p">:</span> <span class="nb">Record</span><span class="o">&lt;</span><span class="kr">string</span><span class="p">,</span> <span class="nx">Goods</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{};</span>
-<span class="kd">const</span> <span class="nx">goodsList</span><span class="p">:</span> <span class="nx">Goods</span><span class="p">[]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">server.com/goods/list</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">goodsList</span><span class="p">:</span> <span class="nx">Goods</span><span class="p">[]</span> <span class="o">=</span> <span class="k">await</span> <span class="nf">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">server.com/goods/list</span><span class="dl">"</span><span class="p">);</span>
 
-<span class="nx">goodsList</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">goods</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<span class="nx">goodsList</span><span class="p">.</span><span class="nf">forEach</span><span class="p">((</span><span class="nx">goods</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="nx">goodsMap</span><span class="p">[</span><span class="nx">goods</span><span class="p">.</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">goods</span><span class="p">;</span>
 <span class="p">});</span>
 </code></pre></div></div>
@@ -400,7 +400,7 @@
 
 <h4 id="exclude">Exclude</h4>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Exclude</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">U</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">T</span> <span class="kd">extends</span> <span class="nx">U</span> <span class="p">?</span> <span class="nx">never</span> <span class="p">:</span> <span class="nx">T</span><span class="p">;</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nb">Exclude</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">U</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">T</span> <span class="kd">extends</span> <span class="nx">U</span> <span class="p">?</span> <span class="nx">never</span> <span class="p">:</span> <span class="nx">T</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>Exclude 的作用与之前介绍过的 Extract 刚好相反，如果 T 中的类型在 U 不存在，则返回，否则抛弃。现在我们拿之前的两个类举例，看看 Exclude 的返回结果。</p>
@@ -419,7 +419,7 @@
   <span class="nl">grade</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="kd">type</span> <span class="nx">ExcludeKeys</span> <span class="o">=</span> <span class="nx">Exclude</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">Worker</span><span class="p">,</span> <span class="kr">keyof</span> <span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="kd">type</span> <span class="nx">ExcludeKeys</span> <span class="o">=</span> <span class="nb">Exclude</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">Worker</span><span class="p">,</span> <span class="kr">keyof</span> <span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
 <span class="c1">// 'salary'</span>
 </code></pre></div></div>
 
@@ -427,7 +427,7 @@
 
 <h4 id="omit">Omit</h4>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Omit</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="kr">any</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">Pick</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">Exclude</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">T</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nb">Omit</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="kr">any</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">Pick</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nb">Exclude</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">T</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;&gt;</span><span class="p">;</span>
 </code></pre></div></div>
 
 <p>Omit 的作用刚好和 Pick 相反，先通过 Exclude&lt;keyof T, K&gt; 先取出类型 T 中存在，但是 K 不存在的属性，然后再由这些属性构造一个新的类型。还是通过前面的 Todo 案例来说，TodoPreview 类型只需要排除接口的 description 属性即可，写法上比之前 Pick 精简了一些。</p>
@@ -438,7 +438,7 @@
   <span class="nl">description</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="kd">type</span> <span class="nx">TodoPreview</span> <span class="o">=</span> <span class="nx">Omit</span><span class="o">&lt;</span><span class="nx">Todo</span><span class="p">,</span> <span class="dl">"</span><span class="s2">description</span><span class="dl">"</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="kd">type</span> <span class="nx">TodoPreview</span> <span class="o">=</span> <span class="nb">Omit</span><span class="o">&lt;</span><span class="nx">Todo</span><span class="p">,</span> <span class="dl">"</span><span class="s2">description</span><span class="dl">"</span><span class="o">&gt;</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">todo</span><span class="p">:</span> <span class="nx">TodoPreview</span> <span class="o">=</span> <span class="p">{</span>
   <span class="na">title</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Clean room</span><span class="dl">"</span><span class="p">,</span>

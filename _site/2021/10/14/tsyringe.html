@@ -11,15 +11,15 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="tsyringe 的介绍文章不多，在此记录一些实践" />
 <meta property="og:description" content="tsyringe 的介绍文章不多，在此记录一些实践" />
-<link rel="canonical" href="/2021/10/14/tsyringe" />
-<meta property="og:url" content="/2021/10/14/tsyringe" />
+<link rel="canonical" href="http://localhost:4000/2021/10/14/tsyringe" />
+<meta property="og:url" content="http://localhost:4000/2021/10/14/tsyringe" />
 <meta property="og:site_name" content="blog.7hihi.com" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-10-14T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="tsyringe" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"/2021/10/14/tsyringe"},"url":"/2021/10/14/tsyringe","@type":"BlogPosting","description":"tsyringe 的介绍文章不多，在此记录一些实践","headline":"tsyringe","dateModified":"2021-10-14T00:00:00+08:00","datePublished":"2021-10-14T00:00:00+08:00","@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/14/tsyringe"},"headline":"tsyringe","dateModified":"2021-10-14T00:00:00+08:00","description":"tsyringe 的介绍文章不多，在此记录一些实践","datePublished":"2021-10-14T00:00:00+08:00","url":"http://localhost:4000/2021/10/14/tsyringe","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -85,21 +85,21 @@
 <span class="k">import</span> <span class="p">{</span> <span class="nx">container</span><span class="p">,</span> <span class="nx">injectable</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">tsyringe</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="c1">// @injectable() 这里可有可无，因为没有被注入需求</span>
-<span class="kd">class</span> <span class="nx">FooService</span> <span class="p">{</span>
-  <span class="k">public</span> <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new FooService()</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">class</span> <span class="nc">FooService</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="nf">constructor</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new FooService()</span><span class="dl">"</span><span class="p">);</span>
   <span class="p">}</span>
-  <span class="nx">doFoo</span><span class="p">(</span><span class="nx">value</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nf">doFoo</span><span class="p">(</span><span class="nx">value</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="s2">`</span><span class="p">${</span><span class="nx">value</span><span class="p">}</span><span class="s2"> : Foo!`</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="p">@</span><span class="nd">injectable</span><span class="p">()</span> <span class="c1">// @autoInjectable</span>
-<span class="kd">class</span> <span class="nx">HogeService</span> <span class="p">{</span>
-  <span class="kd">constructor</span><span class="p">(</span>
+<span class="kd">class</span> <span class="nc">HogeService</span> <span class="p">{</span>
+  <span class="nf">constructor</span><span class="p">(</span>
     <span class="k">private</span> <span class="nx">fooService</span><span class="p">:</span> <span class="nx">FooService</span>
   <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new HogeService()</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new HogeService()</span><span class="dl">"</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="c1">// constructor(</span>
@@ -109,24 +109,24 @@
   <span class="c1">//   console.log("new AutoHogeService()");</span>
   <span class="c1">// }</span>
 
-  <span class="nx">doHoge</span><span class="p">(</span><span class="nx">value</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nf">doHoge</span><span class="p">(</span><span class="nx">value</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="s2">`</span><span class="p">${</span><span class="nx">value</span><span class="p">}</span><span class="s2"> : Hoge!`</span><span class="p">;</span>
   <span class="p">}</span>
-  <span class="nx">doHogeFoo</span><span class="p">(</span><span class="nx">value</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">fooService</span><span class="p">.</span><span class="nx">doFoo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">doHoge</span><span class="p">(</span><span class="nx">value</span><span class="p">));</span>
+  <span class="nf">doHogeFoo</span><span class="p">(</span><span class="nx">value</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">fooService</span><span class="p">.</span><span class="nf">doFoo</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nf">doHoge</span><span class="p">(</span><span class="nx">value</span><span class="p">));</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 
 <span class="c1">//FooService 运行</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">---------</span><span class="dl">"</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">fooService</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">FooService</span><span class="p">);</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">fooService</span><span class="p">.</span><span class="nx">doFoo</span><span class="p">(</span><span class="dl">"</span><span class="s2">test01</span><span class="dl">"</span><span class="p">));</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">---------</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">fooService</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nf">resolve</span><span class="p">(</span><span class="nx">FooService</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">fooService</span><span class="p">.</span><span class="nf">doFoo</span><span class="p">(</span><span class="dl">"</span><span class="s2">test01</span><span class="dl">"</span><span class="p">));</span>
 
 <span class="c1">//HogeService 运行</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">---------</span><span class="dl">"</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">hogeService</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">HogeService</span><span class="p">);</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">hogeService</span><span class="p">.</span><span class="nx">doHogeFoo</span><span class="p">(</span><span class="dl">"</span><span class="s2">test02</span><span class="dl">"</span><span class="p">));</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">---------</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">hogeService</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nf">resolve</span><span class="p">(</span><span class="nx">HogeService</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">hogeService</span><span class="p">.</span><span class="nf">doHogeFoo</span><span class="p">(</span><span class="dl">"</span><span class="s2">test02</span><span class="dl">"</span><span class="p">));</span>
 </code></pre></div></div>
 
 <h2 id="api-containerregister">Api: container.register</h2>
@@ -136,41 +136,41 @@
 <div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="dl">"</span><span class="s2">reflect-metadata</span><span class="dl">"</span><span class="p">;</span>
 <span class="k">import</span> <span class="p">{</span> <span class="nx">container</span><span class="p">,</span> <span class="nx">injectable</span><span class="p">,</span> <span class="nx">inject</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">tsyringe</span><span class="dl">"</span><span class="p">;</span>
 
-<span class="kd">class</span> <span class="nx">SystemSetting</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">SystemSetting</span> <span class="p">{</span>
   <span class="k">public</span> <span class="nx">settingCode</span><span class="p">:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
   <span class="k">public</span> <span class="nx">settingName</span><span class="p">:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="p">@</span><span class="nd">injectable</span><span class="p">()</span>
-<span class="kd">class</span> <span class="nx">SandboxService</span> <span class="p">{</span>
-  <span class="kd">constructor</span><span class="p">(</span>
+<span class="kd">class</span> <span class="nc">SandboxService</span> <span class="p">{</span>
+  <span class="nf">constructor</span><span class="p">(</span>
     <span class="p">@</span><span class="nd">inject</span><span class="p">(</span><span class="dl">"</span><span class="s2">systemCode</span><span class="dl">"</span><span class="p">)</span> <span class="k">private</span> <span class="nx">systemCode</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span>
     <span class="p">@</span><span class="nd">inject</span><span class="p">(</span><span class="dl">"</span><span class="s2">setting</span><span class="dl">"</span><span class="p">)</span> <span class="k">private</span> <span class="nx">setting</span><span class="p">:</span> <span class="nx">SystemSetting</span>
   <span class="p">)</span> <span class="p">{</span>
   <span class="p">}</span>
 
-  <span class="nx">showSystemCode</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`systemCode=</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">systemCode</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
+  <span class="nf">showSystemCode</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`systemCode=</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">systemCode</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="nx">showSetting</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`Setting[settingCode=</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">setting</span><span class="p">.</span><span class="nx">settingCode</span><span class="p">}</span><span class="s2">, settingName=</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">setting</span><span class="p">.</span><span class="nx">settingName</span><span class="p">}</span><span class="s2">]`</span><span class="p">);</span>
+  <span class="nf">showSetting</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`Setting[settingCode=</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">setting</span><span class="p">.</span><span class="nx">settingCode</span><span class="p">}</span><span class="s2">, settingName=</span><span class="p">${</span><span class="k">this</span><span class="p">.</span><span class="nx">setting</span><span class="p">.</span><span class="nx">settingName</span><span class="p">}</span><span class="s2">]`</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="c1">// 注册值</span>
-<span class="nx">container</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">systemCode</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">useValue</span><span class="p">:</span> <span class="dl">"</span><span class="s2">001</span><span class="dl">"</span> <span class="p">});</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">systemCode</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">useValue</span><span class="p">:</span> <span class="dl">"</span><span class="s2">001</span><span class="dl">"</span> <span class="p">});</span>
 
 <span class="c1">// 注册对象</span>
-<span class="kd">const</span> <span class="nx">setting</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SystemSetting</span><span class="p">();</span>
+<span class="kd">const</span> <span class="nx">setting</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SystemSetting</span><span class="p">();</span>
 <span class="nx">setting</span><span class="p">.</span><span class="nx">settingCode</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">010</span><span class="dl">"</span><span class="p">;</span>
 <span class="nx">setting</span><span class="p">.</span><span class="nx">settingName</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">it</span><span class="dl">"</span><span class="p">;</span>
-<span class="nx">container</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">setting</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">useValue</span><span class="p">:</span> <span class="nx">setting</span> <span class="p">});</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">setting</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">useValue</span><span class="p">:</span> <span class="nx">setting</span> <span class="p">});</span>
 
-<span class="kd">const</span> <span class="nx">sandboxService</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">SandboxService</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">sandboxService</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nf">resolve</span><span class="p">(</span><span class="nx">SandboxService</span><span class="p">);</span>
 
-<span class="nx">sandboxService</span><span class="p">.</span><span class="nx">showSystemCode</span><span class="p">();</span>
-<span class="nx">sandboxService</span><span class="p">.</span><span class="nx">showSetting</span><span class="p">();</span>
+<span class="nx">sandboxService</span><span class="p">.</span><span class="nf">showSystemCode</span><span class="p">();</span>
+<span class="nx">sandboxService</span><span class="p">.</span><span class="nf">showSetting</span><span class="p">();</span>
 </code></pre></div></div>
 
 <h4 id="class-provider">Class provider</h4>
@@ -179,35 +179,35 @@
 <span class="k">import</span> <span class="p">{</span> <span class="nx">container</span><span class="p">,</span> <span class="nx">injectable</span><span class="p">,</span> <span class="nx">inject</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">tsyringe</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="p">@</span><span class="nd">injectable</span><span class="p">()</span>
-<span class="kd">class</span> <span class="nx">FooLogicImpl</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">FooLogicImpl</span> <span class="p">{</span>
 
-  <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new FooLogicImpl()</span><span class="dl">"</span><span class="p">);</span>
+  <span class="nf">constructor</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new FooLogicImpl()</span><span class="dl">"</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="nx">doFoo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">doFoo</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="dl">"</span><span class="s2">foo</span><span class="dl">"</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="p">@</span><span class="nd">injectable</span><span class="p">()</span>
-<span class="kd">class</span> <span class="nx">HogeService</span> <span class="p">{</span>
+<span class="kd">class</span> <span class="nc">HogeService</span> <span class="p">{</span>
 
-  <span class="kd">constructor</span><span class="p">(</span>
+  <span class="nf">constructor</span><span class="p">(</span>
     <span class="p">@</span><span class="nd">inject</span><span class="p">(</span><span class="dl">"</span><span class="s2">FooLogic</span><span class="dl">"</span><span class="p">)</span> <span class="k">private</span> <span class="nx">fooLogic</span><span class="p">:</span> <span class="nx">FooLogicImpl</span><span class="p">,</span>
   <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new HogeService()</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new HogeService()</span><span class="dl">"</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="nx">doService</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">fooLogic</span><span class="p">.</span><span class="nx">doFoo</span><span class="p">());</span>
+  <span class="nf">doService</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">fooLogic</span><span class="p">.</span><span class="nf">doFoo</span><span class="p">());</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nx">container</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">FooLogic</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">useClass</span><span class="p">:</span> <span class="nx">FooLogicImpl</span> <span class="p">});</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">FooLogic</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">useClass</span><span class="p">:</span> <span class="nx">FooLogicImpl</span> <span class="p">});</span>
 
-<span class="kd">const</span> <span class="nx">hogeService</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">HogeService</span><span class="p">);</span>
-<span class="nx">hogeService</span><span class="p">.</span><span class="nx">doService</span><span class="p">();</span>
+<span class="kd">const</span> <span class="nx">hogeService</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nf">resolve</span><span class="p">(</span><span class="nx">HogeService</span><span class="p">);</span>
+<span class="nx">hogeService</span><span class="p">.</span><span class="nf">doService</span><span class="p">();</span>
 </code></pre></div></div>
 
 <h4 id="usefactory-provider">useFactory provider</h4>
@@ -216,41 +216,41 @@
 <span class="k">import</span> <span class="p">{</span> <span class="nx">container</span><span class="p">,</span> <span class="nx">DependencyContainer</span><span class="p">,</span> <span class="nx">injectable</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">tsyringe</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="p">@</span><span class="nd">injectable</span><span class="p">()</span>
-<span class="kd">class</span> <span class="nx">BarLogic</span> <span class="p">{</span>
-  <span class="kd">constructor</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new BarLogic()</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">class</span> <span class="nc">BarLogic</span> <span class="p">{</span>
+  <span class="nf">constructor</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new BarLogic()</span><span class="dl">"</span><span class="p">);</span>
   <span class="p">}</span>
-  <span class="nx">doBar</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">doBar</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="dl">"</span><span class="s2">bar</span><span class="dl">"</span><span class="p">;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="kd">class</span> <span class="nx">HogeService</span> <span class="p">{</span>
-  <span class="kd">constructor</span><span class="p">(</span>
+<span class="kd">class</span> <span class="nc">HogeService</span> <span class="p">{</span>
+  <span class="nf">constructor</span><span class="p">(</span>
     <span class="k">private</span> <span class="nx">barLogic</span><span class="p">:</span> <span class="nx">BarLogic</span>
   <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new HogeService()</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">new HogeService()</span><span class="dl">"</span><span class="p">);</span>
   <span class="p">}</span>
-  <span class="nx">doHoge</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">barLogic</span><span class="p">.</span><span class="nx">doBar</span><span class="p">());</span>
+  <span class="nf">doHoge</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">barLogic</span><span class="p">.</span><span class="nf">doBar</span><span class="p">());</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nx">container</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">HogeService</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">HogeService</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">useFactory</span><span class="p">:</span> <span class="p">(</span><span class="na">dependencyContainer</span><span class="p">:</span> <span class="nx">DependencyContainer</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">factory!</span><span class="dl">"</span><span class="p">)</span>
-    <span class="kd">const</span> <span class="nx">barLogic</span> <span class="o">=</span> <span class="nx">dependencyContainer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">BarLogic</span><span class="p">)</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nx">HogeService</span><span class="p">(</span><span class="nx">barLogic</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">factory!</span><span class="dl">"</span><span class="p">)</span>
+    <span class="kd">const</span> <span class="nx">barLogic</span> <span class="o">=</span> <span class="nx">dependencyContainer</span><span class="p">.</span><span class="nf">resolve</span><span class="p">(</span><span class="nx">BarLogic</span><span class="p">)</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nc">HogeService</span><span class="p">(</span><span class="nx">barLogic</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">})</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">------</span><span class="dl">"</span><span class="p">)</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">------</span><span class="dl">"</span><span class="p">)</span>
 <span class="kd">const</span> <span class="nx">hogeService1</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nx">resolve</span><span class="o">&lt;</span><span class="nx">HogeService</span><span class="o">&gt;</span><span class="p">(</span><span class="dl">"</span><span class="s2">HogeService</span><span class="dl">"</span><span class="p">)</span>
-<span class="nx">hogeService1</span><span class="p">.</span><span class="nx">doHoge</span><span class="p">();</span>
+<span class="nx">hogeService1</span><span class="p">.</span><span class="nf">doHoge</span><span class="p">();</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">------</span><span class="dl">"</span><span class="p">)</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">------</span><span class="dl">"</span><span class="p">)</span>
 <span class="kd">const</span> <span class="nx">hogeService2</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nx">resolve</span><span class="o">&lt;</span><span class="nx">HogeService</span><span class="o">&gt;</span><span class="p">(</span><span class="dl">"</span><span class="s2">HogeService</span><span class="dl">"</span><span class="p">)</span>
-<span class="nx">hogeService2</span><span class="p">.</span><span class="nx">doHoge</span><span class="p">();</span>
+<span class="nx">hogeService2</span><span class="p">.</span><span class="nf">doHoge</span><span class="p">();</span>
 <span class="c1">// 输出结果</span>
 <span class="c1">// ------</span>
 <span class="c1">// factory!</span>
@@ -268,21 +268,21 @@
 <p>在前面的例子中，HogeService 工厂函数在你每次请求时都会执行，但是如果使用 instanceCachingFactory，工厂函数的结果会被缓存。</p>
 
 <div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 定义代码省略...</span>
-<span class="nx">container</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">HogeService</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
+<span class="nx">container</span><span class="p">.</span><span class="nf">register</span><span class="p">(</span><span class="dl">"</span><span class="s2">HogeService</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
   <span class="na">useFactory</span><span class="p">:</span> <span class="nx">instanceCachingFactory</span><span class="o">&lt;</span><span class="nx">HogeService</span><span class="o">&gt;</span><span class="p">((</span><span class="na">dependencyContainer</span><span class="p">:</span> <span class="nx">DependencyContainer</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">factory!</span><span class="dl">"</span><span class="p">)</span>
-      <span class="kd">const</span> <span class="nx">barLogic</span> <span class="o">=</span> <span class="nx">dependencyContainer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">BarLogic</span><span class="p">)</span>
-      <span class="k">return</span> <span class="k">new</span> <span class="nx">HogeService</span><span class="p">(</span><span class="nx">barLogic</span><span class="p">);</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">factory!</span><span class="dl">"</span><span class="p">)</span>
+      <span class="kd">const</span> <span class="nx">barLogic</span> <span class="o">=</span> <span class="nx">dependencyContainer</span><span class="p">.</span><span class="nf">resolve</span><span class="p">(</span><span class="nx">BarLogic</span><span class="p">)</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nc">HogeService</span><span class="p">(</span><span class="nx">barLogic</span><span class="p">);</span>
   <span class="p">})</span>
 <span class="p">})</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">------</span><span class="dl">"</span><span class="p">)</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">------</span><span class="dl">"</span><span class="p">)</span>
 <span class="kd">const</span> <span class="nx">hogeService1</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nx">resolve</span><span class="o">&lt;</span><span class="nx">HogeService</span><span class="o">&gt;</span><span class="p">(</span><span class="dl">"</span><span class="s2">HogeService</span><span class="dl">"</span><span class="p">)</span>
-<span class="nx">hogeService1</span><span class="p">.</span><span class="nx">doHoge</span><span class="p">();</span>
+<span class="nx">hogeService1</span><span class="p">.</span><span class="nf">doHoge</span><span class="p">();</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">------</span><span class="dl">"</span><span class="p">)</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">------</span><span class="dl">"</span><span class="p">)</span>
 <span class="kd">const</span> <span class="nx">hogeService2</span> <span class="o">=</span> <span class="nx">container</span><span class="p">.</span><span class="nx">resolve</span><span class="o">&lt;</span><span class="nx">HogeService</span><span class="o">&gt;</span><span class="p">(</span><span class="dl">"</span><span class="s2">HogeService</span><span class="dl">"</span><span class="p">)</span>
-<span class="nx">hogeService2</span><span class="p">.</span><span class="nx">doHoge</span><span class="p">();</span>
+<span class="nx">hogeService2</span><span class="p">.</span><span class="nf">doHoge</span><span class="p">();</span>
 <span class="c1">// 输出结果</span>
 <span class="c1">// ------</span>
 <span class="c1">// factory!</span>
