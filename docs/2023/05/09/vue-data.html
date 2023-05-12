@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>vue 中 data 的坑总结 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="vue 中 data 的坑总结" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="由于 vue 入门极其简单，以至于我们很容易忽略 data 的定义 和 操作带来的坑" />
+<meta property="og:description" content="由于 vue 入门极其简单，以至于我们很容易忽略 data 的定义 和 操作带来的坑" />
+<link rel="canonical" href="http://localhost:4000/2023/05/09/vue-data" />
+<meta property="og:url" content="http://localhost:4000/2023/05/09/vue-data" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-09T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="vue 中 data 的坑总结" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2023-05-09T00:00:00+08:00","headline":"vue 中 data 的坑总结","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/05/09/vue-data"},"description":"由于 vue 入门极其简单，以至于我们很容易忽略 data 的定义 和 操作带来的坑","url":"http://localhost:4000/2023/05/09/vue-data","datePublished":"2023-05-09T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="vue,data,$set,assign" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>vue 中 data 的坑总结</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <p>由于 vue 入门极其简单，以至于我们很容易忽略 data 的定义 和 操作带来的坑</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">data</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">obj</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">}</span>
+<span class="p">},</span>
+<span class="nx">mounted</span><span class="p">:</span> <span class="p">{</span>
+  <span class="c1">// 以下 3 种使用方式 视图更新</span>
+  <span class="c1">// 1</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span>
+  <span class="c1">// 2, 等价于 1</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="k">this</span><span class="p">.</span><span class="nx">obj</span><span class="p">,</span> <span class="p">{</span> <span class="na">d</span><span class="p">:</span> <span class="mi">4</span> <span class="p">})</span>
+  <span class="c1">// 3</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">$set</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">obj</span><span class="p">,</span> <span class="dl">'</span><span class="s1">e</span><span class="dl">'</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+  
+  <span class="c1">// 以下 3 种使用方式，视图不会更新</span>
+  <span class="c1">// 1</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">obj</span><span class="p">.</span><span class="nx">c</span> <span class="o">=</span> <span class="mi">3</span>
+  <span class="c1">// 2</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">obj</span><span class="p">,</span> <span class="p">{</span> <span class="na">d</span><span class="p">:</span> <span class="mi">4</span> <span class="p">})</span>
+  <span class="c1">// 3</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">obj</span><span class="p">,</span> <span class="p">{</span> <span class="na">d</span><span class="p">:</span> <span class="mi">4</span> <span class="p">})</span>
+
+  <span class="c1">// 注意：即使 obj 里面有些 key 是 object 或 array 也正常</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">obj</span> <span class="o">=</span>  <span class="p">{</span> <span class="na">object</span><span class="p">:</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="na">arr</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="p">},</span> <span class="na">array</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">9</span> <span class="p">}]</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>我们经常会碰到一个场景，前端同学不太想定义(偷懒) data.obj 的所有的 key，
+就想等着后端接口加载完，再统一赋值给 data.obj, 此时我需要接上例中的视图更新的
+方式 1 或 2 直接赋值给 data.obj，这样在模板里做好判断，不会出问题，可以正常跑
+但事先不定义好 data.obj 的所有 key, 代码维护起来很抓狂。</p>
+
+<p>对此 vue 的文档上也讲的很明白，也可以参考下 深入响应式原理  https://v2.cn.vuejs.org/v2/guide/reactivity.html</p>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2023-05-09.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/vue" class="post-category">vue</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/vue" class="post-tag">vue</a>
+      
+      <a href="/tag/data" class="post-tag">data</a>
+      
+      <a href="/tag/set" class="post-tag">$set</a>
+      
+      <a href="/tag/assign" class="post-tag">assign</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2022/02/02/em-rem">rem 和 em 的区别</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>

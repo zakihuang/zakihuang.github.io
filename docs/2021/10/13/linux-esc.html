@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Linux vi 快捷操作 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="Linux vi 快捷操作" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Linux vi 退出时的一些操作记录" />
+<meta property="og:description" content="Linux vi 退出时的一些操作记录" />
+<link rel="canonical" href="http://localhost:4000/2021/10/13/linux-esc" />
+<meta property="og:url" content="http://localhost:4000/2021/10/13/linux-esc" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-10-13T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Linux vi 快捷操作" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2021-10-13T00:00:00+08:00","headline":"Linux vi 快捷操作","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/13/linux-esc"},"description":"Linux vi 退出时的一些操作记录","url":"http://localhost:4000/2021/10/13/linux-esc","datePublished":"2021-10-13T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="esc,goto" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>Linux vi 快捷操作</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <p>Linux vi 退出时的一些操作记录</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">:</span><span class="nx">w</span>       <span class="nx">保存不退出</span>
+<span class="p">:</span><span class="nx">q</span>       <span class="nx">不保存</span> <span class="o">&amp;</span> <span class="nx">退出</span>
+<span class="p">:</span><span class="nx">wq</span>      <span class="nx">保存</span> <span class="o">&amp;</span> <span class="nx">退出</span>
+
+<span class="p">:</span><span class="nx">w</span> <span class="nx">file</span>  <span class="nx">文件另存为</span> <span class="nx">file</span> <span class="nx">中</span><span class="p">,</span> <span class="nx">不退出</span>
+
+<span class="p">:</span><span class="nx">w</span><span class="o">!</span>      <span class="nx">强制</span> <span class="o">&amp;</span> <span class="nx">保存</span>
+<span class="p">:</span><span class="nx">q</span><span class="o">!</span>      <span class="nx">不保存</span> <span class="o">&amp;</span> <span class="nx">强制</span> <span class="o">&amp;</span> <span class="nx">退出</span>
+<span class="p">:</span><span class="nx">wq</span><span class="o">!</span>     <span class="nx">强制</span> <span class="o">&amp;</span> <span class="nx">保存</span> <span class="o">&amp;</span> <span class="nx">退出</span>
+
+<span class="p">:</span><span class="nx">e</span><span class="o">!</span>      <span class="nx">放弃修改</span><span class="p">,</span> <span class="nx">从上次保存文件开始再编辑</span>
+</code></pre></div></div>
+
+<p>linux中vi 如何快速跳转至行首或者行尾</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nx">shift</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="o">^</span>   <span class="nx">跳转至行首</span>
+
+<span class="p">(</span><span class="nx">shift</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">$</span>   <span class="nx">跳转至行尾</span>
+</code></pre></div></div>
+
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2021-10-13.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/linux" class="post-category">linux</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/esc" class="post-tag">esc</a>
+      
+      <a href="/tag/goto" class="post-tag">goto</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      <div>
+        <span>后一篇：</span><a href="/2021/10/13/mac-terminal">Mac terminal 光标跳转</a>
+      </div>
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2021/10/13/decorator">es6 decorator</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>

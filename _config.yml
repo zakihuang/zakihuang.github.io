@@ -36,6 +36,8 @@ language: zh-cn
 
 analytics:   # the Google Analytics property ID, e.g. UA-XXXXX-Y
 
+destination: ./docs
+
 paginate: 25
 paginate_path: "/page:num/"
 
@@ -60,6 +62,8 @@ jekyll-archives:
   permalinks:
     category: /category/:name/
     tag: /tag/:name/
+
+
 
 # Build settings
 markdown: kramdown

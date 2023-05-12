@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>es6 decorator | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="es6 decorator" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="装饰器:装饰器是一种特殊类型的声明，它能够被附加到类声明，方法，属性或参数上，可以修改类的行为。" />
+<meta property="og:description" content="装饰器:装饰器是一种特殊类型的声明，它能够被附加到类声明，方法，属性或参数上，可以修改类的行为。" />
+<link rel="canonical" href="http://localhost:4000/2021/10/13/decorator" />
+<meta property="og:url" content="http://localhost:4000/2021/10/13/decorator" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-10-13T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="es6 decorator" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2021-10-13T00:00:00+08:00","headline":"es6 decorator","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/13/decorator"},"description":"装饰器:装饰器是一种特殊类型的声明，它能够被附加到类声明，方法，属性或参数上，可以修改类的行为。","url":"http://localhost:4000/2021/10/13/decorator","datePublished":"2021-10-13T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="es6,javascript,decorator" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>es6 decorator</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <p>装饰器:装饰器是一种特殊类型的声明，它能够被附加到类声明，方法，属性或参数上，可以修改类的行为。</p>
+
+<p>通俗的讲装饰器就是一个方法，可以注入到类、方法、属性参数上来扩展类、属性、方法、参数的功能。</p>
+
+<p>常见的装饰器有：类装饰器、属性装饰器、方法装饰器、参数装饰器</p>
+
+<p>装饰器的写法：普通装饰器（无法传参）、装饰器工厂（可传参）</p>
+
+<p>装饰器是过去几年中js最大的成就之一，已是Es7的标准特性之一</p>
+
+<blockquote>
+  <p>针对类的修饰，只有一个参数 target 指类本身
+针对静态 属性 方法 方法的参数来讲：第一个参数 target 是指 类本身(也既构造函数本身，注意这里讲的是’构造函数’，因为 javascript 没有类机制，所以用的构造函数模拟实现)
+针对实例 属性 方法 方法的参数来讲：第一个参数 target 是指 类的 prototype</p>
+</blockquote>
+
+<p>请注意，这是非常重要的区别，以下代码演示这些区别</p>
+
+<h3 id="修饰类">修饰类</h3>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">decoClass</span><span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// target 就是当前类</span>
+  <span class="nx">target</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">apiUrl</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">动态扩展的属性</span><span class="dl">'</span><span class="p">;</span>
+  <span class="nx">target</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">run</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">我是一个run方法</span><span class="dl">'</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="p">@</span><span class="nd">decoClass</span>
+<span class="kd">class</span> <span class="nx">TestClass</span> <span class="p">{}</span>
+
+<span class="kd">const</span> <span class="nx">instance</span><span class="p">:</span> <span class="kr">any</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TestClass</span><span class="p">();</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">instance</span><span class="p">.</span><span class="nx">apiUrl</span><span class="p">);</span>
+
+<span class="nx">instance</span><span class="p">.</span><span class="nx">run</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="修饰属性-静态--实例">修饰属性 [静态 | 实例]</h3>
+<p>属性装饰器表达式会在运行时当作函数被调用，传入下列2个参数：</p>
+
+<p>1、对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。</p>
+
+<p>2、成员的名字。</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">logProperty</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">attr</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">target</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">attr</span><span class="p">);</span>
+    <span class="nx">target</span><span class="p">[</span><span class="nx">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nx">params</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">staticDemo</span> <span class="p">{</span>
+  <span class="p">@</span><span class="nd">logProperty</span><span class="p">(</span><span class="dl">'</span><span class="s1">http://loaderman.com</span><span class="dl">'</span><span class="p">)</span>
+  <span class="c1">// 区别在这里，看这里，看这里</span>
+  <span class="k">public</span> <span class="nx">url</span><span class="p">:</span> <span class="kr">any</span> <span class="o">|</span> <span class="kc">undefined</span><span class="p">;</span>
+
+  <span class="nx">getData</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">const</span> <span class="nx">staticDemoTest</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">staticDemo</span><span class="p">();</span>
+<span class="nx">staticDemoTest</span><span class="p">.</span><span class="nx">getData</span><span class="p">();</span>
+
+
+<span class="kd">class</span> <span class="nx">instanceDemo</span> <span class="p">{</span>
+  <span class="p">@</span><span class="nd">logProperty</span><span class="p">(</span><span class="dl">'</span><span class="s1">http://loaderman.com</span><span class="dl">'</span><span class="p">)</span>
+  <span class="c1">// 区别在这里，看这里，看这里</span>
+  <span class="k">static</span> <span class="nx">url</span><span class="p">:</span> <span class="kr">any</span> <span class="o">|</span> <span class="kc">undefined</span><span class="p">;</span>
+
+  <span class="nx">getData</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">instanceDemo</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">const</span> <span class="nx">instanceDemoTest</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">instanceDemo</span><span class="p">();</span>
+<span class="nx">instanceDemoTest</span><span class="p">.</span><span class="nx">getData</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="修饰方法-静态--实例">修饰方法 [静态 | 实例]</h3>
+<p>它会被应用到方法的 属性描述符上，可以用来监视，修改或者替换方法定义。</p>
+
+<p>方法装饰会在运行时传入下列3个参数：</p>
+
+<p>1、对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。</p>
+
+<p>2、成员的名字。</p>
+
+<p>3、成员的属性描述符。</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">decoMethod</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">methodName</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">desc</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">target</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">methodName</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">desc</span><span class="p">);</span>
+    <span class="nx">target</span><span class="p">.</span><span class="nx">url</span> <span class="o">=</span> <span class="nx">params</span><span class="p">;</span>
+    <span class="nx">target</span><span class="p">.</span><span class="nx">run</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">run</span><span class="dl">'</span><span class="p">);</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="c1">// 实例方法修饰</span>
+<span class="kd">class</span> <span class="nx">instanceMehodClass</span> <span class="p">{</span>
+  <span class="c1">// 区别在这里，看这里看这里</span>
+  <span class="k">public</span> <span class="nx">url</span><span class="p">:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">undefined</span><span class="p">;</span>
+  <span class="p">@</span><span class="nd">decoMethod</span><span class="p">(</span><span class="dl">'</span><span class="s1">http://www.loaderman,com</span><span class="dl">'</span><span class="p">)</span>
+  <span class="nx">getData</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">http</span><span class="p">:</span> <span class="kr">any</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">instanceMehodClass</span><span class="p">();</span>
+<span class="nx">http</span><span class="p">.</span><span class="nx">getData</span><span class="p">();</span>
+
+<span class="c1">// 静态方法修饰</span>
+<span class="kd">class</span> <span class="nx">staticMethodClass</span> <span class="p">{</span>
+  <span class="k">static</span> <span class="nx">url</span><span class="p">:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">undefined</span><span class="p">;</span>
+  <span class="p">@</span><span class="nd">decoMethod</span><span class="p">(</span><span class="dl">'</span><span class="s1">http://www.loaderman,com</span><span class="dl">'</span><span class="p">)</span>
+  <span class="k">static</span> <span class="nx">getData</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">staticMethodClass</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">staticMethodClass</span><span class="p">.</span><span class="nx">getData</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="修饰方法的参数-静态--实例">修饰方法的参数 [静态 | 实例]</h3>
+<p>参数装饰器表达式会在运行时当作函数被调用，可以使用参数装饰器为类的原型增加一些元素数据 ，传入下列3个参数：</p>
+
+<p>1、对于静态成员来说是类的构造函数，对于实例成员是类的原型对象。</p>
+
+<p>2、方法的名字。</p>
+
+<p>3、参数在函数参数列表中的索引。</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">logParams</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">methodName</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">paramsIndex</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">params</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">target</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">methodName</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">paramsIndex</span><span class="p">);</span>
+    <span class="nx">target</span><span class="p">.</span><span class="nx">apiUrl</span> <span class="o">=</span> <span class="nx">params</span><span class="p">;</span>
+  <span class="p">};</span>
+
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nx">paramsClass</span> <span class="p">{</span>
+  <span class="k">public</span> <span class="nx">url</span><span class="p">:</span> <span class="kr">any</span> <span class="o">|</span> <span class="kc">undefined</span><span class="p">;</span>
+  <span class="nx">getData</span><span class="p">(@</span><span class="nd">logParams</span><span class="p">(</span><span class="dl">'</span><span class="s1">xxxxx</span><span class="dl">'</span><span class="p">)</span> <span class="nx">uuid</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">uuid</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+
+<span class="kd">const</span> <span class="nx">http</span><span class="p">:</span> <span class="kr">any</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">paramsClass</span><span class="p">();</span>
+<span class="nx">http</span><span class="p">.</span><span class="nx">getData</span><span class="p">(</span><span class="mi">123456</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">http</span><span class="p">.</span><span class="nx">apiUrl</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="装饰器执行顺序">装饰器执行顺序</h3>
+<p>属性》方法》方法参数》类</p>
+
+<p>如果有多个同样的装饰器，它会先执行后面的, 至于工厂装饰器，按洋葱模型执行</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">logClass1</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">类装饰器1</span><span class="dl">'</span><span class="p">,</span><span class="nx">target</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">logClass2</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">类装饰器2</span><span class="dl">'</span><span class="p">,</span><span class="nx">target</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">logAttribute1</span><span class="p">(</span><span class="nx">params</span><span class="p">?:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">属性装饰器1</span><span class="dl">'</span><span class="p">,</span><span class="nx">target</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">logAttribute2</span><span class="p">(</span><span class="nx">params</span><span class="p">?:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">属性装饰器2</span><span class="dl">'</span><span class="p">,</span><span class="nx">target</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">logMethod1</span><span class="p">(</span><span class="nx">params</span><span class="p">?:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">desc</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">方法装饰器1</span><span class="dl">'</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">,</span> <span class="nx">desc</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">logMethod2</span><span class="p">(</span><span class="nx">params</span><span class="p">?:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">desc</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">方法装饰器2</span><span class="dl">'</span> <span class="p">,</span><span class="nx">target</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">,</span> <span class="nx">desc</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">logParams1</span><span class="p">(</span><span class="nx">params</span><span class="p">?:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">desc</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">方法参数装饰器1</span><span class="dl">'</span> <span class="p">,</span><span class="nx">target</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">,</span> <span class="nx">desc</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">logParams2</span><span class="p">(</span><span class="nx">params</span><span class="p">?:</span> <span class="kr">string</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">desc</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">方法参数装饰器2</span><span class="dl">'</span> <span class="p">,</span><span class="nx">target</span><span class="p">,</span> <span class="nx">attrName</span><span class="p">,</span> <span class="nx">desc</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="p">@</span><span class="nd">logClass1</span><span class="p">(</span><span class="dl">'</span><span class="s1">http://www.loaderman.com/api</span><span class="dl">'</span><span class="p">)</span>
+<span class="p">@</span><span class="nd">logClass2</span><span class="p">(</span><span class="dl">'</span><span class="s1">xxxx</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">class</span> <span class="nx">HttpClient</span> <span class="p">{</span>
+  <span class="p">@</span><span class="nd">logAttribute1</span><span class="p">()</span>
+  <span class="p">@</span><span class="nd">logAttribute2</span><span class="p">()</span>
+  <span class="k">public</span> <span class="nx">apiUrl</span><span class="p">:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">undefined</span><span class="p">;</span>
+  <span class="p">@</span><span class="nd">logMethod1</span><span class="p">()</span>
+  <span class="p">@</span><span class="nd">logMethod2</span><span class="p">()</span>
+  <span class="nx">getData</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="nx">setData</span><span class="p">(@</span><span class="nd">logParams1</span><span class="p">()</span> <span class="nx">attr1</span><span class="p">:</span> <span class="kr">any</span><span class="p">,</span> <span class="p">@</span><span class="nd">logParams2</span><span class="p">()</span> <span class="nx">attr2</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">attr1</span><span class="p">,</span> <span class="nx">attr2</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">http</span><span class="p">:</span> <span class="kr">any</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">HttpClient</span><span class="p">();</span>
+<span class="nx">http</span><span class="p">.</span><span class="nx">getData</span><span class="p">();</span>
+</code></pre></div></div>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2021-10-13.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/javascript" class="post-category">javascript</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/es6" class="post-tag">es6</a>
+      
+      <a href="/tag/javascript" class="post-tag">javascript</a>
+      
+      <a href="/tag/decorator" class="post-tag">decorator</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      <div>
+        <span>后一篇：</span><a href="/2021/10/13/linux-esc">Linux vi 快捷操作</a>
+      </div>
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2021/10/07/simple-ioc">typescript ioc</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>

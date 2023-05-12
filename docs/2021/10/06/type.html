@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>typescript 高级类型总结 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="typescript 高级类型总结" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="typescript 里的类型奇巧淫技真是多（也许是不习惯而已），特此总结一番：" />
+<meta property="og:description" content="typescript 里的类型奇巧淫技真是多（也许是不习惯而已），特此总结一番：" />
+<link rel="canonical" href="http://localhost:4000/2021/10/06/type" />
+<meta property="og:url" content="http://localhost:4000/2021/10/06/type" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-10-06T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="typescript 高级类型总结" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2021-10-06T00:00:00+08:00","headline":"typescript 高级类型总结","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/06/type"},"description":"typescript 里的类型奇巧淫技真是多（也许是不习惯而已），特此总结一番：","url":"http://localhost:4000/2021/10/06/type","datePublished":"2021-10-06T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="type" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>typescript 高级类型总结</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <p>typescript 里的类型奇巧淫技真是多（也许是不习惯而已），特此总结一番：</p>
+
+<h3 id="高级类型">高级类型</h3>
+
+<p>除了 string、number、boolean 这种基础类型外，我们还应该了解一些类型声明中的一些高级用法。</p>
+
+<h4 id="交叉类型">交叉类型（&amp;）</h4>
+
+<p>交叉类型说简单点就是将多个类型合并成一个类型，个人感觉叫做「合并类型」更合理一点，其语法规则和逻辑 “与” 的符号一致。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T &amp; U
+</code></pre></div></div>
+
+<p>假如，我现在有两个类，一个按钮，一个超链接，现在我需要一个带有超链接的按钮，就可以使用交叉类型来实现。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Button</span> <span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">Link</span> <span class="p">{</span>
+  <span class="nl">href</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">linkBtn</span><span class="p">:</span> <span class="nx">Button</span> <span class="o">&amp;</span> <span class="nx">Link</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">text</span><span class="p">:</span> <span class="dl">"</span><span class="s2">按钮</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">href</span><span class="p">:</span> <span class="dl">"</span><span class="s2">http://www.google.com</span><span class="dl">"</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h4 id="联合类型">联合类型（|）</h4>
+
+<p>联合类型的语法规则和逻辑 “或” 的符号一致，表示其类型为连接的多个类型中的任意一个。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T | U
+</code></pre></div></div>
+
+<p>例如，之前的 Button 组件，我们的 type 属性只能指定固定的几种字符串。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Button</span> <span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">default</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">primary</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">danger</span><span class="dl">"</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">btn</span><span class="p">:</span> <span class="nx">Button</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">primary</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">text</span><span class="p">:</span> <span class="dl">"</span><span class="s2">按钮</span><span class="dl">"</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h4 id="类型别名type">类型别名（type）</h4>
+
+<p>前面提到的交叉类型与联合类型如果有多个地方需要使用，就需要通过类型别名的方式，给这两种类型声明一个别名。类型别名与声明变量的语法类似，只需要把 const、let 换成 type 关键字即可。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>type Alias = T | U
+</code></pre></div></div>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">InnerType</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">default</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">primary</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">danger</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kr">interface</span> <span class="nx">Button</span> <span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">InnerType</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">Alert</span> <span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">ButtonType</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="类型索引keyof">类型索引（keyof）</h4>
+
+<p>keyof 类似于 Object.keys ，用于获取一个接口中 Key 的联合类型。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Button</span> <span class="p">{</span>
+    <span class="nl">type</span><span class="p">:</span> <span class="kr">string</span>
+    <span class="nx">text</span><span class="p">:</span> <span class="kr">string</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">ButtonKeys</span> <span class="o">=</span> <span class="kr">keyof</span> <span class="nx">Button</span>
+<span class="c1">// 等效于</span>
+<span class="kd">type</span> <span class="nx">ButtonKeys</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">type</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">text
+</span></code></pre></div></div>
+
+<p>还是拿之前的 Button 类来举例，Button 的 type 类型来自于另一个类 ButtonTypes，按照之前的写法，每次 ButtonTypes 更新都需要修改 Button 类，如果我们使用 keyof 就不会有这个烦恼。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">ButtonStyle</span> <span class="p">{</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">background</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kr">interface</span> <span class="nx">ButtonTypes</span> <span class="p">{</span>
+  <span class="nl">default</span><span class="p">:</span> <span class="nx">ButtonStyle</span><span class="p">;</span>
+  <span class="nl">primary</span><span class="p">:</span> <span class="nx">ButtonStyle</span><span class="p">;</span>
+  <span class="nl">danger</span><span class="p">:</span> <span class="nx">ButtonStyle</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kr">interface</span> <span class="nx">Button</span> <span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">default</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">primary</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">danger</span><span class="dl">"</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 使用 keyof 后，ButtonTypes修改后，type 类型会自动修改</span>
+<span class="kr">interface</span> <span class="nx">Button</span> <span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="kr">keyof</span> <span class="nx">ButtonTypes</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="类型约束extends">类型约束（extends）</h4>
+
+<p>这里的 extends 关键词不同于在 class 后使用 extends 的继承作用，泛型内使用的主要作用是对泛型加以约束。我们用我们前面写过的 copy 方法再举个例子：</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">BaseType</span> <span class="o">=</span> <span class="kr">string</span> <span class="o">|</span> <span class="kr">number</span> <span class="o">|</span> <span class="nx">boolean</span><span class="p">;</span>
+
+<span class="c1">// 这里表示 copy 的参数</span>
+<span class="c1">// 只能是字符串、数字、布尔这几种基础类型, 如果我们传入一个对象就会有问题。</span>
+<span class="kd">function</span> <span class="nx">copy</span><span class="o">&lt;</span><span class="nx">T</span> <span class="kd">extends</span> <span class="nx">BaseType</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">arg</span><span class="p">:</span> <span class="nx">T</span><span class="p">):</span> <span class="nx">T</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>extends 经常与 keyof 一起使用，例如我们有一个方法专门用来获取对象的值，但是这个对象并不确定，我们就可以使用 extends 和 keyof 进行约束。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nx">getValue</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">obj</span><span class="p">:</span> <span class="nx">T</span><span class="p">,</span> <span class="nx">key</span><span class="p">:</span> <span class="nx">K</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">1</span> <span class="p">};</span>
+<span class="kd">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">getValue</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="dl">"</span><span class="s2">a</span><span class="dl">"</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>这里的 getValue 方法就能根据传入的参数 obj 来约束 key 的值。</p>
+
+<h4 id="类型映射in">类型映射（in）</h4>
+
+<p>in 关键词的作用主要是做类型的映射，遍历已有接口的 key 或者是遍历联合类型。下面使用内置的泛型接口 Readonly 来举例。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nb">Readonly</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="k">readonly</span> <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="p">]:</span> <span class="nx">T</span><span class="p">[</span><span class="nx">P</span><span class="p">];</span>
+<span class="p">};</span>
+
+<span class="kr">interface</span> <span class="nx">Obj</span> <span class="p">{</span>
+  <span class="nl">a</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">b</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">ReadOnlyObj</span> <span class="o">=</span> <span class="nb">Readonly</span><span class="o">&lt;</span><span class="nx">Obj</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<table>
+  <tbody>
+    <tr>
+      <td>我们可以结构下这个逻辑，首先 keyof Obj 得到一个联合类型 ‘a’</td>
+      <td>‘b’</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Obj</span> <span class="p">{</span>
+  <span class="nl">a</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">b</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">ObjKeys</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">a</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">b</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">type</span> <span class="nx">ReadOnlyObj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="k">readonly</span> <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="nx">ObjKeys</span><span class="p">]:</span> <span class="nx">Obj</span><span class="p">[</span><span class="nx">P</span><span class="p">];</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<table>
+  <tbody>
+    <tr>
+      <td>然后 P in ObjKeys 相当于执行了一次 forEach 的逻辑，遍历 ‘a’</td>
+      <td>‘b’</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">ReadOnlyObj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="k">readonly</span> <span class="na">a</span><span class="p">:</span> <span class="nx">Obj</span><span class="p">[</span><span class="dl">"</span><span class="s2">a</span><span class="dl">"</span><span class="p">];</span>
+  <span class="k">readonly</span> <span class="na">b</span><span class="p">:</span> <span class="nx">Obj</span><span class="p">[</span><span class="dl">"</span><span class="s2">b</span><span class="dl">"</span><span class="p">];</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>最后就可以得到一个新的接口。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">ReadOnlyObj</span> <span class="p">{</span>
+  <span class="k">readonly</span> <span class="nx">a</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="k">readonly</span> <span class="nx">b</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="条件类型u--x--y">条件类型（U ? X : Y）</h4>
+
+<p>条件类型的语法规则和三元表达式一致，经常用于一些类型不确定的情况。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>T extends U ? X : Y
+</code></pre></div></div>
+
+<p>上面的意思就是，如果 T 是 U 的子集，就是类型 X，否则为类型 Y。下面使用内置的泛型接口 Extract 来举例。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Extract</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">U</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">T</span> <span class="kd">extends</span> <span class="nx">U</span> <span class="p">?</span> <span class="nx">T</span> <span class="p">:</span> <span class="nx">never</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>如果 T 中的类型在 U 存在，则返回，否则抛弃。假设我们两个类，有三个公共的属性，可以通过 Extract 提取这三个公共属性。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Worker</span> <span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">age</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">email</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">salary</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">Student</span> <span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">age</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">email</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">grade</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">CommonKeys</span> <span class="o">=</span> <span class="nx">Extract</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">Worker</span><span class="p">,</span> <span class="kr">keyof</span> <span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// 'name' | 'age' | 'email'</span>
+</code></pre></div></div>
+
+<h3 id="工具泛型">工具泛型</h3>
+
+<p>TypesScript 中内置了很多工具泛型，前面介绍过 Readonly、Extract 这两种，内置的泛型在 TypeScript 内置的 lib.es5.d.ts 中都有定义，所以不需要任何依赖都是可以直接使用的。下面看看一些经常使用的工具泛型吧。</p>
+
+<h4 id="partial">Partial</h4>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nb">Partial</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="p">]?:</span> <span class="nx">T</span><span class="p">[</span><span class="nx">P</span><span class="p">];</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Partial 用于将一个接口的所有属性设置为可选状态，首先通过 keyof T，取出类型变量 T 的所有属性，然后通过 in 进行遍历，最后在属性后加上一个 ?。
+我们通过 TypeScript 写 React 的组件的时候，如果组件的属性都有默认值的存在，我们就可以通过 Partial 将属性值都变成可选值。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">React</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">react</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kr">interface</span> <span class="nx">ButtonProps</span> <span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">button</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">submit</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">reset</span><span class="dl">"</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">disabled</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">;</span>
+  <span class="nl">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="k">void</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 将按钮组件的 props 的属性都改为可选</span>
+<span class="kd">const</span> <span class="nx">render</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">:</span> <span class="nb">Partial</span><span class="o">&lt;</span><span class="nx">ButtonProps</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">baseProps</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">disabled</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">type</span><span class="p">:</span> <span class="dl">"</span><span class="s2">button</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">text</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Hello World</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">onClick</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{},</span>
+  <span class="p">};</span>
+  <span class="kd">const</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">baseProps</span><span class="p">,</span> <span class="p">...</span><span class="nx">props</span> <span class="p">};</span>
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="o">&lt;</span><span class="nx">button</span>
+      <span class="kd">type</span><span class="o">=</span><span class="p">{</span><span class="nx">options</span><span class="p">.</span><span class="kd">type</span><span class="p">}</span>
+      <span class="nx">disabled</span><span class="o">=</span><span class="p">{</span><span class="nx">options</span><span class="p">.</span><span class="nx">disabled</span><span class="p">}</span>
+      <span class="nx">onClick</span><span class="o">=</span><span class="p">{</span><span class="nx">options</span><span class="p">.</span><span class="nx">onClick</span><span class="p">}</span>
+    <span class="o">&gt;</span>
+      <span class="p">{</span><span class="nx">options</span><span class="p">.</span><span class="nx">text</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="sr">/button</span><span class="err">&gt;
+</span>  <span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h4 id="required">Required</h4>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Required</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="p">]</span><span class="o">-</span><span class="p">?:</span> <span class="nx">T</span><span class="p">[</span><span class="nx">P</span><span class="p">];</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Required 的作用刚好与 Partial 相反，就是将接口中所有可选的属性改为必须的，区别就是把 Partial 里面的 ? 替换成了 -?。</p>
+
+<h4 id="record">Record</h4>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nb">Record</span><span class="o">&lt;</span><span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="kr">any</span><span class="p">,</span> <span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="nx">K</span><span class="p">]:</span> <span class="nx">T</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Record 接受两个类型变量，Record 生成的类型具有类型 K 中存在的属性，值为类型 T。这里有一个比较疑惑的点就是给类型 K 加一个类型约束，extends keyof any，我们可以先看看 keyof any 是个什么东西。大致就是类型 K 被约束在 <code class="language-plaintext highlighter-rouge">string | number | symbol</code> 中，刚好就是对象的索引的类型，也就是类型 K 只能指定为这几种类型。</p>
+
+<p>我们在业务代码中经常会构造某个对象的数组，但是数组不方便索引，所以我们有时候会把对象的某个字段拿出来作为索引，然后构造一个新的对象。假设有个商品列表的数组，要在商品列表中找到商品名为 「每日坚果」的商品，我们一般通过遍历数组的方式来查找，比较繁琐，为了方便，我们就会把这个数组改写成对象。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Goods</span> <span class="p">{</span>
+  <span class="nl">id</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">price</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">image</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">goodsMap</span><span class="p">:</span> <span class="nb">Record</span><span class="o">&lt;</span><span class="kr">string</span><span class="p">,</span> <span class="nx">Goods</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">const</span> <span class="nx">goodsList</span><span class="p">:</span> <span class="nx">Goods</span><span class="p">[]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="dl">"</span><span class="s2">server.com/goods/list</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="nx">goodsList</span><span class="p">.</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">goods</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">goodsMap</span><span class="p">[</span><span class="nx">goods</span><span class="p">.</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">goods</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h4 id="pick">Pick</h4>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nb">Pick</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="nx">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">[</span><span class="nx">P</span> <span class="k">in</span> <span class="nx">K</span><span class="p">]:</span> <span class="nx">T</span><span class="p">[</span><span class="nx">P</span><span class="p">];</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>Pick 主要用于提取接口的某几个属性。做过 Todo 工具的同学都知道，Todo 工具只有编辑的时候才会填写描述信息，预览的时候只有标题和完成状态，所以我们可以通过 Pick 工具，提取 Todo 接口的两个属性，生成一个新的类型 TodoPreview。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Todo</span> <span class="p">{</span>
+  <span class="nl">title</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">completed</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">;</span>
+  <span class="nl">description</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">TodoPreview</span> <span class="o">=</span> <span class="nb">Pick</span><span class="o">&lt;</span><span class="nx">Todo</span><span class="p">,</span> <span class="dl">"</span><span class="s2">title</span><span class="dl">"</span> <span class="o">|</span> <span class="dl">"</span><span class="s2">completed</span><span class="dl">"</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">todo</span><span class="p">:</span> <span class="nx">TodoPreview</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">title</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Clean room</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h4 id="exclude">Exclude</h4>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Exclude</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">U</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nx">T</span> <span class="kd">extends</span> <span class="nx">U</span> <span class="p">?</span> <span class="nx">never</span> <span class="p">:</span> <span class="nx">T</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Exclude 的作用与之前介绍过的 Extract 刚好相反，如果 T 中的类型在 U 不存在，则返回，否则抛弃。现在我们拿之前的两个类举例，看看 Exclude 的返回结果。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Worker</span> <span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">age</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">email</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">salary</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">Student</span> <span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">age</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">email</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">grade</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">ExcludeKeys</span> <span class="o">=</span> <span class="nx">Exclude</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">Worker</span><span class="p">,</span> <span class="kr">keyof</span> <span class="nx">Student</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// 'salary'</span>
+</code></pre></div></div>
+
+<p>取出的是 Worker 在 Student 中不存在的 salary。</p>
+
+<h4 id="omit">Omit</h4>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">type</span> <span class="nx">Omit</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">K</span> <span class="kd">extends</span> <span class="kr">keyof</span> <span class="kr">any</span><span class="o">&gt;</span> <span class="o">=</span> <span class="nb">Pick</span><span class="o">&lt;</span><span class="nx">T</span><span class="p">,</span> <span class="nx">Exclude</span><span class="o">&lt;</span><span class="kr">keyof</span> <span class="nx">T</span><span class="p">,</span> <span class="nx">K</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Omit 的作用刚好和 Pick 相反，先通过 Exclude&lt;keyof T, K&gt; 先取出类型 T 中存在，但是 K 不存在的属性，然后再由这些属性构造一个新的类型。还是通过前面的 Todo 案例来说，TodoPreview 类型只需要排除接口的 description 属性即可，写法上比之前 Pick 精简了一些。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">interface</span> <span class="nx">Todo</span> <span class="p">{</span>
+  <span class="nl">title</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">completed</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">;</span>
+  <span class="nl">description</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">TodoPreview</span> <span class="o">=</span> <span class="nx">Omit</span><span class="o">&lt;</span><span class="nx">Todo</span><span class="p">,</span> <span class="dl">"</span><span class="s2">description</span><span class="dl">"</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">todo</span><span class="p">:</span> <span class="nx">TodoPreview</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">title</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Clean room</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="总结">总结</h3>
+
+<hr />
+
+<p>如果只是掌握了 TypeScript 的一些基础类型，可能很难游刃有余的去使用 TypeScript，而且最近 TypeScript 发布了 4.0 的版本新增了更多功能，想要用好它只能不断的学习和掌握它。希望阅读本文的朋友都能有所收获，摆脱 AnyScript。</p>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2021-10-06.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/typescript" class="post-category">typescript</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/type" class="post-tag">type</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      <div>
+        <span>后一篇：</span><a href="/2021/10/07/simple-ioc">typescript ioc</a>
+      </div>
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2021/10/06/in">typescript 类型映射</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
