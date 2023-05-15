@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>关于vue项目中前后端接口默认值问题 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="关于vue项目中前后端接口默认值问题" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="javascript 中有 string, number, boolean, undefined, null 这 5 种基本类型 和 引用类型 object" />
+<meta property="og:description" content="javascript 中有 string, number, boolean, undefined, null 这 5 种基本类型 和 引用类型 object" />
+<link rel="canonical" href="http://localhost:4000/2023/05/09/defaunt-value" />
+<meta property="og:url" content="http://localhost:4000/2023/05/09/defaunt-value" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-09T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="关于vue项目中前后端接口默认值问题" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2023-05-09T00:00:00+08:00","headline":"关于vue项目中前后端接口默认值问题","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/05/09/defaunt-value"},"description":"javascript 中有 string, number, boolean, undefined, null 这 5 种基本类型 和 引用类型 object","url":"http://localhost:4000/2023/05/09/defaunt-value","datePublished":"2023-05-09T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="vue,api,default value" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>关于vue项目中前后端接口默认值问题</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <p>javascript 中有 string, number, boolean, undefined, null 这 5 种基本类型 和 引用类型 object</p>
+
+<p>其中 null 表示一个值被定义了，定义为“空值”；而 undefined 表示根本不存在定义（缺少值）。</p>
+
+<p>所以设置一个值为 null 是合理的，如 obj.value = null;</p>
+
+<p>但设置一什值是 undefined 是不合理的，undefined 典型用法是，<a href="http://www.ruanyifeng.com/blog/2014/03/undefined-vs-null.html">请参阅</a></p>
+
+<p>由此引发 “前后端接口定义的默认值问题”</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">// java 对应的数据类型的默认值（空值）对应都是 null</span>
+    <span class="kr">string</span>  <span class="o">=&gt;</span> <span class="kc">null</span>
+    <span class="kr">number</span>  <span class="o">=&gt;</span> <span class="kc">null</span>
+    <span class="nx">boolean</span> <span class="o">=&gt;</span> <span class="kc">null</span>
+    <span class="nx">date</span>    <span class="o">=&gt;</span> <span class="kc">null</span>
+    <span class="nx">object</span>  <span class="o">=&gt;</span> <span class="kc">null</span>
+    <span class="nx">array</span>   <span class="o">=&gt;</span> <span class="kc">null</span>
+</code></pre></div></div>
+
+<p>如果后端直接抛给前端这些个 null，经过表单编辑后的数据如下</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="kr">string</span>  <span class="o">=&gt;</span> <span class="kc">null</span> <span class="o">=&gt;</span> <span class="nx">el</span><span class="o">-</span><span class="nx">input</span>  <span class="o">=&gt;</span> <span class="dl">''</span>     <span class="o">=&gt;</span> <span class="nx">server</span>
+    <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="kr">number</span>  <span class="o">=&gt;</span> <span class="kc">null</span> <span class="o">=&gt;</span> <span class="nx">el</span><span class="o">-</span><span class="nx">input</span>  <span class="o">=&gt;</span> <span class="dl">''</span>     <span class="o">=&gt;</span> <span class="nx">server</span>
+    <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="nx">boolean</span> <span class="o">=&gt;</span> <span class="kc">null</span> <span class="o">=&gt;</span> <span class="nx">el</span><span class="o">-</span><span class="k">switch</span> <span class="o">=&gt;</span> <span class="kc">false</span>  <span class="o">=&gt;</span> <span class="nx">server</span>
+    <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="nx">date</span>    <span class="o">=&gt;</span> <span class="kc">null</span> <span class="o">=&gt;</span> <span class="nx">el</span><span class="o">-</span><span class="nx">date</span>   <span class="o">=&gt;</span> <span class="nx">时间戳</span>  <span class="o">=&gt;</span> <span class="nx">server</span>
+    <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="nx">object</span>  <span class="o">=&gt;</span> <span class="kc">null</span> <span class="o">=&gt;</span> <span class="p">{}</span>        <span class="o">=&gt;</span> <span class="p">{}</span>     <span class="o">=&gt;</span> <span class="nx">server</span>
+    <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="nx">array</span>   <span class="o">=&gt;</span> <span class="kc">null</span> <span class="o">=&gt;</span> <span class="p">[]</span>        <span class="o">=&gt;</span> <span class="p">[]</span>     <span class="o">=&gt;</span> <span class="nx">server</span>
+</code></pre></div></div>
+
+<p>再加载页面，后端把数据传给前端</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="kr">string</span>  <span class="o">=&gt;</span> <span class="dl">''</span>     <span class="o">=&gt;</span> <span class="nx">el</span><span class="o">-</span><span class="nx">input</span>  <span class="o">=&gt;</span> <span class="dl">''</span>     <span class="o">=&gt;</span>  <span class="nx">server</span>
+  <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="kr">number</span>  <span class="o">=&gt;</span> <span class="dl">''</span>     <span class="o">=&gt;</span> <span class="nx">el</span><span class="o">-</span><span class="nx">input</span>  <span class="o">=&gt;</span> <span class="dl">''</span>     <span class="o">=&gt;</span>  <span class="nx">server</span>
+  <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="nx">boolean</span> <span class="o">=&gt;</span> <span class="kc">false</span>  <span class="o">=&gt;</span> <span class="nx">el</span><span class="o">-</span><span class="k">switch</span> <span class="o">=&gt;</span> <span class="kc">false</span>  <span class="o">=&gt;</span>  <span class="nx">server</span>
+  <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="nx">date</span>    <span class="o">=&gt;</span> <span class="nx">时间戳</span>  <span class="o">=&gt;</span> <span class="nx">el</span><span class="o">-</span><span class="nx">date</span>   <span class="o">=&gt;</span> <span class="nx">时间戳</span>  <span class="o">=&gt;</span>  <span class="nx">server</span>
+  <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="nx">object</span>  <span class="o">=&gt;</span> <span class="kc">null</span>   <span class="o">=&gt;</span> <span class="p">{}</span>        <span class="o">=&gt;</span> <span class="p">{}</span>     <span class="o">=&gt;</span>  <span class="nx">server</span>
+  <span class="nx">server</span>  <span class="o">=&gt;</span>  <span class="nx">array</span>   <span class="o">=&gt;</span> <span class="kc">null</span>   <span class="o">=&gt;</span> <span class="p">[]</span>        <span class="o">=&gt;</span> <span class="p">[]</span>     <span class="o">=&gt;</span>  <span class="nx">server</span>
+</code></pre></div></div>
+
+<p>这里有争议点在于，字符串 string, 数字 number, 和布尔 boolean 类型</p>
+
+<p>用户一旦经过下列交互，null(空值)即被改变</p>
+
+<p>字符 null =&gt; ‘abc’ =&gt; ‘’    [交互导致]</p>
+
+<p>数字 null =&gt; ‘123’ =&gt; ‘’    [交互导致]</p>
+
+<p>布尔 null =&gt; false =&gt; false [组件行为]</p>
+
+<p>所以，关于 这 三个类型，一旦后端 api 赋予 null 表达业务逻辑，如：表示空值
+前端同学在保存数据时就要小心处理，如</p>
+
+<p>字符 null =&gt; ‘abc’ =&gt; ‘’     [交互导致]  =&gt; 转换回 null</p>
+
+<p>数字 null =&gt; ‘123’ =&gt; ‘’     [交互导致]  =&gt; 转换回 null</p>
+
+<p>布尔 null =&gt; false =&gt; false  [组件行为]  =&gt; 转换回 null</p>
+
+<p>其中 布尔 的处理比较特殊，即使用户没交互，组件初始化时就把它改变了，所以需要根据情况特殊处理</p>
+
+<p>另外，关于 objec 和 array 建议定义为空对象{} 和 空数组[], 避免不必要的错误</p>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">data</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">obj</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">string</span>  <span class="p">:</span> <span class="kc">null</span>
+        <span class="na">number</span>  <span class="p">:</span> <span class="kc">null</span>
+        <span class="na">boolean</span> <span class="p">:</span> <span class="kc">null</span>
+        <span class="na">date</span>    <span class="p">:</span> <span class="kc">null</span>
+        <span class="na">object</span>  <span class="p">:</span> <span class="p">{}</span>
+        <span class="nl">array</span>   <span class="p">:</span> <span class="p">[]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2023-05-09.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/vue" class="post-category">vue</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/vue" class="post-tag">vue</a>
+      
+      <a href="/tag/api" class="post-tag">api</a>
+      
+      <a href="/tag/default-value" class="post-tag">default value</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2023/05/09/vue-data">vue 中 data 的坑总结</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
