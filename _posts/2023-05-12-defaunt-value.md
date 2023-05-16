@@ -12,7 +12,7 @@ javascript 中有 string, number, boolean, undefined, null 这 5 种基本类型
 
 所以设置一个值为 null 是合理的，如 obj.value = null;
 
-但设置一什值是 undefined 是不合理的，undefined 典型用法是，<a href="http://www.ruanyifeng.com/blog/2014/03/undefined-vs-null.html">请参阅</a>
+但设置一个值是 undefined 是不合理的，undefined 典型用法是，<a href="http://www.ruanyifeng.com/blog/2014/03/undefined-vs-null.html">请参阅</a>
 
 由此引发 "前后端接口定义的默认值问题"
 
