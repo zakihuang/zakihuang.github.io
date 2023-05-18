@@ -51,36 +51,41 @@ javascript 中有 string, number, boolean, undefined, null 这 5 种基本类型
 这里有争议点在于，字符串 string, 数字 number, 和布尔 boolean 类型
 
 用户一旦经过下列交互，null(空值)即被改变
-
+>
 字符 null => 'abc' => ''    [交互导致]
-
+> 
 数字 null => '123' => ''    [交互导致]
-
+> 
 布尔 null => false => false [组件行为]
 
 所以，关于 这 三个类型，一旦后端 api 赋予 null 表达业务逻辑，如：表示空值
 前端同学在保存数据时就要小心处理，如 
+> 
+字符 null => 'abc' => ''     [交互导致]  => 转换回 null => server
+> 
+数字 null => '123' => ''     [交互导致]  => 转换回 null => server
+> 
+布尔 null => false => false  [组件行为]  => 转换回 null => server
 
 
-字符 null => 'abc' => ''     [交互导致]  => 转换回 null
+其中 布尔 的处理比较特殊，即使用户没交互，组件初始化时就把它改变了，需要根据情况特殊处理
+> 
+当然，如果约定 布尔 的默认值是 false，完全可以规避这个问题了
+> 
+布尔 false => false => true  => server
 
-数字 null => '123' => ''     [交互导致]  => 转换回 null
-
-布尔 null => false => false  [组件行为]  => 转换回 null
-
-其中 布尔 的处理比较特殊，即使用户没交互，组件初始化时就把它改变了，所以需要根据情况特殊处理
-
-另外，关于 objec 和 array 建议定义为空对象{} 和 空数组[], 避免不必要的错误
+另外，关于 objec 和 array 建议定义为空对象{} 和 空数组[], 避免不必要的错误, **注意是任何深度的数组和集合的数据都要**
 ```ts
 data() {
   return {
     obj: {
         string  : null
         number  : null
-        boolean : null
+        boolean : null ?=> false
         date    : null
         object  : {}
-        array   : []
+        array   : [],
+        deepData: { object: {}, array: [] }
     }
   }
 }

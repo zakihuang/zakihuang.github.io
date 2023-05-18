@@ -114,34 +114,45 @@
 <p>这里有争议点在于，字符串 string, 数字 number, 和布尔 boolean 类型</p>
 
 <p>用户一旦经过下列交互，null(空值)即被改变</p>
+<blockquote>
 
-<p>字符 null =&gt; ‘abc’ =&gt; ‘’    [交互导致]</p>
+  <p>字符 null =&gt; ‘abc’ =&gt; ‘’    [交互导致]</p>
 
-<p>数字 null =&gt; ‘123’ =&gt; ‘’    [交互导致]</p>
+  <p>数字 null =&gt; ‘123’ =&gt; ‘’    [交互导致]</p>
 
-<p>布尔 null =&gt; false =&gt; false [组件行为]</p>
+  <p>布尔 null =&gt; false =&gt; false [组件行为]</p>
+</blockquote>
 
 <p>所以，关于 这 三个类型，一旦后端 api 赋予 null 表达业务逻辑，如：表示空值
 前端同学在保存数据时就要小心处理，如</p>
+<blockquote>
 
-<p>字符 null =&gt; ‘abc’ =&gt; ‘’     [交互导致]  =&gt; 转换回 null</p>
+  <p>字符 null =&gt; ‘abc’ =&gt; ‘’     [交互导致]  =&gt; 转换回 null =&gt; server</p>
 
-<p>数字 null =&gt; ‘123’ =&gt; ‘’     [交互导致]  =&gt; 转换回 null</p>
+  <p>数字 null =&gt; ‘123’ =&gt; ‘’     [交互导致]  =&gt; 转换回 null =&gt; server</p>
 
-<p>布尔 null =&gt; false =&gt; false  [组件行为]  =&gt; 转换回 null</p>
+  <p>布尔 null =&gt; false =&gt; false  [组件行为]  =&gt; 转换回 null =&gt; server</p>
+</blockquote>
 
-<p>其中 布尔 的处理比较特殊，即使用户没交互，组件初始化时就把它改变了，所以需要根据情况特殊处理</p>
+<p>其中 布尔 的处理比较特殊，即使用户没交互，组件初始化时就把它改变了，需要根据情况特殊处理</p>
+<blockquote>
 
-<p>另外，关于 objec 和 array 建议定义为空对象{} 和 空数组[], 避免不必要的错误</p>
+  <p>当然，如果约定 布尔 的默认值是 false，完全可以规避这个问题了</p>
+
+  <p>布尔 false =&gt; false =&gt; true  =&gt; server</p>
+</blockquote>
+
+<p>另外，关于 objec 和 array 建议定义为空对象{} 和 空数组[], 避免不必要的错误, <strong>注意是任何深度的数组和集合的数据都要</strong></p>
 <div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">data</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">return</span> <span class="p">{</span>
     <span class="na">obj</span><span class="p">:</span> <span class="p">{</span>
         <span class="na">string</span>  <span class="p">:</span> <span class="kc">null</span>
         <span class="na">number</span>  <span class="p">:</span> <span class="kc">null</span>
-        <span class="na">boolean</span> <span class="p">:</span> <span class="kc">null</span>
-        <span class="na">date</span>    <span class="p">:</span> <span class="kc">null</span>
+        <span class="na">boolean</span> <span class="p">:</span> <span class="kc">null</span> <span class="p">?</span><span class="o">=&gt;</span> <span class="kc">false</span>
+        <span class="nx">date</span>    <span class="p">:</span> <span class="kc">null</span>
         <span class="na">object</span>  <span class="p">:</span> <span class="p">{}</span>
-        <span class="nl">array</span>   <span class="p">:</span> <span class="p">[]</span>
+        <span class="nl">array</span>   <span class="p">:</span> <span class="p">[],</span>
+        <span class="na">deepData</span><span class="p">:</span> <span class="p">{</span> <span class="na">object</span><span class="p">:</span> <span class="p">{},</span> <span class="na">array</span><span class="p">:</span> <span class="p">[]</span> <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
