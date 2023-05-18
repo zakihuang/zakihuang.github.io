@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>前后端开发规约 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="前后端开发规约" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="前期的麻烦是减少后期更多的沟通成本，减少前后端返工情况。" />
+<meta property="og:description" content="前期的麻烦是减少后期更多的沟通成本，减少前后端返工情况。" />
+<link rel="canonical" href="http://localhost:4000/2023/05/18/front-back-rules" />
+<meta property="og:url" content="http://localhost:4000/2023/05/18/front-back-rules" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-18T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="前后端开发规约" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2023-05-18T00:00:00+08:00","headline":"前后端开发规约","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/05/18/front-back-rules"},"description":"前期的麻烦是减少后期更多的沟通成本，减少前后端返工情况。","url":"http://localhost:4000/2023/05/18/front-back-rules","datePublished":"2023-05-18T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="api,default value" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>前后端开发规约</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <p>前期的麻烦是减少后期更多的沟通成本，减少前后端返工情况。</p>
+
+<h3 id="对齐需求">对齐需求</h3>
+<p>开发前，前后端需要对齐一遍需求及对应接口列表，交互方式</p>
+
+<h3 id="文档">文档</h3>
+<p>接口文档一定要落在线的，禁忌：</p>
+
+<ul>
+  <li>
+    <p><strong>禁口头通知、描述等，容易遗忘</strong></p>
+  </li>
+  <li>
+    <p><strong>禁聊天文本发送，查找记录麻烦</strong></p>
+  </li>
+  <li>
+    <p><strong>禁私自修改文档，一定要通知对应人员</strong></p>
+  </li>
+  <li>
+    <p><strong>禁没有注释，要明确接口字段含义，防止歧义</strong></p>
+  </li>
+</ul>
+
+<h3 id="接口规范">接口规范</h3>
+<p>关于接口输入输出一些规范讨论，后端可以看看阿里巴巴 Java开发手册.pdf</p>
+
+<h3 id="url参数长度">URL参数长度</h3>
+<p>通过GET请求传参数长度限制，不同浏览器对长度限制不一样，最小超过 2048 字节</p>
+
+<h3 id="数据类型要一致">数据类型要一致</h3>
+<p>不要前端枚举获取的Number类型，提交之后，获取输出的变成String类型，不同表的数据类型请尽量保持一致，不然影响前端判断</p>
+
+<h3 id="字段名尽量保持一致">字段名尽量保持一致</h3>
+
+<p>输入输出字段名尽量保持一致，比如保存接口的参数字段名和查询详情的参数字段名完全不一样</p>
+
+<ul>
+  <li>不利于前端理解，假如多个后端开发对接一个前端，一个业务字段每个接口key都不一样，前端理解成本高，需要转换理解</li>
+  <li>不利于前端开发，查询和保存都要相互转换对应字段名
+    <blockquote>
+      <p>因为字段名被占用、关键字等原因就是要不一样，那就是尽量减少这种情况</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h3 id="字段名风格">字段名风格</h3>
+<p>可以统一成lowerCamelCase风格，方便理解和使用，比如error-message这字段名无法被前端当变量名使用的</p>
+
+<h3 id="唯一索引">唯一索引</h3>
+<p>确保列表数组有唯一索引，比如 ID, Code 等，前端遍历需要确保唯一性</p>
+
+<h3 id="时间格式">时间格式</h3>
+<p>前后端的时间格式统一为 timestamp，统一为 GMT，减少前后端格式沟通</p>
+
+<h3 id="空值字段">空值字段</h3>
+
+<p>前端输入 接口参数 一般对象属性值是 undefined 和 null值，前端会过滤不传，如果需要传字段请让前端传空字符 ‘’</p>
+
+<p>字段属性是undefined在 JSON 当中会被过滤，在数组中会被替换成null，所以后端post请求不会接收到值是undefined字段，get请求统一前端过滤处理</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">key</span><span class="p">:</span> <span class="kc">undefined</span> <span class="p">})</span>
+<span class="c1">// '{}'</span>
+
+<span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">]</span> <span class="p">});</span>
+<span class="c1">// '{"x":[10,null]}'</span>
+</code></pre></div></div>
+
+<p>后端输出 接口数据 确保接口返回的字段不会缺失，一般值为空：基础类型可以设置成 ‘’ 或 null，引用类型可以设置成 [] 或 {} ，如果字段缺失：</p>
+
+<ul>
+  <li>无法确定是缺少字段还是没有数据</li>
+  <li>集合或数组时需要做繁琐的空值判断</li>
+</ul>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 后端返回 null 或 不返回</span>
+<span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="dl">"</span><span class="s2">status</span><span class="dl">"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">data</span><span class="dl">"</span><span class="p">:</span> <span class="kc">null</span>
+<span class="p">}</span>
+
+<span class="c1">// 前端</span>
+<span class="k">if</span><span class="p">(</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">list</span><span class="p">){</span> <span class="cm">/* todo */</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>前端觉得怎么能把代码稳定性交给和后端约定的规范？这其实没有限制前端去加空值判断，好的规范是一种双重保障，减少双方失误导致的问题</p>
+</blockquote>
+
+<h3 id="数据列表或集合">数据列表或集合</h3>
+
+<p>数据列表相关的接口返回，如果为空，则返回空数组[]或空集合{}，<strong>注意是任何深度的数组和集合的数据都要</strong></p>
+
+<h3 id="分页数据">分页数据</h3>
+
+<ul>
+  <li>用户输入参数的小于 1，则前端返回第一页参数给后端</li>
+  <li>后端发现用户输入的参数大于总页数，直接返回最后一页</li>
+</ul>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="dl">"</span><span class="s2">status</span><span class="dl">"</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">data</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">list</span><span class="dl">"</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="dl">"</span><span class="s2">total</span><span class="dl">"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">pageSize</span><span class="dl">"</span><span class="p">:</span> <span class="mi">10</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="请求方式">请求方式</h3>
+
+<p>默认提交方式: POST / GET 方法 application/x-www-form-urlencoded，&lt;form&gt;</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// POST</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">application</span><span class="o">/</span><span class="nx">x</span><span class="o">-</span><span class="nx">www</span><span class="o">-</span><span class="nx">form</span><span class="o">-</span><span class="nx">urlencoded</span>
+
+<span class="nx">foo</span><span class="o">=</span><span class="nx">bar</span><span class="o">&amp;</span><span class="nx">baz</span><span class="o">=</span><span class="nx">The</span><span class="o">+</span><span class="nx">first</span><span class="o">+</span><span class="nx">line</span><span class="p">.</span><span class="o">%</span><span class="mi">0</span><span class="nx">D</span><span class="o">%</span><span class="mi">0</span><span class="nx">AThe</span><span class="o">+</span><span class="nx">second</span><span class="o">+</span><span class="nx">line</span><span class="p">.</span><span class="o">%</span><span class="mi">0</span><span class="nx">D</span><span class="o">%</span><span class="mi">0</span><span class="nx">A</span>
+
+<span class="c1">// GET 放到URL后</span>
+<span class="p">?</span><span class="nx">foo</span><span class="o">=</span><span class="nx">bar</span><span class="o">&amp;</span><span class="nx">baz</span><span class="o">=</span><span class="nx">The</span><span class="o">%</span><span class="mi">20</span><span class="nx">first</span><span class="o">%</span><span class="mi">20</span><span class="nx">line</span><span class="p">.</span><span class="o">%</span><span class="mi">0</span><span class="nx">AThe</span><span class="o">%</span><span class="mi">20</span><span class="nx">second</span><span class="o">%</span><span class="mi">20</span><span class="nx">line</span><span class="p">.</span>
+
+</code></pre></div></div>
+<p>文件上传常用提交方式: POST 方法 multipart/form-data</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// POST</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">multipart</span><span class="o">/</span><span class="nx">form</span><span class="o">-</span><span class="nx">data</span><span class="p">;</span> <span class="nx">boundary</span><span class="o">=---------------------------</span><span class="mi">314911788813839</span>
+
+<span class="o">-----------------------------</span><span class="mi">314911788813839</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Disposition</span><span class="p">:</span> <span class="nx">form</span><span class="o">-</span><span class="nx">data</span><span class="p">;</span> <span class="nx">name</span><span class="o">=</span><span class="dl">"</span><span class="s2">foo</span><span class="dl">"</span>
+
+<span class="nx">bar</span>
+<span class="o">-----------------------------</span><span class="mi">314911788813839</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Disposition</span><span class="p">:</span> <span class="nx">form</span><span class="o">-</span><span class="nx">data</span><span class="p">;</span> <span class="nx">name</span><span class="o">=</span><span class="dl">"</span><span class="s2">baz</span><span class="dl">"</span>
+
+<span class="nx">The</span> <span class="nx">first</span> <span class="nx">line</span><span class="p">.</span>
+<span class="nx">The</span> <span class="nx">second</span> <span class="nx">line</span><span class="p">.</span>
+
+<span class="o">-----------------------------</span><span class="mi">314911788813839</span><span class="o">--</span>
+
+</code></pre></div></div>
+
+<p>常用的请求JSON数据方式: POST / GET 方法 application/json</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// POST</span>
+<span class="nx">Content</span><span class="o">-</span><span class="nx">Type</span><span class="p">:</span> <span class="nx">application</span><span class="o">/</span><span class="nx">json</span>
+
+<span class="p">{</span><span class="dl">"</span><span class="s2">foo</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">bar</span><span class="dl">"</span><span class="p">}</span>
+
+<span class="c1">// GET</span>
+<span class="p">?</span><span class="nx">foo</span><span class="o">=</span><span class="nx">bar</span>
+</code></pre></div></div>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2023-05-18.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/api" class="post-category">api</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/api" class="post-tag">api</a>
+      
+      <a href="/tag/default-value" class="post-tag">default value</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2023/05/12/defaunt-value">关于vue项目中前后端接口默认值问题</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
