@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>el-cascader 懒加载 &amp; 回显示 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="el-cascader 懒加载 &amp; 回显示" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="el-cascader 的懒加载很容易，配置下 lazyload 回调函数就成了 但懒加载有点儿猫腻，瞅了一眼源码，发现人家已经实现了，而且很好用 保存以下文件到 index.vue，跑起来。。。 ``` &lt;el-cascader :props=&quot;cascaderProps&quot; clearable style=&quot;width: 100%&quot; v-model=&quot;activeUserCode&quot; &gt; &lt;/el-cascader&gt;" />
+<meta property="og:description" content="el-cascader 的懒加载很容易，配置下 lazyload 回调函数就成了 但懒加载有点儿猫腻，瞅了一眼源码，发现人家已经实现了，而且很好用 保存以下文件到 index.vue，跑起来。。。 ``` &lt;el-cascader :props=&quot;cascaderProps&quot; clearable style=&quot;width: 100%&quot; v-model=&quot;activeUserCode&quot; &gt; &lt;/el-cascader&gt;" />
+<link rel="canonical" href="http://localhost:4000/2023/05/18/el-cascader-lazy-load" />
+<meta property="og:url" content="http://localhost:4000/2023/05/18/el-cascader-lazy-load" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-18T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="el-cascader 懒加载 &amp; 回显示" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2023-05-18T00:00:00+08:00","headline":"el-cascader 懒加载 &amp; 回显示","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/05/18/el-cascader-lazy-load"},"description":"el-cascader 的懒加载很容易，配置下 lazyload 回调函数就成了 但懒加载有点儿猫腻，瞅了一眼源码，发现人家已经实现了，而且很好用 保存以下文件到 index.vue，跑起来。。。 ``` &lt;el-cascader :props=&quot;cascaderProps&quot; clearable style=&quot;width: 100%&quot; v-model=&quot;activeUserCode&quot; &gt; &lt;/el-cascader&gt;","url":"http://localhost:4000/2023/05/18/el-cascader-lazy-load","datePublished":"2023-05-18T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="api,default value" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>el-cascader 懒加载 & 回显示</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <p>el-cascader 的懒加载很容易，配置下 lazyload 回调函数就成了
+但懒加载有点儿猫腻，瞅了一眼源码，发现人家已经实现了，而且很好用
+保存以下文件到 index.vue，跑起来。。。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;template&gt;
+  &lt;div class="dashboard-editor-container"&gt;
+    &lt;el-cascader
+      :props="cascaderProps"
+      clearable
+      style="width: 100%"
+      v-model="activeUserCode"
+    &gt;
+    &lt;/el-cascader&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+let serverData = {
+  root: [
+    {
+      value: "a",
+      label: "a节点",
+      leaf: false,
+    },
+    {
+      value: "c",
+      label: "c节点",
+      leaf: false,
+    },
+  ],
+  a: [
+    {
+      value: "b",
+      label: "a的子节点b",
+      leaf: false,
+    },
+    {
+      value: "x",
+      label: "a的子节点x",
+      leaf: true,
+    },
+  ],
+  b: [
+    {
+      value: "d",
+      label: "d节点",
+      leaf: true,
+    },
+  ],
+};
+
+export default {
+  name: "lazySelector",
+  data() {
+    return {
+      activeUserCode: ["a", "b", "d"],
+      cascaderProps: {
+        multiple: false,
+        value: "value",
+        label: "label",
+        children: "children",
+        lazy: true,
+        lazyLoad(node, resolve) {
+          console.log(node.value);
+          if (node.root) {
+            setTimeout(resolve, 0, serverData.root);
+          } else {
+            setTimeout(resolve, 0, serverData[node.value]);
+          }
+        },
+      },
+    };
+  },
+};
+&lt;/script&gt;
+</code></pre></div></div>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2023-05-18.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/api" class="post-category">api</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/api" class="post-tag">api</a>
+      
+      <a href="/tag/default-value" class="post-tag">default value</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2023/05/18/front-back-rules">前后端开发规约</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
