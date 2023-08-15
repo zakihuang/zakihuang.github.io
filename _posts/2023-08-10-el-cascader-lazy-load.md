@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "el-cascader 懒加载 & 回显示"
-date: 2023-05-18
+date: 2023-08-14
 categories: [api]
 tags: [api, default value]
 ---
@@ -81,3 +81,29 @@ export default {
 };
 </script>
 ```
+
+一切完美了，but 有瑕疵，我们的 value 一般情况是通过接口异步获取的, 所以难免延迟赋值
+这样就没法驱动 el-cascader 动态反显（组件非常偷懒的去只加载第一层数据），所以的，我
+们的反显出 bug 了，失效了，解决办法有两个
+
+### 第一种
+
+```ts
+// 添加一个 ready 属性给  el-cascader 的 v-if='ready'
+// 让我们的 value 赋值之后再让 el-cascader 显示
+```
+### 第二种
+```ts
+// 添加一个 options 给 el-cascader
+//  el-cascader options="options"
+// 初始值设置为
+
+options = [0];
+
+// 异步加载 value 赋值之后调整下 options 的值 
+
+options = [];
+// 别问我为啥可以，问就是源码里这么写的骚操作，正好被我们利用
+```
+
+推荐使用第二种，需要我们手动的二次封装下这个组件，要不然这谁看得懂，受得了
