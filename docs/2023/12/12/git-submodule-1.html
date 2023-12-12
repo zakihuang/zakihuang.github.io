@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>git submodule 使用 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="git submodule 使用" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="1. 添加子模块" />
+<meta property="og:description" content="1. 添加子模块" />
+<link rel="canonical" href="http://localhost:4000/2023/12/12/git-submodule-1" />
+<meta property="og:url" content="http://localhost:4000/2023/12/12/git-submodule-1" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-12-12T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="git submodule 使用" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2023-12-12T00:00:00+08:00","headline":"git submodule 使用","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/12/12/git-submodule-1"},"description":"1. 添加子模块","url":"http://localhost:4000/2023/12/12/git-submodule-1","datePublished":"2023-12-12T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="git,submodule" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>git submodule 使用</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <h3 id="1-添加子模块">1. 添加子模块</h3>
+
+<blockquote>
+  <p>进入主项目目录，使用以下命令创建一个子模块</p>
+</blockquote>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">git</span> <span class="nx">submodule</span> <span class="nx">add</span> <span class="p">[</span><span class="nx">子模块远程仓库地址</span><span class="p">]</span>
+<span class="c1">// git submodule add https://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@github.com/zakihuang/git-sub-module.git </span>
+</code></pre></div></div>
+
+<p>此时项目仓库中会多出两个文件</p>
+
+<ul>
+  <li>.gitmodules：保存子模块的相关信息</li>
+  <li>git-sub-module：子模块代码</li>
+  <li>这时候可以通过git status查看当前状态</li>
+</ul>
+
+<p><img src="/assets/images/submodule_status.png#pic_left" alt="status 更新示意图" title="submodule status" /></p>
+
+<h3 id="2-查看子模块版本信息">2. 查看子模块版本信息</h3>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">git</span> <span class="nx">submodule</span>  
+</code></pre></div></div>
+
+<p><img src="/assets/images/submodule.png#pic_left" alt="submodule" title="submodule" /></p>
+
+<p>然后git commit，push，成功后在主项目的远程仓库里可以看到子模块文件夹，并带上其仓库的版本号</p>
+
+<h3 id="3-使用带有子模块的项目">3. 使用带有子模块的项目</h3>
+<p>后续使用者clone主项目后，子模块默认是空的，需要我们在项目根目录下执行如下命令完成子模块的下载</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">git</span> <span class="nx">submodule</span> <span class="nx">init</span>
+<span class="nx">git</span> <span class="nx">submodule</span> <span class="nx">update</span>
+<span class="c1">// 或</span>
+<span class="nx">git</span> <span class="nx">submodule</span> <span class="nx">update</span> <span class="o">--</span><span class="nx">init</span> <span class="o">--</span><span class="nx">recursive</span>
+</code></pre></div></div>
+<p>还有一种更简单的办法，在clone主项目的时候带参数，这样会递归地将项目中所有子模块的代码拉取。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">git</span> <span class="nx">clone</span> <span class="o">--</span><span class="nx">recurse</span><span class="o">-</span><span class="nx">submodules</span> <span class="p">[</span><span class="nx">主项目url</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>对于已经clone过存在的项目，用git pull 命令同样如此</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">git</span> <span class="nx">pull</span> <span class="o">--</span><span class="nx">recurse</span><span class="o">-</span><span class="nx">submodules</span>
+</code></pre></div></div>
+
+<p>拉取子模块代码后，子模块默认显示在临时分支上，如果要进行开发，记得进入子模块切换到指定分支，如果子模块太多且分支一样，可以执行以下命令批量切换。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">git</span> <span class="nx">submodule</span> <span class="nx">foreach</span> <span class="nx">git</span> <span class="nx">checkout</span> <span class="nx">xxx</span>
+</code></pre></div></div>
+<p>如果不小心在临时分支上做了修改，要记得合并到主分支，否则修改可能会丢失。</p>
+
+<h3 id="4-更新子模块">4. 更新子模块</h3>
+
+<p>子模块是不断在维护更新的，在我们自己的项目里，一般不会去改动子模块。
+第一种情况，子模块远程有更新，如果想保持本地子项目与远程仓库版本一致，就需要用以下命令更新子模块至远程仓库的最新版。</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">git</span> <span class="nx">submodule</span> <span class="nx">update</span> <span class="o">--</span><span class="nx">remote</span>
+<span class="c1">// 注意：命令 git submodule update 是更新主项目内子模块到最新版本，即与主项目远程仓库记录的子模块版本一致</span>
+</code></pre></div></div>
+
+<p>当然也可以进入到子模块目录下，用传统的git pull获取最新代码。如果主项目的子项目特别多，此时可以用以下命令执行</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">git</span> <span class="nx">submodule</span> <span class="nx">foreach</span> <span class="nx">git</span> <span class="nx">pull</span>
+</code></pre></div></div>
+<p>第二种情况，如果本地主项目的子模块有更新，按以下步骤</p>
+<ul>
+  <li>a. 进入到子项目中对更新的代码进行一次提交操作，并推送到远程</li>
+  <li>b. 再回退到主项目中，对主项目进行一次提交，推送
+    <blockquote>
+      <p>注意：不管主项目是否有更新，只要子项目修改过代码并提交过，主项目就需要再提交一次，因为子项目的修改是会同步到主项目中的，这样才能保证开发的一致性</p>
+    </blockquote>
+  </li>
+</ul>
+
+<h3 id="5-删除子模块">5. 删除子模块</h3>
+<ul>
+  <li>a. 执行 git submodule deinit testsub，自动在 .git/config 中删除了子模块相关信息。这个命令如果添加上参数 –force，则子模块工作区内即使有本地的修改，也会被移除。</li>
+  <li>b. 执行 git rm testsub，移除了 testsub 文件夹，并自动在 .gitmodules 中相关信息。
+    <blockquote>
+      <p>此时，主项目中关于子模块的信息基本已经删除（可能.git/modules 目录下还有残余），但是不影响，继续commit，push，完成对子模块的删除。</p>
+    </blockquote>
+  </li>
+</ul>
+
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2023-12-12.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/git" class="post-category">git</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/git" class="post-tag">git</a>
+      
+      <a href="/tag/submodule" class="post-tag">submodule</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2023/11/30/git-submodule-0">git submodule 原理</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2023. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>

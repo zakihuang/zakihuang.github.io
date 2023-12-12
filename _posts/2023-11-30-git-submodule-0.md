@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "git submodule"
+title: "git submodule 原理"
 date: 2023-11-30
 categories: [git]
 tags: [git]
