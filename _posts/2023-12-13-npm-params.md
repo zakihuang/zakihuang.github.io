@@ -24,3 +24,14 @@ tags: [npm, params]
 运行如下命令，--env 对应的参数会通过 \"${npm_config_env}\" 传入 npm 命令
 
 > npm run build:prod --env=customer.a.prod --port=9000
+
+最终，package.json 会被替换后执行
+
+ ```ts
+ // package.json
+{
+    scripts: {
+        "prod": "egg-scripts start --env=customer.a.prod  --port 9000",
+    }
+}
+```

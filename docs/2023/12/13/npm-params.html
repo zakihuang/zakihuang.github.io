@@ -94,6 +94,16 @@
   <p>npm run build:prod –env=customer.a.prod –port=9000</p>
 </blockquote>
 
+<p>最终，package.json 会被替换后执行</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">// package.json</span>
+<span class="p">{</span>
+    <span class="nl">scripts</span><span class="p">:</span> <span class="p">{</span>
+        <span class="dl">"</span><span class="s2">prod</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">egg-scripts start --env=customer.a.prod  --port 9000</span><span class="dl">"</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
   </div>
   <div class="post-info">
     <div class="post-date">
