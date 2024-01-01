@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>gulp 版本兼容问题 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="gulp 版本兼容问题" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="背景 为了打包构建之前的 element-theme，用到了gulp，但是遇到的坑，记录一下。" />
+<meta property="og:description" content="背景 为了打包构建之前的 element-theme，用到了gulp，但是遇到的坑，记录一下。" />
+<link rel="canonical" href="http://localhost:4000/2024/01/01/gulp" />
+<meta property="og:url" content="http://localhost:4000/2024/01/01/gulp" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-01-01T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="gulp 版本兼容问题" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","dateModified":"2024-01-01T00:00:00+08:00","headline":"gulp 版本兼容问题","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/01/01/gulp"},"description":"背景 为了打包构建之前的 element-theme，用到了gulp，但是遇到的坑，记录一下。","url":"http://localhost:4000/2024/01/01/gulp","datePublished":"2024-01-01T00:00:00+08:00","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="npm,gulp" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>gulp 版本兼容问题</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <h4 id="背景">背景</h4>
+<blockquote>
+  <p>为了打包构建之前的 element-theme，用到了gulp，但是遇到的坑，记录一下。</p>
+</blockquote>
+
+<h3 id="报错如下">报错如下</h3>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">fs</span><span class="p">.</span><span class="nx">js</span><span class="p">:</span><span class="mi">40</span>
+<span class="p">}</span> <span class="o">=</span> <span class="nx">primordials</span><span class="p">;</span>
+    <span class="o">^</span>
+<span class="nx">ReferenceError</span><span class="p">:</span> <span class="nx">primordials</span> <span class="k">is</span> <span class="nx">not</span> <span class="nx">defined</span>
+<span class="nx">at</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">js</span><span class="p">:</span><span class="mi">40</span><span class="p">:</span><span class="mi">5</span>
+
+</code></pre></div></div>
+
+<p>ReferenceError: primordials is not defined 意思是primordials这个没被定义，是因为项目中gulp版本和node版本不兼容，先看下本地的版本：</p>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">gulp</span> <span class="o">--</span><span class="nx">version</span>
+
+<span class="nx">CLI</span> <span class="nx">version</span><span class="p">:</span> <span class="mf">2.3</span><span class="p">.</span><span class="mi">0</span>
+<span class="nx">Local</span> <span class="nx">version</span><span class="p">:</span> <span class="mf">3.9</span><span class="p">.</span><span class="mi">1</span><span class="dl">'</span><span class="s1">
+
+node -version
+
+v14.21.0
+</span></code></pre></div></div>
+
+<blockquote>
+  <p>node &gt;=12 &amp;&amp; gulp &lt;= 3的话，他们的版本不兼容，我本地是14的版本。</p>
+</blockquote>
+
+<p>解决方法
+找到原因后，有两种解决方法，降级node或升级gulp</p>
+
+<blockquote>
+
+  <p>解决方法之：降级node
+不建议用这种方法，毕竟时代在进步，还是不要倒退的好, 所以这种方法直接 pass
+那就用另一个解决方法，使用npm shrinkwrap锁定依赖版本：</p>
+</blockquote>
+
+<p>解决方法之：升级gulp（1）</p>
+<blockquote>
+
+  <ul>
+    <li>1、项目根目录新建npm-shrinkwrap.json</li>
+    <li>2、npm-shrinkwrap.json内容修改如下：</li>
+  </ul>
+</blockquote>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="dl">"</span><span class="s2">dependencies</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">graceful-fs</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="dl">"</span><span class="s2">version</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">4.2.2</span><span class="dl">"</span>
+     <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+<p>然后重新执行npm install，这时候再去执行gulp相关操作就不会报错了。</p>
+<blockquote>
+  <p>注意：这个文件在执行过一次npm install以后，就失效了，下次再执行就没有效果了。</p>
+</blockquote>
+
+<p>解决方法之：升级gulp（2）</p>
+<blockquote>
+  <p>在package.json文件里加入以下代码：</p>
+</blockquote>
+
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="dl">"</span><span class="s2">scripts</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">preinstall</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">npx npm-force-resolutions</span><span class="dl">"</span>
+  <span class="p">},</span>
+  <span class="dl">"</span><span class="s2">resolutions</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="dl">"</span><span class="s2">graceful-fs</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">4.2.2</span><span class="dl">"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+
+  <p>注意：此方案有毒</p>
+</blockquote>
+
+<p>原因： package.json中<code class="language-plaintext highlighter-rouge">"preinstall": "npx npm-force-resolutions"</code>强制npm安装特定的传递依赖项版本，该命令需要package-lock.json</p>
+
+<p>解决方法：先注释掉 //”preinstall”: “npx npm-force-resolutions”, 然后npm install生成 package-lock.json 文件，最后再取消注释重新安装。</p>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2024-01-01.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/npm" class="post-category">npm</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/npm" class="post-tag">npm</a>
+      
+      <a href="/tag/gulp" class="post-tag">gulp</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2023/12/13/npm-params">向 npm 命令 传递参数</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2024. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
