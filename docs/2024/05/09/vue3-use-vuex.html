@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>如何优雅的在 vue3 中使用 vuex | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="如何优雅的在 vue3 中使用 vuex" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="背景 vuex 也许是被 vue3.0 抛弃了，开始推 pinia 了，pinia 太过灵活，灵活就很容易失控，对于一个习惯了 vuex 严谨函数式设计思维的同学， vue3 对 vuex 的支持真是无法忍受，如何优雅的在 vue3 中 使用 vuex 呢？hooks 你值得拥有。" />
+<meta property="og:description" content="背景 vuex 也许是被 vue3.0 抛弃了，开始推 pinia 了，pinia 太过灵活，灵活就很容易失控，对于一个习惯了 vuex 严谨函数式设计思维的同学， vue3 对 vuex 的支持真是无法忍受，如何优雅的在 vue3 中 使用 vuex 呢？hooks 你值得拥有。" />
+<link rel="canonical" href="http://localhost:4000/2024/05/09/vue3-use-vuex" />
+<meta property="og:url" content="http://localhost:4000/2024/05/09/vue3-use-vuex" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-05-09T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何优雅的在 vue3 中使用 vuex" />
+<script type="application/ld+json">
+{"headline":"如何优雅的在 vue3 中使用 vuex","dateModified":"2024-05-09T00:00:00+08:00","datePublished":"2024-05-09T00:00:00+08:00","description":"背景 vuex 也许是被 vue3.0 抛弃了，开始推 pinia 了，pinia 太过灵活，灵活就很容易失控，对于一个习惯了 vuex 严谨函数式设计思维的同学， vue3 对 vuex 的支持真是无法忍受，如何优雅的在 vue3 中 使用 vuex 呢？hooks 你值得拥有。","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2024/05/09/vue3-use-vuex"},"url":"http://localhost:4000/2024/05/09/vue3-use-vuex","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="vue,vuex" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>如何优雅的在 vue3 中使用 vuex</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <h3 id="背景">背景</h3>
+<blockquote>
+  <p>vuex 也许是被 vue3.0 抛弃了，开始推 pinia 了，pinia 太过灵活，灵活就很容易失控，对于一个习惯了 vuex 严谨函数式设计思维的同学，
+vue3 对 vuex 的支持真是无法忍受，如何优雅的在 vue3 中 使用 vuex 呢？hooks 你值得拥有。</p>
+</blockquote>
+
+<h3 id="1把-vuex-封装成一个-hooks-命名为-usevuexjs">1：把 vuex 封装成一个 hooks, 命名为 useVuex.js</h3>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">vue</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createNamespacedHelpers</span><span class="p">,</span> <span class="nx">useStore</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">vuex</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">useFunctionHandle</span> <span class="o">=</span> <span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">,</span> <span class="nx">mapFn</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">mapperFn</span> <span class="o">=</span> <span class="nx">mapFn</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">moduleName</span> <span class="o">===</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span> <span class="o">&amp;&amp;</span> <span class="nx">moduleName</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">mapperFn</span> <span class="o">=</span> <span class="nx">createNamespacedHelpers</span><span class="p">(</span><span class="nx">moduleName</span><span class="p">)[</span><span class="nx">mapFn</span><span class="p">];</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">mapper</span> <span class="o">=</span> <span class="nx">moduleName</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="nx">useStore</span><span class="p">();</span>
+  <span class="kd">const</span> <span class="nx">tempFns</span> <span class="o">=</span> <span class="nx">mapperFn</span><span class="p">(</span><span class="nx">mapper</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">storeFns</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">tempFns</span><span class="p">).</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">keyFn</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">storeFns</span><span class="p">[</span><span class="nx">keyFn</span><span class="p">]</span> <span class="o">=</span> <span class="nx">tempFns</span><span class="p">[</span><span class="nx">keyFn</span><span class="p">].</span><span class="nx">bind</span><span class="p">({</span> <span class="na">$store</span><span class="p">:</span> <span class="nx">store</span> <span class="p">});</span>
+  <span class="p">});</span>
+  <span class="k">return</span> <span class="nx">storeFns</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kd">const</span> <span class="nx">useFunctionState</span> <span class="o">=</span> <span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">,</span> <span class="nx">mapFn</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">mapperFn</span> <span class="o">=</span> <span class="nx">mapFn</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">moduleName</span> <span class="o">===</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span> <span class="o">&amp;&amp;</span> <span class="nx">moduleName</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">mapperFn</span> <span class="o">=</span> <span class="nx">createNamespacedHelpers</span><span class="p">(</span><span class="nx">moduleName</span><span class="p">)[</span><span class="nx">mapFn</span><span class="p">];</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">mapper</span> <span class="o">=</span> <span class="nx">moduleName</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">const</span> <span class="nx">store</span> <span class="o">=</span> <span class="nx">useStore</span><span class="p">();</span>
+  <span class="kd">const</span> <span class="nx">tempFns</span> <span class="o">=</span> <span class="nx">mapperFn</span><span class="p">(</span><span class="nx">mapper</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">storeState</span> <span class="o">=</span> <span class="p">{};</span>
+
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">tempFns</span><span class="p">).</span><span class="nx">forEach</span><span class="p">((</span><span class="nx">keyFn</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">storeState</span><span class="p">[</span><span class="nx">keyFn</span><span class="p">]</span> <span class="o">=</span> <span class="nx">computed</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">tempFns</span><span class="p">[</span><span class="nx">keyFn</span><span class="p">].</span><span class="nx">call</span><span class="p">({</span> <span class="na">$store</span><span class="p">:</span> <span class="nx">store</span> <span class="p">}));</span>
+  <span class="p">});</span>
+  <span class="k">return</span> <span class="nx">storeState</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">useState</span> <span class="o">=</span> <span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">useFunctionState</span><span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">,</span> <span class="dl">"</span><span class="s2">mapState</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">useGetters</span> <span class="o">=</span> <span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">useFunctionState</span><span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">,</span> <span class="dl">"</span><span class="s2">mapGetters</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="c1">// 使用 Composition API 创建类似于 mapActions 的函数</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">useActions</span> <span class="o">=</span> <span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">useFunctionHandle</span><span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">,</span> <span class="dl">"</span><span class="s2">mapActions</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">};</span>
+
+<span class="c1">// 使用 Composition API 创建类似于 mapMutations 的函数</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">useMutations</span> <span class="o">=</span> <span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">useFunctionHandle</span><span class="p">(</span><span class="nx">moduleName</span><span class="p">,</span> <span class="nx">mapper</span><span class="p">,</span> <span class="dl">"</span><span class="s2">mapMutations</span><span class="dl">"</span><span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="1引用操作-vuex-所有使用方式无限趋近于之前的-vuex-版本真香有没有">1：引用操作 vuex, 所有使用方式无限趋近于之前的 vuex 版本，真香，有没有？</h3>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span>
+  <span class="nx">useState</span><span class="p">,</span>
+  <span class="nx">useGetters</span><span class="p">,</span>
+  <span class="nx">useActions</span><span class="p">,</span>
+  <span class="nx">useMutations</span><span class="p">,</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">useVuex.js</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="c1">// 直接使用 State</span>
+<span class="kd">const</span> <span class="nx">storeState</span> <span class="o">=</span> <span class="nx">useState</span><span class="p">(</span><span class="dl">"</span><span class="s2">demo</span><span class="dl">"</span><span class="p">,</span> <span class="p">[</span><span class="dl">"</span><span class="s2">demoList</span><span class="dl">"</span><span class="p">]);</span>
+<span class="c1">// 换名使用 State</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">listStateNewName</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useState</span><span class="p">(</span><span class="dl">"</span><span class="s2">demo</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">listStateNewName</span><span class="p">:</span> <span class="dl">"</span><span class="s2">demoList</span><span class="dl">"</span> <span class="p">});</span>
+
+<span class="c1">// 直接使用 Getters</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">getList</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useGetters</span><span class="p">(</span><span class="dl">"</span><span class="s2">demo</span><span class="dl">"</span><span class="p">,</span> <span class="p">[</span><span class="dl">"</span><span class="s2">getList</span><span class="dl">"</span><span class="p">]);</span>
+
+<span class="c1">// 换名使用 Getters</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">listNewName</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useGetters</span><span class="p">(</span><span class="dl">"</span><span class="s2">demo</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">listNewName</span><span class="p">:</span> <span class="dl">"</span><span class="s2">getList</span><span class="dl">"</span> <span class="p">});</span>
+
+<span class="c1">// 直接使用 Actions</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">addAction</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useActions</span><span class="p">(</span><span class="dl">"</span><span class="s2">demo</span><span class="dl">"</span><span class="p">,</span> <span class="p">[</span><span class="dl">"</span><span class="s2">addAction</span><span class="dl">"</span><span class="p">]);</span>
+<span class="nx">addAction</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="mi">9</span> <span class="p">});</span>
+
+<span class="c1">// 重命令 Actions</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">addAc</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useActions</span><span class="p">(</span><span class="dl">"</span><span class="s2">demo</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span> <span class="na">addAc</span><span class="p">:</span> <span class="dl">"</span><span class="s2">addAction</span><span class="dl">"</span> <span class="p">});</span>
+<span class="nx">addAc</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="mi">99</span> <span class="p">});</span>
+<span class="nx">addAc</span><span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="mi">922</span> <span class="p">});</span>
+
+<span class="c1">// 直接使用 Mutations</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">addMutation</span><span class="p">,</span> <span class="nx">removeMutaion</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useMutations</span><span class="p">(</span><span class="dl">"</span><span class="s2">demo</span><span class="dl">"</span><span class="p">,</span> <span class="p">[</span>
+  <span class="dl">"</span><span class="s2">addMutation</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">removeMutaion</span><span class="dl">"</span><span class="p">,</span>
+<span class="p">]);</span>
+
+<span class="nx">addMutation</span><span class="p">({</span> <span class="na">b</span><span class="p">:</span> <span class="mi">666</span> <span class="p">});</span>
+<span class="nx">removeMutaion</span><span class="p">({</span> <span class="na">id</span><span class="p">:</span> <span class="dl">"</span><span class="s2">008</span><span class="dl">"</span> <span class="p">});</span>
+
+<span class="c1">// 重命名 Mutations</span>
+<span class="kd">const</span> <span class="p">{</span> <span class="nx">add</span><span class="p">,</span> <span class="nx">remove</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">useMutations</span><span class="p">(</span><span class="dl">"</span><span class="s2">demo</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">add</span><span class="p">:</span> <span class="dl">"</span><span class="s2">addMutation</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">remove</span><span class="p">:</span> <span class="dl">"</span><span class="s2">removeMutaion</span><span class="dl">"</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2024-05-09.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/vue3" class="post-category">vue3</a>
+      
+      <a href="/category/vuex" class="post-category">vuex</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/vue" class="post-tag">vue</a>
+      
+      <a href="/tag/vuex" class="post-tag">vuex</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2024/05/09/npm-link">npm 开发期间的调试配置</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2024. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
