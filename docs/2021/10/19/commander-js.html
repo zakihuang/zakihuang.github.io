@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Begin Jekyll SEO tag v2.7.1 -->
 <title>commander.js 参数取反 | blog.7hihi.com</title>
-<meta name="generator" content="Jekyll v4.2.1" />
+<meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="commander.js 参数取反" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="commander.js 用于 Node.js 的命令行解析和任务处理" />
@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="commander.js 参数取反" />
 <script type="application/ld+json">
-{"headline":"commander.js 参数取反","dateModified":"2021-10-19T00:00:00+08:00","datePublished":"2021-10-19T00:00:00+08:00","description":"commander.js 用于 Node.js 的命令行解析和任务处理","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/19/commander-js"},"url":"http://localhost:4000/2021/10/19/commander-js","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"dateModified":"2021-10-19T00:00:00+08:00","datePublished":"2021-10-19T00:00:00+08:00","url":"http://localhost:4000/2021/10/19/commander-js","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/19/commander-js"},"@type":"BlogPosting","description":"commander.js 用于 Node.js 的命令行解析和任务处理","headline":"commander.js 参数取反","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -76,15 +76,15 @@
 
 <p>没什么特别要讲的，精炼强大，此处记录一下选项的基本使用。特别强调一下取反处理。</p>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">Command</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">commander</span><span class="dl">"</span><span class="p">);</span>
-<span class="kd">const</span> <span class="nx">program</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Command</span><span class="p">();</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">Command</span> <span class="p">}</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">commander</span><span class="dl">"</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">program</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Command</span><span class="p">();</span>
 
 <span class="nx">program</span>
-    <span class="p">.</span><span class="nx">option</span><span class="p">(</span><span class="dl">"</span><span class="s2">-a, --no-add</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">add a file</span><span class="dl">"</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">option</span><span class="p">(</span><span class="dl">"</span><span class="s2">-u, --update &lt;fileName&gt;</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">update a file</span><span class="dl">"</span><span class="p">)</span>
-    <span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">argv</span><span class="p">);</span>
+    <span class="p">.</span><span class="nf">option</span><span class="p">(</span><span class="dl">"</span><span class="s2">-a, --no-add</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">add a file</span><span class="dl">"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">option</span><span class="p">(</span><span class="dl">"</span><span class="s2">-u, --update &lt;fileName&gt;</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">update a file</span><span class="dl">"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">argv</span><span class="p">);</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">program</span><span class="p">.</span><span class="nx">add</span><span class="p">,</span> <span class="nx">program</span><span class="p">.</span><span class="nx">update</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">program</span><span class="p">.</span><span class="nx">add</span><span class="p">,</span> <span class="nx">program</span><span class="p">.</span><span class="nx">update</span><span class="p">);</span>
 
 <span class="c1">// node cmd -u update</span>
 <span class="c1">// 输出: true update</span>
@@ -130,7 +130,7 @@
     </main>
     <footer class="container-footer">
       <div class="footer-copyright">
-  <span class="footer-copyright-text float-left">Copyright &copy; 2024. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-left">Copyright &copy; 2025. blog.7hihi.com.</span>
   <span class="footer-copyright-text float-right">
     Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
   </span>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>JS 与 CSS 是否阻塞 DOM 的渲染和解析 | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="JS 与 CSS 是否阻塞 DOM 的渲染和解析" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="前言" />
+<meta property="og:description" content="前言" />
+<link rel="canonical" href="http://localhost:4000/2025/04/15/js-css" />
+<meta property="og:url" content="http://localhost:4000/2025/04/15/js-css" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-04-15T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="JS 与 CSS 是否阻塞 DOM 的渲染和解析" />
+<script type="application/ld+json">
+{"dateModified":"2025-04-15T00:00:00+08:00","datePublished":"2025-04-15T00:00:00+08:00","url":"http://localhost:4000/2025/04/15/js-css","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/04/15/js-css"},"@type":"BlogPosting","description":"前言","headline":"JS 与 CSS 是否阻塞 DOM 的渲染和解析","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="js,css" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>JS 与 CSS 是否阻塞 DOM 的渲染和解析</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <h2 id="前言">前言</h2>
+
+<p>最近系统梳理<code class="language-plaintext highlighter-rouge">HTML5</code>所有涉及到的标签时，梳理至<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>和<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签时，碰巧想到一个困扰很久的问题，即一般把<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>放在<code class="language-plaintext highlighter-rouge">&lt;body&gt;</code>尾部，<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>标签放在<code class="language-plaintext highlighter-rouge">&lt;head&gt;</code>内部，而页面通过<code class="language-plaintext highlighter-rouge">CDN</code>引入第三方框架或库时，基本都是将其<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签放在<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>标签前面。</p>
+
+<p>可能此方式已经成为了约定俗成，但是究竟其好处在哪里，或者说其它的方式为什么不可取，想必你也和我有同样的疑问，那就接着来往下看吧。</p>
+
+<h2 id="准备工作">准备工作</h2>
+
+<p>首先需要做的准备工作是，搭建一个服务器，目的是为了返回<code class="language-plaintext highlighter-rouge">css</code>样式和<code class="language-plaintext highlighter-rouge">js</code>脚本，并且让服务器根据传递的参数，固定延时返回数据。</p>
+
+<p>其目录结构如下，其中<code class="language-plaintext highlighter-rouge">index.js</code>和<code class="language-plaintext highlighter-rouge">style.css</code>就是用于返回的数据，<code class="language-plaintext highlighter-rouge">app.js</code>为服务器启动文件，<code class="language-plaintext highlighter-rouge">index.html</code>是用来测试案例的文件，剩余文件或文件夹可以忽略。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── static
+│   ├── index.js
+│   ├── style.css
+├── app.js
+├── index.html
+├── package.json
+├── node_modules/
+</code></pre></div></div>
+
+<p>涉及的相关代码也贴一下吧，方便复制调试。有必要说明一下，本地运行<code class="language-plaintext highlighter-rouge">node app.js</code>启动后，浏览器输入<code class="language-plaintext highlighter-rouge">http://127.0.0.1:3000/</code>就能访问到<code class="language-plaintext highlighter-rouge">index.html</code>，而访问<code class="language-plaintext highlighter-rouge">style.css</code>可以输入<code class="language-plaintext highlighter-rouge">http://127.0.0.1:3000/static/style.css?sleep=3000</code>，其中<code class="language-plaintext highlighter-rouge">sleep</code>参数则可自由控制<code class="language-plaintext highlighter-rouge">css</code>文件延时返回，例如想要文件<code class="language-plaintext highlighter-rouge">5s</code>后返回就设置<code class="language-plaintext highlighter-rouge">sleep=5000</code>。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// app.js</span>
+<span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">express</span><span class="p">()</span>
+<span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">3000</span>
+
+<span class="kd">const</span> <span class="nx">sleepFun</span> <span class="o">=</span> <span class="nx">time</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nc">Promise</span><span class="p">(</span><span class="nx">res</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nf">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="nf">res</span><span class="p">()</span>
+    <span class="p">},</span> <span class="nx">time</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">filter</span> <span class="o">=</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="p">{</span> <span class="nx">sleep</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">query</span> <span class="o">||</span> <span class="mi">0</span>
+
+  <span class="k">if </span><span class="p">(</span><span class="nx">sleep</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">sleepFun</span><span class="p">(</span><span class="nx">sleep</span><span class="p">).</span><span class="nf">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nf">next</span><span class="p">())</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nf">next</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="dl">'</span><span class="s1">/static/</span><span class="dl">'</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="nf">static</span><span class="p">(</span><span class="dl">'</span><span class="s1">./static/</span><span class="dl">'</span><span class="p">))</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="nf">function </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">fs</span><span class="p">.</span><span class="nf">readFile</span><span class="p">(</span><span class="dl">'</span><span class="s1">./index.html</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">UTF-8</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">if </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">return</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">})</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nf">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`app is running at http://127.0.0.1:</span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">/`</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="c1">// static/index.js</span>
+<span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+
+<span class="c1">// static/style.css</span>
+<span class="nx">p</span> <span class="p">{</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="nx">lightblue</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>接着就是<code class="language-plaintext highlighter-rouge">index.html</code>的准备工作，其中<code class="language-plaintext highlighter-rouge">HTML</code>部分的架子就长下面那样，然后你只需要记住<code class="language-plaintext highlighter-rouge">DOMContentLoaded</code>事件将在页面<code class="language-plaintext highlighter-rouge">DOM</code>解析完成后触发。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"zh-CN"</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;script&gt;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+
+      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="p">})</span>
+  <span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;p&gt;</span>hello world<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="css-不会阻塞-dom-解析但是会阻塞-dom-渲染">CSS 不会阻塞 DOM 解析，但是会阻塞 DOM 渲染</h2>
+
+<p>首先在<code class="language-plaintext highlighter-rouge">index.html</code>插入如下<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>标签，然后在浏览器输入<code class="language-plaintext highlighter-rouge">http://127.0.0.1:3000/</code>访问此页面。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;script&gt;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+
+      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="p">})</span>
+  <span class="nt">&lt;/script&gt;</span>
+  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"./static/style.css?sleep=3000"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;p&gt;</span>hello world<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
+<p>页面初始显示为空白，控制台打印出了<code class="language-plaintext highlighter-rouge">p</code>元素，同时浏览器标签页上加载<code class="language-plaintext highlighter-rouge">loading</code>，<code class="language-plaintext highlighter-rouge">3s</code>后页面显示出浅蓝色的<code class="language-plaintext highlighter-rouge">hello world</code>。</p>
+
+<p><img src="/assets/images/d148f693ca21439a868aca2627289e31~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p>以上情况也就说明，<code class="language-plaintext highlighter-rouge">CSS</code>不会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>的解析，如果说<code class="language-plaintext highlighter-rouge">CSS</code>阻塞<code class="language-plaintext highlighter-rouge">DOM</code>解析的话，那么<code class="language-plaintext highlighter-rouge">p</code>标签不会被解析，进而<code class="language-plaintext highlighter-rouge">DOM</code>不会被解析完成，<code class="language-plaintext highlighter-rouge">CSS</code>请求过程中也就不可能会触发<code class="language-plaintext highlighter-rouge">DOMContentLoaded</code>事件。而且在<code class="language-plaintext highlighter-rouge">css</code>请求过程中，控制台立即打印出了<code class="language-plaintext highlighter-rouge">p</code>元素，因此<code class="language-plaintext highlighter-rouge">CSS</code>不会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>的解析。</p>
+
+<p>另一个情况就是，虽然<code class="language-plaintext highlighter-rouge">DOM</code>很早就被解析完成，但是<code class="language-plaintext highlighter-rouge">p</code>标签却迟迟没有渲染，原因在于<code class="language-plaintext highlighter-rouge">CSS</code>样式还未请求完成，在样式获取后<code class="language-plaintext highlighter-rouge">hello world</code>才被渲染出来，所以说<code class="language-plaintext highlighter-rouge">CSS</code>会阻塞页面渲染。</p>
+
+<p>简单阐述一下浏览器的解析渲染过程，解析<code class="language-plaintext highlighter-rouge">DOM</code>生成<code class="language-plaintext highlighter-rouge">DOM Tree</code>，解析<code class="language-plaintext highlighter-rouge">CSS</code>生成<code class="language-plaintext highlighter-rouge">CSSOM Tree</code>，两者结合生成<code class="language-plaintext highlighter-rouge">render tree</code>渲染树，最后浏览器根据渲染树渲染至页面。由此可以看出<code class="language-plaintext highlighter-rouge">DOM Tree</code>的解析和<code class="language-plaintext highlighter-rouge">CSSOM Tree</code>的解析是互不影响的，两者是并行的。因此<code class="language-plaintext highlighter-rouge">CSS</code>不会阻塞页面<code class="language-plaintext highlighter-rouge">DOM</code>的解析，但是由于<code class="language-plaintext highlighter-rouge">render tree</code>的生成是依赖<code class="language-plaintext highlighter-rouge">DOM Tree</code>和<code class="language-plaintext highlighter-rouge">CSSOM Tree</code>的，因此<code class="language-plaintext highlighter-rouge">CSS</code>必然会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>的渲染。</p>
+
+<p>更为严谨一点的说，<code class="language-plaintext highlighter-rouge">CSS</code>会阻塞<code class="language-plaintext highlighter-rouge">render tree</code>的生成，进而会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>的渲染。</p>
+
+<h2 id="js-会阻塞-dom-解析">JS 会阻塞 DOM 解析</h2>
+
+<p>为了避免加载<code class="language-plaintext highlighter-rouge">CSS</code>造成的干扰，如下仅关注<code class="language-plaintext highlighter-rouge">JS</code>的执行情况，其中<code class="language-plaintext highlighter-rouge">for</code>循环的循环体中逻辑暂不考虑，仅仅是让<code class="language-plaintext highlighter-rouge">JS</code>执行更多时间。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;script&gt;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+
+      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="p">})</span>
+  <span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;script&gt;</span>
+    <span class="kd">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[];</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">100000000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">arr</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="nt">&lt;/script&gt;</span>
+  <span class="nt">&lt;p&gt;</span>hello world<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
+<p>浏览器访问页面，初始时为空白且控制台打印<code class="language-plaintext highlighter-rouge">null</code>，浏览器<code class="language-plaintext highlighter-rouge">loading</code>短暂延时后，控制台打印出<code class="language-plaintext highlighter-rouge">p</code>标签同时页面渲染出<code class="language-plaintext highlighter-rouge">hello world</code>。</p>
+
+<p><img src="/assets/images/ed84300752c543ecb7bb4cf063e7e7a8~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p>以上情况很容易说明<code class="language-plaintext highlighter-rouge">JS</code>会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>解析了，<code class="language-plaintext highlighter-rouge">JS</code>执行初控制台打印<code class="language-plaintext highlighter-rouge">null</code>，因为此时<code class="language-plaintext highlighter-rouge">p</code>标签还未被解析，<code class="language-plaintext highlighter-rouge">for</code>循环执行时，可以明显感觉到执行耗时，执行完成<code class="language-plaintext highlighter-rouge">p</code>标签被解析，此时触发<code class="language-plaintext highlighter-rouge">DOMContentLoaded</code>事件，控制台打印出<code class="language-plaintext highlighter-rouge">p</code>标签，同时页面渲染出<code class="language-plaintext highlighter-rouge">hello world</code>。</p>
+
+<p>比较合理的解释就是，首先浏览器无法知晓<code class="language-plaintext highlighter-rouge">JS</code>的具体内容，倘若先解析<code class="language-plaintext highlighter-rouge">DOM</code>，万一<code class="language-plaintext highlighter-rouge">JS</code>内部全部删除掉<code class="language-plaintext highlighter-rouge">DOM</code>，那么浏览器就白忙活了，所以就干脆暂停解析<code class="language-plaintext highlighter-rouge">DOM</code>，等到<code class="language-plaintext highlighter-rouge">JS</code>执行完成再继续解析。</p>
+
+<h2 id="css-会阻塞-js-的执行">CSS 会阻塞 JS 的执行</h2>
+
+<p>如下在页内<code class="language-plaintext highlighter-rouge">JS</code>脚本前插入<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>标签，并且延时<code class="language-plaintext highlighter-rouge">3s</code>获取<code class="language-plaintext highlighter-rouge">CSS</code>样式。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;script&gt;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+
+      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="p">})</span>
+  <span class="nt">&lt;/script&gt;</span>
+  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"./static/style.css?sleep=3000"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"./static/index.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;p&gt;</span>hello world<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
+<p>初始页面空白，浏览器<code class="language-plaintext highlighter-rouge">loading</code>加载<code class="language-plaintext highlighter-rouge">3s</code>后，控制台打印出<code class="language-plaintext highlighter-rouge">null</code>，紧接着打印出<code class="language-plaintext highlighter-rouge">p</code>标签，同时页面渲染出浅蓝色<code class="language-plaintext highlighter-rouge">p</code>标签。</p>
+
+<p><img src="/assets/images/50fbe6302d054b0d8491fd8344f42f99~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p>此情况好像是<code class="language-plaintext highlighter-rouge">CSS</code>不仅阻塞了<code class="language-plaintext highlighter-rouge">DOM</code>的解析，并且也阻塞了<code class="language-plaintext highlighter-rouge">DOM</code>渲染。</p>
+
+<p>但是首先要思考下是什么阻塞了<code class="language-plaintext highlighter-rouge">DOM</code>的解析，刚刚已经证明了<code class="language-plaintext highlighter-rouge">CSS</code>不会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>的解析，所以只可能是<code class="language-plaintext highlighter-rouge">JS</code>阻塞了<code class="language-plaintext highlighter-rouge">DOM</code>解析。但是<code class="language-plaintext highlighter-rouge">JS</code>只有两行代码，不会阻塞长达<code class="language-plaintext highlighter-rouge">3s</code>左右的时间。所以只有一个可能就是<code class="language-plaintext highlighter-rouge">CSS</code>会阻塞<code class="language-plaintext highlighter-rouge">JS</code>的执行。</p>
+
+<p>因此输出结果也能大致分析出来了，首先解析到第一个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签，<code class="language-plaintext highlighter-rouge">document</code>绑定上<code class="language-plaintext highlighter-rouge">DOMContentLoaded</code>事件，紧接着解析到<code class="language-plaintext highlighter-rouge">link</code>标签，浏览器请求<code class="language-plaintext highlighter-rouge">CSS</code>样式，由于<code class="language-plaintext highlighter-rouge">CSS</code>不会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>解析，因此浏览器继续向下解析，发现第二个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签，浏览器请求<code class="language-plaintext highlighter-rouge">JS</code>脚本，此时<code class="language-plaintext highlighter-rouge">JS</code>获取完成，但是由于<code class="language-plaintext highlighter-rouge">CSS</code>还在获取，<code class="language-plaintext highlighter-rouge">JS</code>需要一直等待其获取完成，所以不能立即执行。</p>
+
+<p>而第二个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>不能立即执行，导致它后面的<code class="language-plaintext highlighter-rouge">p</code>标签也没办法解析，原因则是<code class="language-plaintext highlighter-rouge">JS</code>会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>解析。只有等待到<code class="language-plaintext highlighter-rouge">CSS</code>样式获取成功后，此时<code class="language-plaintext highlighter-rouge">JS</code>立即执行，控制台输出<code class="language-plaintext highlighter-rouge">null</code>，然后浏览器继续解析到<code class="language-plaintext highlighter-rouge">p</code>标签，解析完成，<code class="language-plaintext highlighter-rouge">DOMContentLoaded</code>事件触发，控制台输出<code class="language-plaintext highlighter-rouge">p</code>标签，最后浅蓝色<code class="language-plaintext highlighter-rouge">hello world</code>渲染至页面。</p>
+
+<p>其实这样做也是有道理的，设想<code class="language-plaintext highlighter-rouge">JS</code>脚本中的内容是获取<code class="language-plaintext highlighter-rouge">DOM</code>元素的<code class="language-plaintext highlighter-rouge">CSS</code>样式属性，如果<code class="language-plaintext highlighter-rouge">JS</code>想要获取到<code class="language-plaintext highlighter-rouge">DOM</code>最新的正确的样式，势必需要所有的<code class="language-plaintext highlighter-rouge">CSS</code>加载完成，否则获取的样式可能是错误或者不是最新的。因此要等到<code class="language-plaintext highlighter-rouge">JS</code>脚本前面的<code class="language-plaintext highlighter-rouge">CSS</code>加载完成，<code class="language-plaintext highlighter-rouge">JS</code>才能再执行，并且不管<code class="language-plaintext highlighter-rouge">JS</code>脚本中是否获取<code class="language-plaintext highlighter-rouge">DOM</code>元素的样式，浏览器都要这样做。</p>
+
+<p>回溯文章开头的那个疑问，所以一般将<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>放在<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>标签前面是有道理的。</p>
+
+<h2 id="js-会触发页面渲染">JS 会触发页面渲染</h2>
+
+<p>如下<code class="language-plaintext highlighter-rouge">CSS</code>采用页内方式，其中颜色名及其<code class="language-plaintext highlighter-rouge">rgb</code>值分别为浅绿色<code class="language-plaintext highlighter-rouge">lightgreen</code>（<code class="language-plaintext highlighter-rouge">rgb(144, 238, 144)</code>）、粉色<code class="language-plaintext highlighter-rouge">pink</code>（<code class="language-plaintext highlighter-rouge">rgb(255, 192, 203)</code>）。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;style&gt;</span>
+    <span class="nt">p</span> <span class="p">{</span>
+      <span class="nl">color</span><span class="p">:</span> <span class="no">lightgreen</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;p&gt;</span>hello<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"./static/index.js?sleep=2000"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;p&gt;</span>beautiful<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;style&gt;</span>
+    <span class="nt">p</span> <span class="p">{</span>
+      <span class="nl">color</span><span class="p">:</span> <span class="no">pink</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="nt">&lt;/style&gt;</span>
+  <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"./static/index.js?sleep=4000"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;p&gt;</span>world<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;style&gt;</span>
+    <span class="nt">p</span> <span class="p">{</span>
+      <span class="nl">color</span><span class="p">:</span> <span class="no">lightblue</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+
+// static/index.js
+var p = document.querySelector('p')
+var style = window.getComputedStyle(p, null)
+
+console.log(style.color)
+</code></pre></div></div>
+
+<p>页面初始渲染出浅绿色<code class="language-plaintext highlighter-rouge">hello</code>，紧接着<code class="language-plaintext highlighter-rouge">2s</code>后渲染出粉色<code class="language-plaintext highlighter-rouge">hello beautiful</code>且控制台打印<code class="language-plaintext highlighter-rouge">rgb(144, 238, 144)</code>，然后又<code class="language-plaintext highlighter-rouge">2s</code>后渲染出浅蓝色<code class="language-plaintext highlighter-rouge">hello beautiful world</code>且控制台打印<code class="language-plaintext highlighter-rouge">rgb(255, 192, 203)</code>。</p>
+
+<p><img src="/assets/images/6d5dd223d4bd4860a1b6786da8c87e53~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p>上述结果大致分析为浏览器首先解析第一个<code class="language-plaintext highlighter-rouge">&lt;style&gt;</code>标签和<code class="language-plaintext highlighter-rouge">hello</code>文本的<code class="language-plaintext highlighter-rouge">p</code>标签，此时继续向下解析发现了第一个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签，紧接着触发一次渲染，由于此过程非常快所以页面初始就能看到浅绿色<code class="language-plaintext highlighter-rouge">hello</code>。</p>
+
+<p>然后浏览器发出<code class="language-plaintext highlighter-rouge">JS</code>请求，<code class="language-plaintext highlighter-rouge">2s</code>后<code class="language-plaintext highlighter-rouge">JS</code>获取完成立即运行控制台输出<code class="language-plaintext highlighter-rouge">rgb(144, 238, 144)</code>，<code class="language-plaintext highlighter-rouge">JS</code>运行完成后浏览器继续向下解析到<code class="language-plaintext highlighter-rouge">beautiful</code>文本的<code class="language-plaintext highlighter-rouge">p</code>标签和第二个<code class="language-plaintext highlighter-rouge">&lt;style&gt;</code>标签，再继续向下解析发现了第二个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签，触发一次渲染，这个过程也是非常快，所以可以看到控制台输出结果和渲染粉色<code class="language-plaintext highlighter-rouge">hello beautiful</code>几乎是同时的。</p>
+
+<p>解析到第二个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签时，浏览器不会发出请求（稍作解释），<code class="language-plaintext highlighter-rouge">2s</code>后获取到<code class="language-plaintext highlighter-rouge">JS</code>脚本并执行，控制台输出<code class="language-plaintext highlighter-rouge">rgb(255, 192, 203)</code>，紧接着浏览器继续向下解析到<code class="language-plaintext highlighter-rouge">world</code>文本的<code class="language-plaintext highlighter-rouge">p</code>标签和第三个<code class="language-plaintext highlighter-rouge">&lt;style&gt;</code>标签，此时<code class="language-plaintext highlighter-rouge">DOM</code>解析完成，再进行正常的渲染，这个过程也是非常快，所以也能看到控制台输出结果和渲染浅蓝色<code class="language-plaintext highlighter-rouge">hello beautiful world</code>几乎是同时的。</p>
+
+<p>现在来解答刚才那个问题，浏览器解析<code class="language-plaintext highlighter-rouge">DOM</code>时，虽然会一行一行向下解析，但是它会预先加载具有引用标记的外部资源（例如带有<code class="language-plaintext highlighter-rouge">src</code>标记的<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签），而在解析到此标签时，则无需再去加载，直接运行，以此提高运行效率。所以就会有上述两个输出结果间隔<code class="language-plaintext highlighter-rouge">2s</code>的情况，而不是<code class="language-plaintext highlighter-rouge">4s</code>，因为浏览器预先就一起加载了两个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>脚本，第一个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>脚本加载完成时，第二个<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>脚本还剩大概<code class="language-plaintext highlighter-rouge">2s</code>加载完成。</p>
+
+<p>而这个结论才是解释为何<code class="language-plaintext highlighter-rouge">CSS</code>会阻塞<code class="language-plaintext highlighter-rouge">JS</code>的执行的真正原因，浏览器无法预先知道脚本的具体内容，因此在碰到<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签时，只好先渲染一次页面，确保<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>脚本内能获取到<code class="language-plaintext highlighter-rouge">DOM</code>的最新的样式。倘若在决定渲染页面时，还有尚未加载完成的<code class="language-plaintext highlighter-rouge">CSS</code>样式，只能等待其加载完成再去渲染页面。</p>
+
+<h2 id="body-内的-css">Body 内的 CSS</h2>
+
+<p>来看一个较为特殊的情况。</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;script&gt;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+
+      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="p">})</span>
+  <span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;p&gt;</span>hello<span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"./static/style.css?sleep=3000"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;p&gt;</span>world<span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
+<p>按照上述的所有结论，预先分析一下运行结果，首先浏览器解析<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>脚本，<code class="language-plaintext highlighter-rouge">document</code>上绑定了<code class="language-plaintext highlighter-rouge">DOMContentLoaded</code>事件，紧接着浏览器继续向下解析，发现了文本为<code class="language-plaintext highlighter-rouge">hello</code>的<code class="language-plaintext highlighter-rouge">p</code>标签和<code class="language-plaintext highlighter-rouge">&lt;link&gt;</code>标签，浏览器发起<code class="language-plaintext highlighter-rouge">CSS</code>请求，由于<code class="language-plaintext highlighter-rouge">CSS</code>不会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>解析，浏览器继续向下解析至文本为<code class="language-plaintext highlighter-rouge">world</code>的<code class="language-plaintext highlighter-rouge">p</code>标签，此时页面解析完成，<code class="language-plaintext highlighter-rouge">DOMContentLoaded</code>事件触发控制台输出<code class="language-plaintext highlighter-rouge">p</code>标签，<code class="language-plaintext highlighter-rouge">3s</code>后页面渲染出浅蓝色<code class="language-plaintext highlighter-rouge">hello world</code>。</p>
+
+<p>因此初始时页面空白，浏览器<code class="language-plaintext highlighter-rouge">loading</code>加载<code class="language-plaintext highlighter-rouge">3s</code>后，控制台打印出<code class="language-plaintext highlighter-rouge">p</code>标签，同时页面渲染出浅蓝色<code class="language-plaintext highlighter-rouge">hello world</code>。</p>
+
+<p>但是实际结果并不是这样，先来看看<code class="language-plaintext highlighter-rouge">Chrome</code>浏览器下的表现。</p>
+
+<p><img src="/assets/images/a910002ac79e4f03ad3f73b167a7c4d4~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p>再来看看<code class="language-plaintext highlighter-rouge">Firefox</code>浏览器下的表现。</p>
+
+<p><img src="/assets/images/8fe9421ba5714ce7b49d43c3521421d0~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p>接着再来看看<code class="language-plaintext highlighter-rouge">Opera</code>浏览器下的表现。</p>
+
+<p><img src="/assets/images/7acd07876d6f4cd4a9041bfd3816db1f~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">IE11</code>及以下浏览器的表现。</p>
+
+<p><img src="/assets/images/ddc1d198fbca49a6ba3bf1bf344239da~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">Edge</code>浏览器下的表现。</p>
+
+<p><img src="/assets/images/886d188a2af149ff8c1ac60f7f9eb8d3~tplv-k3u1fbpfcp-zoom-in-crop-mark_1512_0_0_0.awebp.gif" alt="在这里插入图片描述" /></p>
+
+<p>怎么样，蒙了吧，<code class="language-plaintext highlighter-rouge">5</code>种浏览器<code class="language-plaintext highlighter-rouge">3</code>种表现形式，并且没有一种表现与预先分析的一致。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>浏览器</th>
+      <th>阻塞解析</th>
+      <th>阻塞渲染</th>
+      <th>DOMContentLoaded 执行时间点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>chrome</td>
+      <td>是</td>
+      <td>是</td>
+      <td>解析后执行</td>
+    </tr>
+    <tr>
+      <td>opera</td>
+      <td>是</td>
+      <td>是</td>
+      <td>解析后执行</td>
+    </tr>
+    <tr>
+      <td>ie11</td>
+      <td>是</td>
+      <td>是</td>
+      <td>解析后执行</td>
+    </tr>
+    <tr>
+      <td>firefox</td>
+      <td>否</td>
+      <td>是</td>
+      <td>解析后执行</td>
+    </tr>
+    <tr>
+      <td>edge</td>
+      <td>否</td>
+      <td>是</td>
+      <td>渲染后执行</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>其实造成这种差异的原因，是一种被称为浏览器样式闪烁（<a href="https://link.juejin.cn/?target=https%3A%2F%2Fwebkit.org%2Fblog%2F66%2Fthe-fouc-problem%2F" title="https://webkit.org/blog/66/the-fouc-problem/">FOUC</a>，<code class="language-plaintext highlighter-rouge">Flash of Unstyled Content</code>）的现象。</p>
+
+<p>由于浏览器引擎的架构方式不一致，在浏览器解析到<code class="language-plaintext highlighter-rouge">Body</code>内的<code class="language-plaintext highlighter-rouge">CSS</code>的时候，浏览器引擎是可以做出选择的。</p>
+
+<p>一种选择是它可以在请求<code class="language-plaintext highlighter-rouge">CSS</code>的时候暂停后续<code class="language-plaintext highlighter-rouge">DOM</code>的解析，在<code class="language-plaintext highlighter-rouge">CSS</code>加载完成后再继续往后解析，此情况就会造成<code class="language-plaintext highlighter-rouge">CSS</code>阻塞<code class="language-plaintext highlighter-rouge">DOM</code>的解析，导致页面<code class="language-plaintext highlighter-rouge">DOM</code>解析及其样式渲染推迟，而此表现形式就与<code class="language-plaintext highlighter-rouge">JS</code>的情况相似。</p>
+
+<p>另一种选择是它也可以在请求<code class="language-plaintext highlighter-rouge">CSS</code>的时候继续往后解析，此时<code class="language-plaintext highlighter-rouge">CSS</code>的加载与<code class="language-plaintext highlighter-rouge">DOM</code>的解析就是并行的，等到<code class="language-plaintext highlighter-rouge">CSS</code>加载完成后再更新样式，此情况下部分<code class="language-plaintext highlighter-rouge">DOM</code>样式就会从默认样式立即跳转到有样式状态，形成样式闪烁。</p>
+
+<p>此小结不必太过于纠结，只需记住<code class="language-plaintext highlighter-rouge">Body</code>内的<code class="language-plaintext highlighter-rouge">CSS</code>会由于浏览器的差异，呈现不同的表现形式，而这种现象一般称为<code class="language-plaintext highlighter-rouge">FOUC</code>，代码中应当极力避免此种情况发生即可。</p>
+
+<h2 id="综上所述">综上所述</h2>
+
+<p>综合上述所有情况，可以得出如下结论。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">CSS</code>不会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>解析，但是会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>渲染，严谨一点则是<code class="language-plaintext highlighter-rouge">CSS</code>会阻塞<code class="language-plaintext highlighter-rouge">render tree</code>的生成，进而会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>的渲染</li>
+  <li><code class="language-plaintext highlighter-rouge">JS</code>会阻塞<code class="language-plaintext highlighter-rouge">DOM</code>解析</li>
+  <li><code class="language-plaintext highlighter-rouge">CSS</code>会阻塞<code class="language-plaintext highlighter-rouge">JS</code>的执行</li>
+  <li>浏览器遇到<code class="language-plaintext highlighter-rouge">&lt;script&gt;</code>标签且没有<code class="language-plaintext highlighter-rouge">defer</code>或<code class="language-plaintext highlighter-rouge">async</code>属性时会触发页面渲染</li>
+  <li><code class="language-plaintext highlighter-rouge">Body</code>内部的外链<code class="language-plaintext highlighter-rouge">CSS</code>较为特殊，会形成<code class="language-plaintext highlighter-rouge">FOUC</code>现象，请慎用</li>
+</ul>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2025-04-15.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/css" class="post-category">css</a>
+      
+      <a href="/category/js" class="post-category">js</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/js" class="post-tag">js</a>
+      
+      <a href="/tag/css" class="post-tag">css</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2024/05/09/vue3-use-vuex">如何优雅的在 vue3 中使用 vuex</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2025. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>

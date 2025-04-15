@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Begin Jekyll SEO tag v2.7.1 -->
 <title>前后端开发规约 | blog.7hihi.com</title>
-<meta name="generator" content="Jekyll v4.2.1" />
+<meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="前后端开发规约" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="前期的麻烦是减少后期更多的沟通成本，减少前后端返工情况。" />
@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="前后端开发规约" />
 <script type="application/ld+json">
-{"headline":"前后端开发规约","dateModified":"2023-05-18T00:00:00+08:00","datePublished":"2023-05-18T00:00:00+08:00","description":"前期的麻烦是减少后期更多的沟通成本，减少前后端返工情况。","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/05/18/front-back-rules"},"url":"http://localhost:4000/2023/05/18/front-back-rules","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"dateModified":"2023-05-18T00:00:00+08:00","datePublished":"2023-05-18T00:00:00+08:00","url":"http://localhost:4000/2023/05/18/front-back-rules","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2023/05/18/front-back-rules"},"@type":"BlogPosting","description":"前期的麻烦是减少后期更多的沟通成本，减少前后端返工情况。","headline":"前后端开发规约","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -132,10 +132,10 @@
 
 <p>字段属性是undefined在 JSON 当中会被过滤，在数组中会被替换成null，所以后端post请求不会接收到值是undefined字段，get请求统一前端过滤处理</p>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">key</span><span class="p">:</span> <span class="kc">undefined</span> <span class="p">})</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">JSON</span><span class="p">.</span><span class="nf">stringify</span><span class="p">({</span> <span class="na">key</span><span class="p">:</span> <span class="kc">undefined</span> <span class="p">})</span>
 <span class="c1">// '{}'</span>
 
-<span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">]</span> <span class="p">});</span>
+<span class="nx">JSON</span><span class="p">.</span><span class="nf">stringify</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">]</span> <span class="p">});</span>
 <span class="c1">// '{"x":[10,null]}'</span>
 </code></pre></div></div>
 
@@ -261,7 +261,7 @@
     </main>
     <footer class="container-footer">
       <div class="footer-copyright">
-  <span class="footer-copyright-text float-left">Copyright &copy; 2024. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-left">Copyright &copy; 2025. blog.7hihi.com.</span>
   <span class="footer-copyright-text float-right">
     Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
   </span>

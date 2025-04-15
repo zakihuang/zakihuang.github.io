@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Begin Jekyll SEO tag v2.7.1 -->
 <title>util.js promisify and callbackfy | blog.7hihi.com</title>
-<meta name="generator" content="Jekyll v4.2.1" />
+<meta name="generator" content="Jekyll v4.4.1" />
 <meta property="og:title" content="util.js promisify and callbackfy" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="util.js 里的 promisify 函数可以把常规的，最后一个参数为回调函数的函数转化为 promise" />
@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="util.js promisify and callbackfy" />
 <script type="application/ld+json">
-{"headline":"util.js promisify and callbackfy","dateModified":"2021-10-13T00:00:00+08:00","datePublished":"2021-10-13T00:00:00+08:00","description":"util.js 里的 promisify 函数可以把常规的，最后一个参数为回调函数的函数转化为 promise","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/13/promisify"},"url":"http://localhost:4000/2021/10/13/promisify","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"dateModified":"2021-10-13T00:00:00+08:00","datePublished":"2021-10-13T00:00:00+08:00","url":"http://localhost:4000/2021/10/13/promisify","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2021/10/13/promisify"},"@type":"BlogPosting","description":"util.js 里的 promisify 函数可以把常规的，最后一个参数为回调函数的函数转化为 promise","headline":"util.js promisify and callbackfy","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -74,19 +74,19 @@
   <div class="post-content">
     <p>util.js 里的 promisify 函数可以把常规的，最后一个参数为回调函数的函数转化为 promise</p>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">util</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">util</span><span class="dl">'</span><span class="p">);</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">util</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">util</span><span class="dl">'</span><span class="p">);</span>
 
 <span class="kd">const</span> <span class="nx">fn</span> <span class="o">=</span> <span class="p">(</span><span class="nx">param</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="nx">callback</span><span class="p">(</span><span class="dl">'</span><span class="s1">err</span><span class="dl">'</span><span class="p">,</span> <span class="nx">param</span><span class="p">)</span>
+  <span class="nf">callback</span><span class="p">(</span><span class="dl">'</span><span class="s1">err</span><span class="dl">'</span><span class="p">,</span> <span class="nx">param</span><span class="p">)</span>
 <span class="p">};</span>
 
-<span class="kd">var</span> <span class="nx">fnTest</span> <span class="o">=</span> <span class="nx">util</span><span class="p">.</span><span class="nx">promisify</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">fnTest</span> <span class="o">=</span> <span class="nx">util</span><span class="p">.</span><span class="nf">promisify</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span>
 
-<span class="p">(</span><span class="k">async</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<span class="p">(</span><span class="k">async</span> <span class="nf">function </span><span class="p">()</span> <span class="p">{</span>
 
-  <span class="kd">const</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">ffnTest</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="kd">const</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">await</span> <span class="nf">ffnTest</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
   
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
 
 <span class="p">})();</span>
 </code></pre></div></div>
@@ -94,19 +94,19 @@
 <p>另一个功能是可以使用 util.promisify.custom 符号重写 util.promisify 返回值。</p>
 
 <div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">fn</span> <span class="o">=</span> <span class="p">(</span><span class="nx">param</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="nx">callback</span><span class="p">(</span><span class="dl">'</span><span class="s1">err</span><span class="dl">'</span><span class="p">,</span> <span class="nx">param</span><span class="p">)</span>
+  <span class="nf">callback</span><span class="p">(</span><span class="dl">'</span><span class="s1">err</span><span class="dl">'</span><span class="p">,</span> <span class="nx">param</span><span class="p">)</span>
 <span class="p">};</span>
 
 <span class="nx">fn</span><span class="p">[</span><span class="nx">util</span><span class="p">.</span><span class="nx">promisify</span><span class="p">.</span><span class="nx">custom</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nx">e</span><span class="p">,</span> <span class="nx">r</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="dl">'</span><span class="s1">这是自定义返回</span><span class="dl">'</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nb">Promise</span><span class="p">.</span><span class="nf">resolve</span><span class="p">(</span><span class="dl">'</span><span class="s1">这是自定义返回</span><span class="dl">'</span><span class="p">);</span>
 <span class="p">};</span>
 
-<span class="kd">var</span> <span class="nx">fnTest</span> <span class="o">=</span> <span class="nx">util</span><span class="p">.</span><span class="nx">promisify</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">fnTest</span> <span class="o">=</span> <span class="nx">util</span><span class="p">.</span><span class="nf">promisify</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span>
 
-<span class="p">(</span><span class="k">async</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<span class="p">(</span><span class="k">async</span> <span class="nf">function </span><span class="p">()</span> <span class="p">{</span>
 
-  <span class="kd">const</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fnTest</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="nx">x</span> <span class="o">=</span> <span class="k">await</span> <span class="nf">fnTest</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
 
 <span class="p">})();</span>
 
@@ -114,14 +114,14 @@
 
 <p>另外一个叫 callbackfy 的函数正好相反，可以把 promise 轩化为回调函数</p>
 
-<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">async</span> <span class="kd">function</span> <span class="nx">ff</span><span class="p">()</span> <span class="p">{</span>
+<div class="language-ts highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">async</span> <span class="kd">function</span> <span class="nf">ff</span><span class="p">()</span> <span class="p">{</span>
   <span class="k">return</span> <span class="mi">999</span>
 <span class="p">}</span>
 
-<span class="kd">const</span> <span class="nx">fff</span> <span class="o">=</span> <span class="nx">util</span><span class="p">.</span><span class="nx">callbackify</span><span class="p">(</span><span class="nx">ff</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">fff</span> <span class="o">=</span> <span class="nx">util</span><span class="p">.</span><span class="nf">callbackify</span><span class="p">(</span><span class="nx">ff</span><span class="p">);</span>
 
-<span class="nx">fff</span><span class="p">((</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ret</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ret</span><span class="p">)</span>
+<span class="nf">fff</span><span class="p">((</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ret</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">ret</span><span class="p">)</span>
 <span class="p">})</span>
 </code></pre></div></div>
 
@@ -162,7 +162,7 @@
     </main>
     <footer class="container-footer">
       <div class="footer-copyright">
-  <span class="footer-copyright-text float-left">Copyright &copy; 2024. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-left">Copyright &copy; 2025. blog.7hihi.com.</span>
   <span class="footer-copyright-text float-right">
     Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
   </span>

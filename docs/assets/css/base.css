@@ -107,7 +107,7 @@ th {
 }
 
 .header-info-desc {
-  font-size: .9em;
+  font-size: 0.9em;
 }
 
 .header-main-nav {
@@ -251,7 +251,6 @@ body {
     float: none;
   }
 }
-
 @media print {
   /* Header */
   .header-container {
@@ -279,7 +278,6 @@ body {
     white-space: pre-wrap;
   }
 }
-
 .task-list-item {
   list-style: none;
 }
