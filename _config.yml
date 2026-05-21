@@ -34,7 +34,7 @@ language: zh-cn
 # zh-tw: 繁體中文 (Traditional Chinese)
 # ko : 한국어(Korean)
 
-analytics:   # the Google Analytics property ID, e.g. UA-XXXXX-Y
+analytics:  webfunny
 
 destination: ./docs
 
