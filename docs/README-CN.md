@@ -1,102 +1,63 @@
-# Jekyll-Paper
+# blog.7hihi.com
 
-![Jekyll-Paper](./favicon.ico)
+基于 Jekyll 4.2 的个人博客，使用 Jekyll-Paper 主题（纸质书籍排版风格）。
 
-[English](./README.md) | 简体中文
+## 环境要求
 
-Jekyll Paper是一个依照纸质书籍排版设计的Jekyll主题，它旨在于帮助你以最方便最快捷的方式创建自己的博客。Jekyll Paper的设计风格以简洁为主，仿照书本的排版设计，使读者能专注于文章的阅读。
+- Ruby >= 2.6
+- bundler ~> 2.4.22（Ruby 2.6 兼容版）
 
-Jekyll Paper for Github是Jekyll Paper为Github Pages所提供依赖制作的版本，可查看[Jekyll Paper for Github][jekyll-paper-github]项目了解更多。
+> 注：Ruby 2.6 无法安装 bundler 2.6+，需显式指定 2.4.22。rouge 也锁定为 3.30.0。
 
-## 特色
+## 本地运行
 
-- 响应式设计
-- 分页
-- RSS
-- Sitemap
-- 自定义404页面
-- 分类目录索引
-- SASS
-- 可配置菜单栏
-- 国际化
-- SEO优化
-- 数学公式支持 (MathJax)
-- 图表支持 (Mermaid)
-- 评论支持 (Disqus)
-
-## 如何使用
-
-Jekyll Paper的使用方法十分简单，只需要简单的几步即可创建自己的博客：
-
-1. `$ gem install bundler jekyll`
-2. `git clone git@github.com:ghosind/Jekyll-Paper.git`
-3. `$ cd Jekyll-Paper`
-4. `Jekyll-Paper $ bundle install`
-5. `Jekyll-Paper $ bundle exec jekyll serve`
-
-## 发布新的文章
-
-在拥有一个Jekyll博客后，随时可以发布新的文章以及进行修改、删除等操作。发布新的文章只需要进入_posts文件夹，以类似于2018-03-21-xxx.md的命名风格创建一个新的文件即可。文章内容需要使用Markdown进行编写，且在头部需要设置部分信息，具体可参考_posts文件夹中现有文件或参考Wiki中其它文档。
-
-## 自定义导航栏
-
-你可以在`_data/menus.yml`文件中增加或修改导航栏内容，导航栏每个链接配置需要包括名称与URL，具体配置可参照下方。
-
-### 导航栏配置示例
-
-```yml
-- title: "Index"
-  url:   ""
-
-- title: "Github"
-  absoluteUrl: true
-  url: "https://github.com/john_doe"
-
-- title: "About"
-  url:   "about"
+```bash
+gem install bundler -v '2.4.22'
+bundle _2.4.22_ install
+bundle _2.4.22_ exec jekyll serve --host 0.0.0.0 --port 4000
 ```
 
-## 支持的语言列表
+访问 http://localhost:4000
 
-Jekyll Paper目前支持下列语言，欢迎参与提高翻译质量及增加更多语言。请在`_config.yml`文件中设置`language`的值，其默认值为`en`（`language: en`）。
+## 写新文章
 
-- 简体中文
-- 繁體中文
-- English (英语)
-- Español (西班牙语)
-- Français (法语)
-- Deutsche (德语)
-- 日本語 (日语)
-- Português (葡萄牙语)
+在 `_posts/` 下新建文件，命名格式：`YYYY-MM-DD-title.md`
 
-## 预览
+头部示例：
 
-首页：
+```yaml
+---
+layout: post
+title: "文章标题"
+date: 2025-01-01 10:00:00 +0800
+categories: [分类名]
+tags: [标签1, 标签2]
+---
+```
 
-![Index](./assets/images/index-screenshot.png)
+## 统计
 
-文章页：
+当前集成 [Webfunny](https://webmonitor.hang-xin.cn) 前端监控。代码在 `_includes/analytics.html`，每页自动加载。需修改跟踪 ID 时直接编辑该文件。
 
-![Post](./assets/images/post-screenshot.png)
+## 部署
 
-分类目录页：
+构建目标目录为 `./docs`，提交后由 GitHub Pages 自动发布。
 
-![Category](./assets/images/category-screenshot.png)
+```bash
+bundle _2.4.22_ exec jekyll build
+```
 
-移动版首页：
+## 配置速查
 
-![Mobile](./assets/images/mobile-screenshot.png)
+| 配置项 | 说明 |
+|--------|------|
+| `_config.yml` | 站点标题、域名、分页、插件等 |
+| `_data/menus.yml` | 顶部导航栏 |
+| `destination: ./docs` | 构建输出目录 |
+| `paginate: 25` | 首页文章分页数 |
+| `mathjax: true` | 数学公式支持 |
+| `mermaid: true` | 图表支持 |
 
 ## 许可
 
-Jekyll Paper通过MIT许可发布。
-
-## 参与项目
-
-如果您想参与Jekyll Paper的开发，可以在Fork后提交新的PR。
-
-若您有任何建议或者意见，可在[Jekyll Paper Issues][jekyll-paper-issues]发布。
-
-[jekyll-paper]: https://github.com/ghosind/Jekyll-Paper
-[jekyll-paper-github]: https://github.com/ghosind/Jekyll-Paper-Github
-[jekyll-paper-issues]: https://github.com/ghosind/Jekyll-Paper/issues
+MIT

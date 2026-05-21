@@ -6,20 +6,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Begin Jekyll SEO tag v2.7.1 -->
 <title>JS 与 CSS 是否阻塞 DOM 的渲染和解析 | blog.7hihi.com</title>
-<meta name="generator" content="Jekyll v4.4.1" />
+<meta name="generator" content="Jekyll v4.3.4" />
 <meta property="og:title" content="JS 与 CSS 是否阻塞 DOM 的渲染和解析" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="前言" />
 <meta property="og:description" content="前言" />
-<link rel="canonical" href="http://localhost:4000/2025/04/15/js-css" />
-<meta property="og:url" content="http://localhost:4000/2025/04/15/js-css" />
+<link rel="canonical" href="/2025/04/15/js-css" />
+<meta property="og:url" content="/2025/04/15/js-css" />
 <meta property="og:site_name" content="blog.7hihi.com" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2025-04-15T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="JS 与 CSS 是否阻塞 DOM 的渲染和解析" />
 <script type="application/ld+json">
-{"dateModified":"2025-04-15T00:00:00+08:00","datePublished":"2025-04-15T00:00:00+08:00","url":"http://localhost:4000/2025/04/15/js-css","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2025/04/15/js-css"},"@type":"BlogPosting","description":"前言","headline":"JS 与 CSS 是否阻塞 DOM 的渲染和解析","@context":"https://schema.org"}</script>
+{"@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"/2025/04/15/js-css"},"url":"/2025/04/15/js-css","headline":"JS 与 CSS 是否阻塞 DOM 的渲染和解析","description":"前言","dateModified":"2025-04-15T00:00:00+08:00","datePublished":"2025-04-15T00:00:00+08:00","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -34,7 +34,12 @@
 <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
-
+<!-- Webfunny Monitor -->
+<script>
+  window.localStorage.wmUserInfo = JSON.stringify({ userId: 'userId', userTag: 'tag', projectVersion: '1.0.1', env: 'pro' });
+  (function(f){var e=f.sessionStorage;if(e){e.CUSTOMER_WEB_MONITOR_ID="webfunny_20260521_103505_pro";var d=document.createElement("script");d.async=1;d.src="//webmonitor.hang-xin.cn/webfunny/w.js";var g=document.getElementsByTagName("script")[0];g.parentNode.insertBefore(d,g)}})(window);
+</script>
+<!-- End Webfunny Monitor -->
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
 
@@ -96,15 +101,15 @@
 <p>涉及的相关代码也贴一下吧，方便复制调试。有必要说明一下，本地运行<code class="language-plaintext highlighter-rouge">node app.js</code>启动后，浏览器输入<code class="language-plaintext highlighter-rouge">http://127.0.0.1:3000/</code>就能访问到<code class="language-plaintext highlighter-rouge">index.html</code>，而访问<code class="language-plaintext highlighter-rouge">style.css</code>可以输入<code class="language-plaintext highlighter-rouge">http://127.0.0.1:3000/static/style.css?sleep=3000</code>，其中<code class="language-plaintext highlighter-rouge">sleep</code>参数则可自由控制<code class="language-plaintext highlighter-rouge">css</code>文件延时返回，例如想要文件<code class="language-plaintext highlighter-rouge">5s</code>后返回就设置<code class="language-plaintext highlighter-rouge">sleep=5000</code>。</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// app.js</span>
-<span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
-<span class="kd">const</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">)</span>
-<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">express</span><span class="p">()</span>
+<span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">express</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">fs</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">express</span><span class="p">()</span>
 <span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">3000</span>
 
 <span class="kd">const</span> <span class="nx">sleepFun</span> <span class="o">=</span> <span class="nx">time</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="k">new</span> <span class="nc">Promise</span><span class="p">(</span><span class="nx">res</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="nf">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="nf">res</span><span class="p">()</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="p">(</span><span class="nx">res</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="nx">res</span><span class="p">()</span>
     <span class="p">},</span> <span class="nx">time</span><span class="p">)</span>
   <span class="p">})</span>
 <span class="p">}</span>
@@ -112,33 +117,33 @@
 <span class="kd">const</span> <span class="nx">filter</span> <span class="o">=</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="kd">const</span> <span class="p">{</span> <span class="nx">sleep</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">query</span> <span class="o">||</span> <span class="mi">0</span>
 
-  <span class="k">if </span><span class="p">(</span><span class="nx">sleep</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nf">sleepFun</span><span class="p">(</span><span class="nx">sleep</span><span class="p">).</span><span class="nf">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nf">next</span><span class="p">())</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">sleep</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">sleepFun</span><span class="p">(</span><span class="nx">sleep</span><span class="p">).</span><span class="nx">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">next</span><span class="p">())</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="nf">next</span><span class="p">()</span>
+    <span class="nx">next</span><span class="p">()</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nf">use</span><span class="p">(</span><span class="dl">'</span><span class="s1">/static/</span><span class="dl">'</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="nf">static</span><span class="p">(</span><span class="dl">'</span><span class="s1">./static/</span><span class="dl">'</span><span class="p">))</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="dl">'</span><span class="s1">/static/</span><span class="dl">'</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="kd">static</span><span class="p">(</span><span class="dl">'</span><span class="s1">./static/</span><span class="dl">'</span><span class="p">))</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="nf">function </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
-  <span class="nx">fs</span><span class="p">.</span><span class="nf">readFile</span><span class="p">(</span><span class="dl">'</span><span class="s1">./index.html</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">UTF-8</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="k">if </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">return</span>
+<span class="nx">app</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/</span><span class="dl">'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">fs</span><span class="p">.</span><span class="nx">readFile</span><span class="p">(</span><span class="dl">'</span><span class="s1">./index.html</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">UTF-8</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="k">return</span>
 
-    <span class="nx">res</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
   <span class="p">})</span>
 <span class="p">})</span>
 
-<span class="nx">app</span><span class="p">.</span><span class="nf">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`app is running at http://127.0.0.1:</span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">/`</span><span class="p">)</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`app is running at http://127.0.0.1:</span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">/`</span><span class="p">)</span>
 <span class="p">})</span>
 
 <span class="c1">// static/index.js</span>
-<span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
 
 <span class="c1">// static/style.css</span>
 <span class="nx">p</span> <span class="p">{</span>
@@ -153,10 +158,10 @@
 
 <span class="nt">&lt;head&gt;</span>
   <span class="nt">&lt;script&gt;</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
 
-      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
     <span class="p">})</span>
   <span class="nt">&lt;/script&gt;</span>
 <span class="nt">&lt;/head&gt;</span>
@@ -174,10 +179,10 @@
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
   <span class="nt">&lt;script&gt;</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
 
-      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
     <span class="p">})</span>
   <span class="nt">&lt;/script&gt;</span>
   <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"./static/style.css?sleep=3000"</span><span class="nt">&gt;</span>
@@ -206,22 +211,22 @@
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
   <span class="nt">&lt;script&gt;</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
 
-      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
     <span class="p">})</span>
   <span class="nt">&lt;/script&gt;</span>
 <span class="nt">&lt;/head&gt;</span>
 
 <span class="nt">&lt;body&gt;</span>
   <span class="nt">&lt;script&gt;</span>
-    <span class="kd">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+    <span class="kd">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
 
-    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[];</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">100000000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nx">arr</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+      <span class="nx">arr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
     <span class="p">}</span>
   <span class="nt">&lt;/script&gt;</span>
   <span class="nt">&lt;p&gt;</span>hello world<span class="nt">&lt;/p&gt;</span>
@@ -242,10 +247,10 @@
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
   <span class="nt">&lt;script&gt;</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
 
-      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
     <span class="p">})</span>
   <span class="nt">&lt;/script&gt;</span>
   <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"./static/style.css?sleep=3000"</span><span class="nt">&gt;</span>
@@ -330,10 +335,10 @@ console.log(style.color)
 
 <div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
   <span class="nt">&lt;script&gt;</span>
-    <span class="nb">document</span><span class="p">.</span><span class="nf">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nf">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">DOMContentLoaded</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">'</span><span class="s1">p</span><span class="dl">'</span><span class="p">)</span>
 
-      <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
     <span class="p">})</span>
   <span class="nt">&lt;/script&gt;</span>
 <span class="nt">&lt;/head&gt;</span>
@@ -471,7 +476,7 @@ console.log(style.color)
     </main>
     <footer class="container-footer">
       <div class="footer-copyright">
-  <span class="footer-copyright-text float-left">Copyright &copy; 2025. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-left">Copyright &copy; 2026. blog.7hihi.com.</span>
   <span class="footer-copyright-text float-right">
     Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
   </span>
