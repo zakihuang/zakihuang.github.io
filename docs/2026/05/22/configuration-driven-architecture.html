@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>配置驱动架构：让代码从’雕版’变成’活字’ | blog.7hihi.com</title>
+<meta name="generator" content="Jekyll v4.3.4" />
+<meta property="og:title" content="配置驱动架构：让代码从’雕版’变成’活字’" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="你有没有算过，过去一年你写了多少个表单？" />
+<meta property="og:description" content="你有没有算过，过去一年你写了多少个表单？" />
+<link rel="canonical" href="/2026/05/22/configuration-driven-architecture" />
+<meta property="og:url" content="/2026/05/22/configuration-driven-architecture" />
+<meta property="og:site_name" content="blog.7hihi.com" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-05-22T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="配置驱动架构：让代码从’雕版’变成’活字’" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"/2026/05/22/configuration-driven-architecture"},"url":"/2026/05/22/configuration-driven-architecture","headline":"配置驱动架构：让代码从’雕版’变成’活字’","dateModified":"2026-05-22T00:00:00+08:00","datePublished":"2026-05-22T00:00:00+08:00","description":"你有没有算过，过去一年你写了多少个表单？","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<meta name="keywords" content="react,antd,form,movabletype" />
+
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" href="/favicon.ico"/>
+<link rel="alternate" type="application/rss+xml" title="blog.7hihi.com - " href="/feed.xml" />
+<link rel="stylesheet" type="text/css" href="/assets/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/assets/css/highlight.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<!-- Webfunny Monitor -->
+<script>
+  window.localStorage.wmUserInfo = JSON.stringify({ userTag: 'tag', projectVersion: '1.0.1', env: 'pro' });
+  (function(f){var e=f.sessionStorage;if(e){e.CUSTOMER_WEB_MONITOR_ID="webfunny_20260521_103505_pro";var d=document.createElement("script");d.async=1;d.src="//webmonitor.hang-xin.cn/webfunny/w.js";var g=document.getElementsByTagName("script")[0];g.parentNode.insertBefore(d,g)}})(window);
+</script>
+<!-- End Webfunny Monitor -->
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async ></script>
+
+
+<script src="/assets/script/jekyllpaper.js" async ></script>
+<script src="https://unpkg.com/mermaid@8.5.1/dist/mermaid.min.js" onload="javascript:loadMermaid();" async></script>
+
+
+</head>
+<body>
+  <div class="container-wrapper">
+    <header class="container-header">
+      <div class="header-info">
+  <span class="header-info-name">blog.7hihi.com</span>
+  <span class="header-info-desc"></span>
+</div>
+<nav class="header-nav">
+  <ul class="header-main-nav">
+  
+    <li class="header-main-nav-item"><a href="/">首页</a></li>
+  
+    <li class="header-main-nav-item"><a href="/category">分类</a></li>
+  
+    <li class="header-main-nav-item"><a href="/about">关于我</a></li>
+  
+  </ul>
+</nav>
+    </header>
+    <main class="container-main">
+      <article class="container-post">
+  <div class="post-title">
+    <h1>配置驱动架构：让代码从'雕版'变成'活字'</h1>
+  </div>
+  <div class="post-author">
+    <span>zakihuang</span>
+  </div>
+  <div class="post-content">
+    <p>你有没有算过，过去一年你写了多少个表单？</p>
+
+<p>Input + Select + DatePicker，组合、联动、校验、提交。80% 的代码结构几乎一样，但每次都要复制粘贴，改字段名，调布局，测联动。产品经理说”加两个字段”，你默默打开三个文件，修改几十行代码，再测试各种边界情况。</p>
+
+<p><strong>这些重复劳动的本质，不是表单太复杂，而是我们还在用”手工雕版”的方式做开发。</strong></p>
+
+<hr />
+
+<h2 id="一个古老的类比">一个古老的类比</h2>
+
+<p>北宋毕昇发明活字印刷术之前，印一本书需要先把整页内容刻在木板上。想改一个字？整块木板作废，重新雕刻。</p>
+
+<p>今天的表单开发，像极了这种”雕版印刷”：</p>
+
+<ul>
+  <li>字段定义和表单布局写在同一份 JSX 里，耦合在一起</li>
+  <li>每个表单都是一份独立的”雕版”，无法复用</li>
+  <li>需求变更等于”改字重刻”，牵一发而动全身</li>
+</ul>
+
+<p>活字印刷的思路是：把每个字做成独立的字模，排版时按需组合，印完可复用。</p>
+
+<p><strong>配置驱动架构（Configuration-Driven Architecture）做的正是这件事：把”字”（字段）和”版”（表单）分开。</strong></p>
+
+<hr />
+
+<h2 id="什么是配置驱动架构">什么是配置驱动架构</h2>
+
+<p>简单说，就是把原本硬编码在代码里的逻辑，抽出来变成可维护的配置。</p>
+
+<p>不是新概念。Webpack 用配置文件管理构建，Terraform 用 HCL 管理基础设施，很多系统都在这么做。但在前端表单领域，这个概念被贯彻得还不够彻底。</p>
+
+<p>传统的表单开发：</p>
+
+<div class="language-tsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">FormPage</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="p">[</span><span class="nx">name</span><span class="p">,</span> <span class="nx">setName</span><span class="p">]</span> <span class="o">=</span> <span class="nx">useState</span><span class="p">(</span><span class="dl">''</span><span class="p">);</span>
+  <span class="kd">const</span> <span class="p">[</span><span class="kd">type</span><span class="p">,</span> <span class="nx">setType</span><span class="p">]</span> <span class="o">=</span> <span class="nx">useState</span><span class="p">(</span><span class="dl">''</span><span class="p">);</span>
+  <span class="c1">// ... 还有28个</span>
+
+  <span class="k">return</span> <span class="p">(</span>
+    <span class="p">&lt;</span><span class="nc">Form</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nc">Form</span><span class="p">.</span><span class="nc">Item</span> <span class="na">label</span><span class="p">=</span><span class="s">"名称"</span> <span class="na">required</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nc">Input</span> <span class="na">value</span><span class="p">=</span><span class="si">{</span><span class="nx">name</span><span class="si">}</span> <span class="na">onChange</span><span class="p">=</span><span class="si">{</span><span class="nx">setName</span><span class="si">}</span> <span class="p">/&gt;</span>
+      <span class="p">&lt;/</span><span class="nc">Form</span><span class="p">.</span><span class="nc">Item</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="nc">Form</span><span class="p">.</span><span class="nc">Item</span> <span class="na">label</span><span class="p">=</span><span class="s">"类型"</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nc">Select</span> <span class="na">value</span><span class="p">=</span><span class="si">{</span><span class="kd">type</span><span class="si">}</span> <span class="na">onChange</span><span class="p">=</span><span class="si">{</span><span class="nx">setType</span><span class="si">}</span> <span class="na">options</span><span class="p">=</span><span class="si">{</span><span class="nx">options</span><span class="si">}</span> <span class="p">/&gt;</span>
+      <span class="p">&lt;/</span><span class="nc">Form</span><span class="p">.</span><span class="nc">Item</span><span class="p">&gt;</span>
+      <span class="si">{</span><span class="cm">/* 重复30次 */</span><span class="si">}</span>
+    <span class="p">&lt;/</span><span class="nc">Form</span><span class="p">&gt;</span>
+  <span class="p">);</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>配置驱动的思路：字段长什么样、怎么校验、怎么联动，全部用 JSON 描述。代码只负责读配置、渲染界面。</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">fields</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">name</span><span class="p">:</span> <span class="p">{</span> <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">名称</span><span class="dl">'</span><span class="p">,</span> <span class="na">component</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Input</span><span class="dl">'</span><span class="p">,</span> <span class="na">required</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+  <span class="na">type</span><span class="p">:</span> <span class="p">{</span> <span class="na">label</span><span class="p">:</span> <span class="dl">'</span><span class="s1">类型</span><span class="dl">'</span><span class="p">,</span> <span class="na">component</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Select</span><span class="dl">'</span><span class="p">,</span> <span class="nx">options</span> <span class="p">},</span>
+<span class="p">};</span>
+
+<span class="kd">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">sections</span><span class="p">:</span> <span class="p">[{</span> <span class="na">fields</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">name</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">type</span><span class="dl">'</span><span class="p">]</span> <span class="p">}],</span>
+<span class="p">};</span>
+
+<span class="c1">// 渲染引擎读取配置，自动生成表单</span>
+<span class="o">&lt;</span><span class="nx">FormEngine</span> <span class="nx">fields</span><span class="o">=</span><span class="p">{</span><span class="nx">fields</span><span class="p">}</span> <span class="nx">config</span><span class="o">=</span><span class="p">{</span><span class="nx">config</span><span class="p">}</span> <span class="sr">/</span><span class="err">&gt;
+</span></code></pre></div></div>
+
+<p><strong>界面是配置的执行结果，不是代码的堆砌。</strong></p>
+
+<hr />
+
+<h2 id="movabletype一个具体的实现">MovableType：一个具体的实现</h2>
+
+<p>如果你认同这个方向，可以看看 <a href="https://blog.7hihi.com/MovableType">MovableType</a>。它是一个基于 React 和 Ant Design 的纯渲染型配置引擎，命名就来自活字印刷术。</p>
+
+<p>它的设计很克制，核心只有三个概念：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>概念</th>
+      <th>作用</th>
+      <th>类比</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>字段池 (fields)</strong></td>
+      <td>定义所有可用字段的标签、组件、校验规则</td>
+      <td>字模仓库</td>
+    </tr>
+    <tr>
+      <td><strong>表单配置 (config)</strong></td>
+      <td>决定某张表单用哪些字段、如何分组、何种布局</td>
+      <td>排版方案</td>
+    </tr>
+    <tr>
+      <td><strong>组件注册表</strong></td>
+      <td>自定义组件的加载方式，扩展引擎能力</td>
+      <td>特殊字体</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>字段池只管”字模长什么样”，配置只管”这次怎么排版”。同一份字段池可以被 N 个表单复用。需求变更时，改几行 JSON，而不是几十个组件文件。</p>
+
+<hr />
+
+<h2 id="它能做什么">它能做什么</h2>
+
+<p><strong>1. 声明式联动，无需手写 useEffect</strong></p>
+
+<p>配置里写一句 <code class="language-plaintext highlighter-rouge">watch</code>，字段间联动自动处理：</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">city</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">watch</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">province</span><span class="p">:</span> <span class="p">(</span><span class="nx">province</span><span class="p">,</span> <span class="p">{</span> <span class="nx">form</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="nx">form</span><span class="p">.</span><span class="nx">setFieldsValue</span><span class="p">({</span> <span class="na">city</span><span class="p">:</span> <span class="kc">undefined</span> <span class="p">});</span>
+      <span class="k">return</span> <span class="p">{</span> <span class="na">dataLoader</span><span class="p">:</span> <span class="s2">`/api/cities?province=</span><span class="p">${</span><span class="nx">province</span><span class="p">}</span><span class="s2">`</span> <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>省份变化后，城市字段自动清空并加载新选项。不需要 <code class="language-plaintext highlighter-rouge">useEffect</code>，不需要手动处理 <code class="language-plaintext highlighter-rouge">loading</code>。</p>
+
+<p><strong>2. 一套配置，两种模式</strong></p>
+
+<p>通过 <code class="language-plaintext highlighter-rouge">mode="edit"</code> 或 <code class="language-plaintext highlighter-rouge">mode="view"</code> 切换。查看模式下，输入框自动变成纯文本展示，内置组件自动把 <code class="language-plaintext highlighter-rouge">value</code> 翻译成 <code class="language-plaintext highlighter-rouge">label</code>。不用写两份代码。</p>
+
+<p><strong>3. 为 AI 而生</strong></p>
+
+<p>这是最有意思的一点。因为整个表单被抽象为纯粹的结构化数据，大语言模型可以极低成本地生成、理解和修改这些配置。你不是在让 AI 写 React 组件，而是在让 AI 写 JSON——这恰恰是它最擅长的事。</p>
+
+<hr />
+
+<h2 id="效果对比">效果对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>传统开发</th>
+      <th>配置驱动</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>30字段表单代码量</td>
+      <td>~1000行</td>
+      <td>~230行（配置+引擎）</td>
+    </tr>
+    <tr>
+      <td>新增一个字段</td>
+      <td>改多个 JSX 文件</td>
+      <td>加一行配置</td>
+    </tr>
+    <tr>
+      <td>修改验证规则</td>
+      <td>找到组件，改代码</td>
+      <td>改配置里的 rules</td>
+    </tr>
+    <tr>
+      <td>查看模式</td>
+      <td>重写一份展示组件</td>
+      <td>切换 mode</td>
+    </tr>
+    <tr>
+      <td>AI 生成可行性</td>
+      <td>低（需理解组件上下文）</td>
+      <td>高（纯结构化数据）</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="背后的认知">背后的认知</h2>
+
+<p>配置驱动架构不是让你写更多 JSON，而是逼你做一件事：<strong>把数据和表现分开。</strong></p>
+
+<p>字段池是”数据”，表单配置是”排版方案”。两者解耦后，表单逻辑才变得高度结构化、可序列化、可复用。</p>
+
+<p>这和 Form-Driven Architecture 是相通的：让专门的工具做专门的事。Form 管理表单状态，配置引擎管理表单结构，开发者只处理业务逻辑。</p>
+
+<hr />
+
+<h2 id="什么时候用">什么时候用</h2>
+
+<p>✅ 字段超过10个、多表单复用相同字段、需求变更频繁、需要AI辅助生成表单</p>
+
+<p>❌ 2-3个字段的一次性表单（不值得引入引擎）</p>
+
+<hr />
+
+<h2 id="总结">总结</h2>
+
+<p>从手工雕版到活字印刷，本质上是一次”分离关注”的胜利：字是字，版是版，各管各的。</p>
+
+<p>配置驱动架构在做同样的事：字段定义一次，表单配置百次复用。需求变更时，改配置而不是改代码。</p>
+
+<p>如果你想深入了解这个思路的具体实现，包括声明式联动的完整语法、自定义组件的扩展方式、以及如何让 AI 帮你生成配置，可以去看 <a href="https://blog.7hihi.com/MovableType">MovableType 的完整文档</a>。</p>
+
+<blockquote>
+  <p>技术的选择，往往取决于你愿不愿意承认一件事：很多重复劳动，本来就不该存在。</p>
+</blockquote>
+
+  </div>
+  <div class="post-info">
+    <div class="post-date">
+      发表于2026-05-22.
+    </div>
+    <div class="post-categories">
+      <span>分类：</span>
+      
+      <a href="/category/react" class="post-category">react</a>
+      
+      <a href="/category/architecture" class="post-category">architecture</a>
+      
+    </div>
+    <div class="post-tags">
+      <span>标签：</span>
+      
+      <a href="/tag/react" class="post-tag">react</a>
+      
+      <a href="/tag/antd" class="post-tag">antd</a>
+      
+      <a href="/tag/form" class="post-tag">form</a>
+      
+      <a href="/tag/movabletype" class="post-tag">movabletype</a>
+      
+    </div>
+    <div class="post-tools">
+      
+      <div>
+        <span>后一篇：</span><a href="/2026/05/22/form-driven-architecture">Form-Driven Architecture：表单驱动架构</a>
+      </div>
+      
+      
+      <div>
+        <span>前一篇：</span><a href="/2025/04/15/js-css">JS 与 CSS 是否阻塞 DOM 的渲染和解析</a>
+      </div>
+      
+    </div>
+    
+  </div>
+</article>
+    </main>
+    <footer class="container-footer">
+      <div class="footer-copyright">
+  <span class="footer-copyright-text float-left">Copyright &copy; 2026. blog.7hihi.com.</span>
+  <span class="footer-copyright-text float-right">
+    Powered by <a href="https://jekyllrb.com/">Jekyll</a>, themed by <a href="https://github.com/ghosind/Jekyll-Paper">Jekyll-Paper</a>.
+  </span>
+</div>
+    </footer>
+  </div>
+</body>
+</html>
