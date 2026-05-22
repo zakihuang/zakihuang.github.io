@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Form-Driven Architecture：表单即状态管理器"
+title: "Form-Driven Architecture：表单驱动架构"
 date: 2026-05-22
 categories: [react, architecture]
 tags: [react, antd, form]
