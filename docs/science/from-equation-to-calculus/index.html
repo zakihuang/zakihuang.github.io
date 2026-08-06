@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>从 x+9=0 到微积分</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent2: #a78bfa;
+    --accent3: #f472b6;
+    --border: #334155;
+    --code-bg: #1e293b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.9;
+    font-size: 16px;
+  }
+  .container { max-width: 680px; margin: 0 auto; padding: 60px 20px 120px; }
+  h1 {
+    font-size: 1.6rem; text-align: center; margin-bottom: 6px;
+    font-weight: 800; letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 48px; font-size: 0.95rem; }
+  h2 {
+    font-size: 1.2rem; margin: 52px 0 18px; padding-left: 12px;
+    border-left: 4px solid var(--accent); font-weight: 700; color: var(--accent);
+  }
+  h3 { font-size: 1.05rem; margin: 32px 0 10px; font-weight: 700; color: var(--accent2); }
+  p { margin-bottom: 14px; }
+  strong { color: #fff; }
+  em { color: var(--accent3); font-style: normal; font-weight: 600; }
+  code {
+    background: var(--code-bg); padding: 1px 6px; border-radius: 3px;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace; font-size: 0.9em;
+    color: var(--accent3);
+  }
+  blockquote {
+    margin: 20px 0; padding: 12px 20px;
+    background: rgba(167,139,250,0.08); border-left: 4px solid var(--accent2); border-right: 4px solid var(--accent2);
+    color: var(--accent2); font-size: 0.95rem; border-radius: 6px;
+  }
+  blockquote p { margin-bottom: 6px; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 20px 24px; margin: 20px 0;
+  }
+  .card-title {
+    font-weight: 700; font-size: 0.95rem; margin-bottom: 10px; color: var(--accent);
+  }
+  .canvas-wrap { display: flex; justify-content: center; margin: 20px 0; }
+  canvas { border-radius: 6px; display: block; max-width: 100%; border: 1px solid var(--border); }
+  .caption { text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
+  .big-idea {
+    background: linear-gradient(135deg, rgba(56,189,248,0.12), rgba(167,139,250,0.12));
+    border: 1px solid var(--accent); border-radius: 8px;
+    padding: 16px 24px; margin: 28px 0; text-align: center;
+  }
+  .big-idea .label { font-size: 0.8rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+  .big-idea .content { font-size: 1.05rem; font-weight: 700; margin-top: 6px; color: var(--text); }
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+  th { background: var(--card-bg); color: var(--accent); font-weight: 600; }
+  td { background: rgba(30,41,59,0.5); }
+  .chain {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: 6px; margin: 20px 0; font-size: 0.85rem;
+  }
+  .chain-item {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 14px; white-space: nowrap;
+  }
+  .chain-arrow { color: var(--accent); font-size: 1.1rem; font-weight: 700; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 5px; }
+  .final {
+    background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(244,114,182,0.15));
+    border-radius: 12px; padding: 32px; text-align: center; margin-top: 52px;
+  }
+  .final h2 { border: none; padding: 0; color: var(--accent3); }
+  /* animation canvas */
+  .anim-wrap { display: flex; justify-content: center; margin: 24px 0; }
+  .btn-row { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+  .btn {
+    padding: 6px 18px; border: 1px solid var(--accent); border-radius: 4px;
+    background: transparent; color: var(--accent); cursor: pointer; font-size: 0.85rem;
+    font-family: inherit; transition: all .2s;
+  }
+  .btn:hover { background: var(--accent); color: #0f172a; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn:disabled:hover { background: transparent; color: var(--accent); }
+  .kbd {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 3px;
+    padding: 1px 5px; font-size: 0.8rem; font-family: inherit; color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>从 x+9=0 到微积分</h1>
+<p class="subtitle">写给高二的你 —— 一条思维链，把散装的知识点串成一座大厦</p>
+
+<!-- ===== 序 ===== -->
+<h2>一、一道"无聊"的题</h2>
+
+<p><em>x + 9 = 0</em> 是一元一次方程吗？</p>
+<p>你会说：这也太简单了吧，<code>x = -9</code>，秒了。</p>
+<p>但如果我接着问：为什么要学这个？它和坐标系有什么关系？和微积分有什么关系？——大多数人就卡住了。</p>
+<p>这篇文章，就从这道题出发，顺着一条思维链，一步步推到微积分基本定理。你会发现：数学不是一堆散装的知识点，而是一座环环相扣的大厦。</p>
+
+<!-- ===== 第一站 ===== -->
+<h2>二、方程的本质——"挑拣"</h2>
+
+<div class="card">
+  <div class="card-title">x + 9 = 0 在干什么？</div>
+  <p>你有一个未知数 <em>x</em>，但它被 <em>+9</em> 这个"包裹"盖住了。你的任务是：<strong>把 x 从包裹中剥离出来</strong>。</p>
+  <p>怎么剥离？利用<strong>等式的性质</strong>：等式两边同时减 9 → <code>x = -9</code>。</p>
+  <p>这个操作叫<strong>移项</strong>，本质是：<strong>在保持等式成立的前提下，一步步把目标从背景中分离出来</strong>。</p>
+</div>
+
+<blockquote>
+  <p>核心思想：挑拣。把未知量从已知量的包围中孤立出来，去芜存菁。</p>
+</blockquote>
+
+<p>这个思想不只属于数学，生活中处处在"挑拣"：</p>
+<ul>
+  <li>从一筐苹果中挑出最红的那一个 —— 你排除了青的、小的、有虫眼的，最终把目标孤立出来</li>
+  <li>从一群人中找到真正善良的人 —— 排除那些表面热情但背后算计的，排除那些沉默但冷漠的，一层层剥离伪装，剩下的才是本质</li>
+  <li>考试做选择题 —— 排除明显错误的选项，在剩下的里面挑正确答案</li>
+  <li>整理书包 —— 把不用的书拿出来，只留下今天需要的</li>
+</ul>
+
+<p><strong>万物皆可"挑拣"。</strong></p>
+
+<!-- ===== 第二站 ===== -->
+<h2>三、从数到点 —— 笛卡尔的桥梁</h2>
+
+<div class="card">
+  <div class="card-title">x = -9 不只是一个数</div>
+  <p>在数轴上，<code>x = -9</code> 就是一个<strong>点</strong>。</p>
+  <p>如果有两个未知数呢？比如 <code>y = 2x + 1</code> —— 它的解不是单个值，而是无数个 <code>(x, y)</code> 数对：</p>
+  <p>(0,1), (1,3), (2,5), (3,7) …</p>
+  <p>每个数对在坐标系里就是一个<strong>点</strong>，这些点连起来就是一条<strong>线</strong>。</p>
+</div>
+
+<div class="canvas-wrap">
+  <canvas id="c1" width="520" height="340"></canvas>
+</div>
+<p class="caption">▲ y = 2x + 1 —— 无数个 (x, y) 数对连成一条直线</p>
+
+<div class="big-idea">
+  <div class="label">笛卡尔的革命</div>
+  <div class="content">方程 ⇄ 图形：代数可以"看见"，几何可以"计算"</div>
+</div>
+
+<p>于是有了这条链：</p>
+<div class="chain">
+  <span class="chain-item">数对 (x,y)</span>
+  <span class="chain-arrow">→</span>
+  <span class="chain-item">点</span>
+  <span class="chain-arrow">→</span>
+  <span class="chain-item">点动成线</span>
+  <span class="chain-arrow">→</span>
+  <span class="chain-item">线动成面</span>
+  <span class="chain-arrow">→</span>
+  <span class="chain-item">面动成体</span>
+</div>
+<p>几何与代数，从此统一。</p>
+
+<!-- ===== 第三站 ===== -->
+<h2>四、导数 —— 曲线的"变化率切片"</h2>
+
+<h3>问题：曲线每一点有多陡？</h3>
+
+<div class="card">
+  <div class="card-title">切片的思路又来了</div>
+  <p>把曲线放大、再放大 —— 每个极小的局部都近似一条<strong>小直线</strong>。</p>
+  <p>这条小直线的斜率就是该点的<strong>导数</strong>：<code>dy / dx</code></p>
+  <p>横轴变化 dx，纵轴变化 dy，两者之比 = 斜率 = 变化率。</p>
+</div>
+
+<div class="canvas-wrap">
+  <canvas id="c2" width="520" height="340"></canvas>
+</div>
+<p class="caption">▲ 曲线放大后，局部近似直线，斜率 = dy/dx</p>
+
+<p>把曲线每个点的斜率都算出来，连成一条新曲线 —— 这就是<strong>导函数</strong>。</p>
+
+<div class="canvas-wrap">
+  <canvas id="c3" width="520" height="340"></canvas>
+</div>
+<p class="caption">▲ F(x)=x²（蓝）与它的导函数 f(x)=2x（红）—— 图像变了，但信息等价</p>
+
+<blockquote>
+  <p>导数 = 切片化 + 除法思想：把曲线切成无数小段，每段算 dy ÷ dx，关注的是"变化快慢"。</p>
+</blockquote>
+
+<!-- ===== 第四站 ===== -->
+<h2>五、积分 —— "面积切片"与反推</h2>
+
+<h3>问题一：曲线下的面积怎么算？</h3>
+
+<div class="card">
+  <div class="card-title">同样的切片，不同的问题</div>
+  <p>把曲线下的区域切成无数个极窄的<strong>竖条</strong>：</p>
+  <p>每个竖条近似一个矩形 → 宽 = <code>dx</code>，高 = <code>y</code>（曲线在该点的高度）</p>
+  <p>矩形面积 = <code>y · dx</code></p>
+  <p>把所有竖条面积累加起来 → 总面积 = <code>∫ y dx</code></p>
+</div>
+
+<div class="canvas-wrap">
+  <canvas id="c4" width="520" height="340"></canvas>
+</div>
+<p class="caption">▲ 曲线下切成无数竖条，每个面积 y·dx，累加即积分</p>
+
+<p>注意：这里的高是 <strong>y</strong>（曲线的高度值），不是 dy（变化量）。y 是位置，dy 是变化，两者不同。很多人在这里搞混了。</p>
+
+<h3>问题二：已知斜率，怎么反推原曲线？</h3>
+
+<div class="card">
+  <div class="card-title">换个角度看同一件事</div>
+  <p>想象你在开车，你知道每个时刻的<strong>速度 v(t)</strong>，想知道走了多远。</p>
+  <p>把时间切成无数小段 dt，每段走的距离 = <code>v(t) · dt</code></p>
+  <p>总距离 = 所有小段距离之和 = <code>∫ v(t) dt</code></p>
+  <p>而速度本身就是位置的导数：<code>v = ds/dt</code>。从 v 积分回 s，这就是<strong>导数的逆运算</strong>。</p>
+</div>
+
+<div class="canvas-wrap">
+  <canvas id="c5" width="520" height="340"></canvas>
+</div>
+<p class="caption">▲ 在导函数 f(x)=2x（红）上切竖条累加面积 → 恢复出原函数 F(x)=x²（蓝）</p>
+
+<!-- ===== 关键澄清 ===== -->
+<h2>六、两种积分，别搞混了</h2>
+
+<p>前面一直用"积分"这个词，但它其实有两个意思：</p>
+
+<div class="table-wrap">
+<table>
+  <tr><th></th><th>定积分</th><th>不定积分</th></tr>
+  <tr><td>符号</td><td>∫<sub>a</sub><sup>b</sup> f(x) dx</td><td>∫ f(x) dx</td></tr>
+  <tr><td>结果</td><td>一个<strong>数值</strong>（面积）</td><td>一个<strong>函数</strong>（原函数 + C）</td></tr>
+  <tr><td>是什么</td><td>面积 = F(b) − F(a)</td><td>F(x) + C（反求导的结果）</td></tr>
+  <tr><td>有没有上下限</td><td>有（a 到 b）</td><td>没有</td></tr>
+  <tr><td>切竖条？</td><td>✅ 是，y·dx 累加</td><td>❌ 不是，这是反求导</td></tr>
+</table>
+</div>
+
+<p>不定积分就是<strong>反求导</strong>：给你导函数，找出原函数。跟切竖条、算面积完全没有关系。</p>
+<p>为什么叫"不定"？因为常数 C 不确定 —— <code>x²</code>、<code>x²+5</code>、<code>x²-100</code> 的导数都是 <code>2x</code>，反推回去不知道常数是多少。考试时 C 必须写，不写扣分。</p>
+
+<!-- ===== 互逆动画 ===== -->
+<h2>七、互逆关系（动画演示）</h2>
+
+<p>整个微积分里，<strong>只有一组互逆关系</strong>：</p>
+
+<div class="big-idea">
+  <div class="label">互逆关系</div>
+  <div class="content">求导 ↔ 不定积分（反求导）</div>
+</div>
+
+<div class="anim-wrap">
+  <canvas id="anim1" width="700" height="440"></canvas>
+</div>
+<div class="btn-row">
+  <button class="btn" id="btnDeriv" title="从原函数求导">求导：切线滑动，斜率掉落成导函数</button>
+  <button class="btn" id="btnInteg" title="从导函数反推原函数">不定积分：切片累加，串回原函数</button>
+  <button class="btn" id="btnReset1">重置</button>
+</div>
+<p class="caption">▲ <strong>互逆</strong>：上方原函数 F(x)=x²，下方导函数 f(x)=2x。<br>求导：切线在 F 上滑动，每点斜率 dy/dx 掉落下去，串成导函数。<br>不定积分：f 上切竖条，注意 <strong>f(x)·dx = dy，只是原函数的一小段变化量</strong>，不是原函数值本身。<br>但把每一段 dy <strong>累加</strong>起来，就能串回原函数（动画假设起点为原点，即 C=0）。<br>不累加就垮台，累加了才能串回去 —— 这就是不定积分 + 初始条件的威力。</p>
+
+<!-- ===== 等价动画 ===== -->
+<h2>八、等价关系（动画演示）</h2>
+
+<p>微积分基本定理说的是一个<strong>等价关系</strong>，不是互逆关系。注意：这里只有一个面积——是 <strong>f(x) 这条曲线下面的面积</strong>，不是 F(x) 下面的。</p>
+
+<div class="big-idea">
+  <div class="label">等价关系（微积分基本定理）</div>
+  <div class="content">在 f(x) 上切竖条累加的面积 = 原函数端点之差<br>∫<sub>a</sub><sup>b</sup> f(x) dx = F(b) − F(a)<br><span style="font-size:0.85rem;font-weight:400;color:var(--text-muted);">左边：在导函数曲线上切竖条 ∑ f(x)·dx<br>右边：在原函数上取端点值相减<br>两者结果相等，所以算面积不用真的切竖条，找到 F 就行</span></div>
+</div>
+
+<div class="anim-wrap">
+  <canvas id="anim2" width="700" height="440"></canvas>
+</div>
+<div class="btn-row">
+  <button class="btn" id="btnArea">算面积（定积分）</button>
+  <button class="btn" id="btnEndpoint">原函数端点之差</button>
+  <button class="btn" id="btnReset2">重置</button>
+</div>
+<p class="caption">▲ <strong>等价</strong>：在 f(x)=2x（导函数）下切竖条 ∑ 2x·dx，面积 = 9；而原函数 F(x)=x² 端点相减 F(3)−F(0)=9。算的是 f 曲线下的面积，却能用 F 端点差直接得到——两件事结果一样，是一座桥。</p>
+
+<!-- ===== 对比总结 ===== -->
+<h2>九、两种关系，一张表讲清楚</h2>
+
+<div class="table-wrap">
+<table>
+  <tr><th></th><th>互逆关系</th><th>等价关系</th></tr>
+  <tr><td>涉及什么</td><td>求导 ↔ 不定积分</td><td>定积分 = 原函数端点差</td></tr>
+  <tr><td>本质</td><td>操作的逆（除法 ↔ 乘法累加）</td><td>结果的相等（面积 = 差值）</td></tr>
+  <tr><td>输入/输出</td><td>函数 → 函数</td><td>数值 = 数值</td></tr>
+  <tr><td>能来回吗？</td><td>✅ F → f → F</td><td>❌ 不能把面积变回导数</td></tr>
+  <tr><td>例子</td><td>x² → 2x → x² + C</td><td>∫₀³ 2x dx = 3² − 0² = 9</td></tr>
+</table>
+</div>
+
+<p>所以正确的图景是：</p>
+<ul>
+  <li><strong>一组互逆</strong>：求导 ↔ 不定积分（反求导），函数层面的操作互逆</li>
+  <li><strong>一个定理</strong>：面积 = 原函数差值，把互逆的两个操作和面积计算挂上了钩</li>
+</ul>
+
+<!-- ===== 全景图 ===== -->
+<h2>十、全景图：思维链完整回顾</h2>
+
+<div class="chain" style="flex-direction: column; align-items: stretch; gap: 4px;">
+  <div class="chain-item" style="text-align:center;">① x+9=0 → 移项 → 挑拣：把未知量从已知量中分离出来</div>
+  <div style="text-align:center;color:var(--accent);">↓</div>
+  <div class="chain-item" style="text-align:center;">② 解(x,y) → 点 → 坐标系 → 代数与几何统一</div>
+  <div style="text-align:center;color:var(--accent);">↓</div>
+  <div class="chain-item" style="text-align:center;">③ 切片化：曲线放大 → 局部直线 → dy/dx = 导数（变化率）</div>
+  <div style="text-align:center;color:var(--accent);">↓</div>
+  <div class="chain-item" style="text-align:center;">④ 切片化：区域切竖条 → y·dx = 面积片段 → 累加 = 定积分（算面积）</div>
+  <div style="text-align:center;color:var(--accent);">↓</div>
+  <div class="chain-item" style="text-align:center;">⑤ 互逆：求导（dy/dx）↔ 不定积分（反求导），乘除互逆</div>
+  <div style="text-align:center;color:var(--accent);">↓</div>
+  <div class="chain-item" style="text-align:center;">⑥ 等价：微积分基本定理 —— 定积分（面积）= 原函数端点之差</div>
+</div>
+
+<!-- ===== 结尾 ===== -->
+<div class="final">
+  <h2>写在最后</h2>
+  <p>
+    从 <em>x + 9 = 0</em> 到 <em>微积分基本定理</em>，<br>
+    贯穿始终的只有两个思想：
+  </p>
+  <p style="font-size:1.1rem;font-weight:700;margin:14px 0;">
+    挑拣（分离目标） + 切片（无穷细分）
+  </p>
+  <p>数学不是背公式，是<strong>追问每个概念从哪来、到哪去</strong>。</p>
+  <p>当你开始问"这个和那个有什么关系"的时候，<br>数学就从负担变成了游戏。</p>
+  <p style="margin-top:20px;color:var(--text-muted);font-size:0.9rem;">
+    大道至简，万物归一。
+  </p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ============ Shared helpers (dark theme) ============
+var C_BG = '#0f172a';
+var C_AXES = '#475569';
+var C_GRID = '#1e293b';
+var C_TEXT = '#e2e8f0';
+var C_MUTED = '#94a3b8';
+var C_BLUE = '#38bdf8';
+var C_RED = '#f472b6';
+var C_GREEN = '#a78bfa';
+
+function drawAxes(ctx, w, h, ox, oy, xL, yL) {
+  ctx.fillStyle = C_BG;
+  ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = C_AXES; ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(25, oy); ctx.lineTo(w-15, oy);
+  ctx.moveTo(ox, 12); ctx.lineTo(ox, h-25);
+  ctx.stroke();
+  ctx.fillStyle = C_AXES;
+  ctx.beginPath(); ctx.moveTo(w-15,oy); ctx.lineTo(w-23,oy-4); ctx.lineTo(w-23,oy+4); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(ox,12); ctx.lineTo(ox-4,20); ctx.lineTo(ox+4,20); ctx.fill();
+  ctx.fillStyle = C_MUTED; ctx.font = '11px sans-serif';
+  ctx.fillText(xL||'x', w-15, oy-6);
+  ctx.fillText(yL||'y', ox+6, 18);
+}
+
+function drawGrid(ctx, w, h, ox, oy, sc) {
+  ctx.strokeStyle = C_GRID; ctx.lineWidth = 0.5;
+  var xMin = Math.ceil((25-ox)/sc), xMax = Math.floor((w-15-ox)/sc);
+  var yMin = Math.ceil((12-oy)/sc), yMax = Math.floor((h-25-oy)/sc);
+  for (var i = xMin; i <= xMax; i++) {
+    ctx.beginPath(); ctx.moveTo(ox+i*sc, 12); ctx.lineTo(ox+i*sc, h-25); ctx.stroke();
+  }
+  for (var j = yMin; j <= yMax; j++) {
+    ctx.beginPath(); ctx.moveTo(25, oy+j*sc); ctx.lineTo(w-15, oy+j*sc); ctx.stroke();
+  }
+}
+
+// ============ Canvas 1: y = 2x + 1 ============
+(function(){
+  var c = document.getElementById('c1');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height, ox = w/2, oy = h/2, sc = 28;
+  drawAxes(ctx,w,h,ox,oy,'x','y');
+  drawGrid(ctx,w,h,ox,oy,sc);
+  ctx.strokeStyle = C_BLUE; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  for (var x = -9; x <= 9; x += 0.1) {
+    var sx = ox + x*sc, sy = oy - (2*x+1)*sc;
+    if (sy<5||sy>h-5) continue;
+    x===-9 ? ctx.moveTo(sx,sy) : ctx.lineTo(sx,sy);
+  }
+  ctx.stroke();
+  var pts = [[-2,-3],[-1,-1],[0,1],[1,3],[2,5]];
+  ctx.fillStyle = C_RED;
+  pts.forEach(function(p){
+    ctx.beginPath();
+    ctx.arc(ox+p[0]*sc, oy-p[1]*sc, 4, 0, Math.PI*2);
+    ctx.fill();
+  });
+  ctx.fillStyle = C_TEXT; ctx.font = '12px sans-serif';
+  ctx.fillText('(0,1)', ox+6, oy-sc-6);
+  ctx.fillText('(1,3)', ox+sc+6, oy-3*sc-6);
+  ctx.fillText('(2,5)', ox+2*sc+6, oy-5*sc-6);
+})();
+
+// ============ Canvas 2: curve + tangent + zoom ============
+(function(){
+  var c = document.getElementById('c2');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height, ox = w/2, oy = h/2+40, sc = 30;
+  function F(x) { return 0.04*Math.pow(x+2,3)-0.3*x+2; }
+  function dF(x) { return 0.12*Math.pow(x+2,2)-0.3; }
+  drawAxes(ctx,w,h,ox,oy,'x','y');
+  drawGrid(ctx,w,h,ox,oy,sc);
+  ctx.strokeStyle = C_BLUE; ctx.lineWidth = 2.5;
+  ctx.beginPath(); var first=true;
+  for (var x = -8; x <= 8; x += 0.05) {
+    var sx=ox+x*sc, sy=oy-F(x)*sc;
+    if (sy<5||sy>h-5){first=true;continue;}
+    first?(ctx.moveTo(sx,sy),first=false):ctx.lineTo(sx,sy);
+  }
+  ctx.stroke();
+  var x0=3, y0=F(x0), m=dF(x0), sx0=ox+x0*sc, sy0=oy-y0*sc;
+  ctx.strokeStyle = C_RED; ctx.lineWidth = 2; ctx.setLineDash([6,3]);
+  ctx.beginPath();
+  ctx.moveTo(ox-2*sc, oy-(y0+m*(-2-x0))*sc);
+  ctx.lineTo(ox+8*sc, oy-(y0+m*(8-x0))*sc);
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = C_RED;
+  ctx.beginPath(); ctx.arc(sx0,sy0,5,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = C_RED; ctx.font = '12px sans-serif';
+  ctx.fillText('dy/dx ≈ '+m.toFixed(2), sx0+10, sy0-10);
+  // zoom inset box
+  ctx.strokeStyle = C_AXES; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.strokeRect(sx0-18, sy0-18, 36, 36); ctx.setLineDash([]);
+  // zoom circle
+  var zx=w-90, zy=55, zr=38;
+  ctx.strokeStyle=C_AXES; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.arc(zx,zy,zr,0,Math.PI*2); ctx.stroke();
+  // zoomed curve
+  ctx.strokeStyle=C_BLUE; ctx.lineWidth=2;
+  ctx.beginPath();
+  for (var t=-0.25; t<=0.25; t+=0.01){
+    var zsx=zx+t*140, zsy=zy-(F(x0)+m*t-F(x0))*140;
+    t===-0.25?ctx.moveTo(zsx,zsy):ctx.lineTo(zsx,zsy);
+  }
+  ctx.stroke();
+  ctx.strokeStyle=C_RED; ctx.lineWidth=1.5; ctx.setLineDash([4,3]);
+  ctx.beginPath();
+  ctx.moveTo(zx-0.25*140, zy-m*(-0.25)*140);
+  ctx.lineTo(zx+0.25*140, zy-m*0.25*140);
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle=C_MUTED; ctx.font='11px sans-serif';
+  ctx.fillText('放大后近似直线', zx-38, zy+zr+16);
+})();
+
+// ============ Canvas 3: F(x)=x² and f(x)=2x ============
+(function(){
+  var c = document.getElementById('c3');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height, ox = w/2, oy = h/2+50, sc = 20;
+  drawAxes(ctx,w,h,ox,oy,'x','y');
+  drawGrid(ctx,w,h,ox,oy,sc);
+  ctx.strokeStyle = C_BLUE; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  for (var x = -7; x <= 7; x += 0.05) {
+    var sx=ox+x*sc, sy=oy-x*x*sc;
+    if (sy<5||sy>h-5) continue;
+    x===-7?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+  }
+  ctx.stroke();
+  ctx.strokeStyle = C_RED; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(ox-7*sc, oy+14*sc);
+  ctx.lineTo(ox+7*sc, oy-14*sc);
+  ctx.stroke();
+  // tangents on F
+  for (var xv = -4; xv <= 4; xv += 2) {
+    var m = 2*xv, yv = xv*xv;
+    ctx.strokeStyle = C_GREEN; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+    ctx.beginPath();
+    ctx.moveTo(ox+xv*sc-25, oy-yv*sc-m*(-25/sc)*sc);
+    ctx.lineTo(ox+xv*sc+25, oy-yv*sc-m*(25/sc)*sc);
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  ctx.fillStyle = C_BLUE; ctx.font = '13px sans-serif';
+  ctx.fillText('F(x)=x² 原函数', ox-7*sc+4, oy-49*sc+18);
+  ctx.fillStyle = C_RED;
+  ctx.fillText('f(x)=2x 导函数', ox+3*sc+4, oy-6*sc-6);
+})();
+
+// ============ Canvas 4: Area under curve ============
+(function(){
+  var c = document.getElementById('c4');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height, ox = 55, oy = h-55, sc = 34;
+  function f(x) { return 0.06*x*x + 0.3*x + 1.5; }
+  drawAxes(ctx,w,h,ox,oy,'x','y');
+  drawGrid(ctx,w,h,ox,oy,sc);
+  ctx.strokeStyle = C_BLUE; ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  for (var x = 0; x <= 8; x += 0.05) {
+    var sx=ox+x*sc, sy=oy-f(x)*sc;
+    x===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+  }
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(56,189,248,0.1)';
+  ctx.beginPath(); ctx.moveTo(ox,oy);
+  for (var x=0;x<=8;x+=0.1) ctx.lineTo(ox+x*sc, oy-f(x)*sc);
+  ctx.lineTo(ox+8*sc, oy); ctx.closePath(); ctx.fill();
+  var n=16, dx=8/n;
+  for (var i=0;i<n;i++) {
+    var xm=i*dx+dx/2, hgt=f(xm);
+    var rx=ox+i*dx*sc, rw=dx*sc, rh=hgt*sc;
+    ctx.strokeStyle='rgba(244,114,182,0.35)'; ctx.lineWidth=0.7;
+    ctx.strokeRect(rx, oy-rh, rw, rh);
+    ctx.fillStyle='rgba(244,114,182,0.06)';
+    ctx.fillRect(rx, oy-rh, rw, rh);
+  }
+  ctx.fillStyle=C_RED; ctx.font='11px sans-serif';
+  ctx.fillText('y·dx', ox+55, oy-50);
+  ctx.fillStyle=C_TEXT; ctx.font='italic 13px sans-serif';
+  ctx.fillText('∫ f(x) dx = 所有竖条面积之和', ox+10, 32);
+})();
+
+// ============ Canvas 5: area under f(x)=2x builds x² ============
+(function(){
+  var c = document.getElementById('c5');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height, ox = 60, oy = h-70, sc = 27;
+  drawAxes(ctx,w,h,ox,oy,'x','y');
+  drawGrid(ctx,w,h,ox,oy,sc);
+  ctx.strokeStyle = C_RED; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+7*sc, oy-14*sc); ctx.stroke();
+  ctx.strokeStyle = C_BLUE; ctx.lineWidth = 2.5; ctx.setLineDash([7,4]);
+  ctx.beginPath();
+  for (var x=0;x<=7;x+=0.05){
+    var sx=ox+x*sc, sy=oy-x*x*sc;
+    x===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(244,114,182,0.12)';
+  ctx.beginPath(); ctx.moveTo(ox,oy);
+  for (var x=0;x<=4;x+=0.05) ctx.lineTo(ox+x*sc, oy-2*x*sc);
+  ctx.lineTo(ox+4*sc, oy); ctx.closePath(); ctx.fill();
+  var ax=ox+4*sc, ay=oy-16*sc;
+  ctx.fillStyle=C_RED; ctx.font='12px sans-serif';
+  ctx.fillText('面积 = x²', ax+6, ay-8);
+  ctx.strokeStyle=C_AXES; ctx.lineWidth=0.7; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(ax,oy); ctx.lineTo(ax,ay); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=C_BLUE;
+  ctx.beginPath(); ctx.arc(ax,ay,5,0,Math.PI*2); ctx.fill();
+  ctx.fillText('F(4)=16', ax+6, ay+4);
+  ctx.fillStyle=C_RED; ctx.font='13px sans-serif';
+  ctx.fillText('f(x)=2x (导函数/速度)', ox+3*sc, oy-6*sc-12);
+  ctx.fillStyle=C_BLUE;
+  ctx.fillText('F(x)=x² (原函数/距离)', ox+5*sc, oy-25*sc+4);
+})();
+
+// ============ Animation 1: Inverse (single coord, top=F bottom=f, dots drop) ============
+(function(){
+  var c = document.getElementById('anim1');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height;
+
+  // Single shared coordinate system — same x,y for both curves
+  var ox = 60;         // x-origin
+  var oy = h - 50;     // y-origin (x-axis at bottom)
+  var xMax = 7;
+  var xStep = 28;      // pixels per x unit
+  var yScale = 5.5;    // pixels per y unit (shared — bigger = taller curves)
+
+  var state = 'idle';
+  var progress = 0;
+  var animId = null;
+  var derivPoints = [];
+  var integPoints = [];
+
+  // Both curves use the SAME coordinate mapping
+  function Fval(x) { return x * x; }
+  function fval(x) { return 2 * x; }
+
+  // Shared screen coordinate: (sx, sy) for a given (x, yval)
+  function toScreen(x, yval) {
+    return {
+      sx: ox + x * xStep,
+      sy: oy - yval * yScale
+    };
+  }
+
+  function clearCanvas() {
+    ctx.fillStyle = C_BG;
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  function drawAxesAndGrid() {
+    clearCanvas();
+
+    // --- y-axis (left) ---
+    ctx.strokeStyle = C_AXES; ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(ox, 10); ctx.lineTo(ox, h - 10);
+    ctx.stroke();
+    ctx.fillStyle = C_AXES;
+    ctx.beginPath(); ctx.moveTo(ox, 10); ctx.lineTo(ox - 4, 18); ctx.lineTo(ox + 4, 18); ctx.fill();
+    ctx.fillStyle = C_MUTED; ctx.font = '10px sans-serif';
+    ctx.fillText('y', ox + 6, 16);
+
+    // --- x-axis (bottom) ---
+    ctx.strokeStyle = C_AXES; ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(15, oy); ctx.lineTo(w - 15, oy);
+    ctx.stroke();
+    ctx.fillStyle = C_AXES;
+    ctx.beginPath(); ctx.moveTo(w - 15, oy); ctx.lineTo(w - 23, oy - 4); ctx.lineTo(w - 23, oy + 4); ctx.fill();
+    ctx.fillStyle = C_MUTED; ctx.font = '10px sans-serif';
+    ctx.fillText('x', w - 18, oy - 6);
+
+    // --- Vertical grid lines ---
+    ctx.strokeStyle = C_GRID; ctx.lineWidth = 0.35;
+    for (var i = 0; i <= xMax; i++) {
+      var gx = ox + i * xStep;
+      if (gx < w - 15) {
+        ctx.beginPath();
+        ctx.moveTo(gx, 10); ctx.lineTo(gx, h - 10);
+        ctx.stroke();
+      }
+    }
+
+    // --- Horizontal grid lines (shared y values) ---
+    ctx.strokeStyle = C_GRID; ctx.lineWidth = 0.3;
+    var displayMaxY = 25; // only show up to y=25 (both curves visible in this range)
+    for (var j = 0; j <= displayMaxY; j += 5) {
+      var gy = oy - j * yScale;
+      if (gy > 10 && gy < h - 10) {
+        ctx.beginPath();
+        ctx.moveTo(ox, gy); ctx.lineTo(w - 15, gy);
+        ctx.stroke();
+      }
+    }
+
+    // --- x tick labels ---
+    ctx.fillStyle = C_MUTED; ctx.font = '9px sans-serif';
+    for (var i = 1; i <= xMax; i++) {
+      ctx.fillText(i, ox + i * xStep - 3, oy + 14);
+    }
+
+    // --- y tick labels ---
+    ctx.fillStyle = C_MUTED; ctx.font = '8px sans-serif';
+    for (var j = 0; j <= displayMaxY; j += 5) {
+      var gy = oy - j * yScale;
+      if (gy > 10 && gy < h - 10) {
+        ctx.fillText(j, ox - 22, gy + 3);
+      }
+    }
+
+    // --- Legend ---
+    ctx.fillStyle = C_BLUE; ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('F(x) = x²', ox + 30, 18);
+    ctx.fillStyle = C_RED; ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('f(x) = 2x', ox + 160, 18);
+  }
+
+  // --- Drawing helpers (all use toScreen) ---
+
+  function drawFCurve() {
+    ctx.strokeStyle = C_BLUE; ctx.lineWidth = 2.2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    for (var x = 0; x <= xMax; x += 0.05) {
+      var p = toScreen(x, Fval(x));
+      if (p.sy < 8 || p.sy > h - 8) continue;
+      x === 0 ? ctx.moveTo(p.sx, p.sy) : ctx.lineTo(p.sx, p.sy);
+    }
+    ctx.stroke();
+  }
+
+  function drawFCurveDashed() {
+    ctx.strokeStyle = C_BLUE; ctx.lineWidth = 1.8;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    for (var x = 0; x <= xMax; x += 0.05) {
+      var p = toScreen(x, Fval(x));
+      if (p.sy < 8 || p.sy > h - 8) continue;
+      x === 0 ? ctx.moveTo(p.sx, p.sy) : ctx.lineTo(p.sx, p.sy);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawFCurveSolid() {
+    ctx.strokeStyle = C_RED; ctx.lineWidth = 2.2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    var p0 = toScreen(0, fval(0));
+    var p7 = toScreen(xMax, fval(xMax));
+    ctx.moveTo(p0.sx, p0.sy);
+    ctx.lineTo(p7.sx, p7.sy);
+    ctx.stroke();
+  }
+
+  function drawTangentAt(xv) {
+    var p = toScreen(xv, Fval(xv));
+    var m = fval(xv); // slope = 2x
+    var slopeScreen = m * yScale / xStep;
+
+    // Longer, thicker tangent line
+    var tLen = 40;
+    var dx = tLen / Math.sqrt(1 + slopeScreen * slopeScreen);
+    var dy = slopeScreen * dx;
+
+    // Glow under the tangent
+    ctx.strokeStyle = 'rgba(167,139,250,0.25)'; ctx.lineWidth = 6;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(p.sx - dx, p.sy + dy);
+    ctx.lineTo(p.sx + dx, p.sy - dy);
+    ctx.stroke();
+
+    // Main tangent line — bright yellow-green, solid
+    ctx.strokeStyle = '#a3e635'; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(p.sx - dx, p.sy + dy);
+    ctx.lineTo(p.sx + dx, p.sy - dy);
+    ctx.stroke();
+
+    // Large glowing dot at tangent point
+    ctx.fillStyle = 'rgba(163,230,53,0.3)';
+    ctx.beginPath();
+    ctx.arc(p.sx, p.sy, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#a3e635';
+    ctx.beginPath();
+    ctx.arc(p.sx, p.sy, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(p.sx, p.sy, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Slope label with background
+    var labelW = 70, labelH = 16;
+    var lx = p.sx - 35, ly = p.sy - 22;
+    ctx.fillStyle = 'rgba(15,23,42,0.85)';
+    ctx.fillRect(lx, ly, labelW, labelH);
+    ctx.strokeStyle = '#a3e635'; ctx.lineWidth = 1;
+    ctx.strokeRect(lx, ly, labelW, labelH);
+    ctx.fillStyle = '#a3e635'; ctx.font = 'bold 10px sans-serif';
+    ctx.fillText('dy/dx=' + m.toFixed(1), lx + 4, ly + 12);
+  }
+
+  function drawFallingDot(xv, alpha) {
+    var pF = toScreen(xv, Fval(xv));
+    var pf = toScreen(xv, fval(xv));
+    var fy = pF.sy + (pf.sy - pF.sy) * alpha;
+
+    ctx.strokeStyle = 'rgba(167,139,250,' + (0.25 * (1 - alpha)) + ')';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(pF.sx, pF.sy);
+    ctx.lineTo(pF.sx, fy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = C_RED;
+    ctx.beginPath();
+    ctx.arc(pF.sx, fy, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(244,114,182,' + (0.35 * (1 - alpha)) + ')';
+    ctx.beginPath();
+    ctx.arc(pF.sx, fy, 7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawFlyingUpDot(xv, alpha) {
+    var pF = toScreen(xv, Fval(xv));
+    var pf = toScreen(xv, fval(xv));
+    var fy = pf.sy - (pf.sy - pF.sy) * alpha;
+
+    ctx.strokeStyle = 'rgba(167,139,250,' + (0.25 * (1 - alpha)) + ')';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(pf.sx, pf.sy);
+    ctx.lineTo(pf.sx, fy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = C_BLUE;
+    ctx.beginPath();
+    ctx.arc(pf.sx, fy, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(56,189,248,' + (0.35 * (1 - alpha)) + ')';
+    ctx.beginPath();
+    ctx.arc(pf.sx, fy, 7, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawDerivPoints() {
+    ctx.fillStyle = C_RED;
+    for (var i = 0; i < derivPoints.length; i++) {
+      var p = derivPoints[i];
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function drawDerivLineFromPoints() {
+    if (derivPoints.length < 2) return;
+    ctx.strokeStyle = C_RED; ctx.lineWidth = 2.5;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    for (var i = 0; i < derivPoints.length; i++) {
+      var p = derivPoints[i];
+      i === 0 ? ctx.moveTo(p.sx, p.sy) : ctx.lineTo(p.sx, p.sy);
+    }
+    ctx.stroke();
+  }
+
+  function drawIntegPoints() {
+    ctx.fillStyle = C_BLUE;
+    for (var i = 0; i < integPoints.length; i++) {
+      var p = integPoints[i];
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function drawIntegLineFromPoints() {
+    if (integPoints.length < 2) return;
+    ctx.strokeStyle = C_BLUE; ctx.lineWidth = 2.5;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    for (var i = 0; i < integPoints.length; i++) {
+      var p = integPoints[i];
+      i === 0 ? ctx.moveTo(p.sx, p.sy) : ctx.lineTo(p.sx, p.sy);
+    }
+    ctx.stroke();
+  }
+
+  // --- Main draw ---
+
+  function draw() {
+    drawAxesAndGrid();
+
+    if (state === 'deriv') {
+      // === DERIVATIVE: tangent slides, slopes drop ===
+      drawFCurve();
+
+      // Each "step" = 0.5 x units apart, and the dot falls over next 0.5 units
+      var stepSize = 0.5;
+      var fallDuration = 0.5; // how long each dot takes to fall (in x units)
+
+      var xv = progress * xMax;
+      var numLanded = Math.floor(xv / stepSize);
+
+      // Draw tangent at current x
+      if (xv > 0.01 && xv <= xMax) {
+        drawTangentAt(Math.min(xv, xMax));
+      }
+
+      // Build landed deriv points
+      derivPoints = [];
+      for (var i = 0; i < numLanded; i++) {
+        var px = i * stepSize;
+        if (px > xMax) px = xMax;
+        var pp = toScreen(px, fval(px));
+        derivPoints.push({ sx: pp.sx, sy: pp.sy });
+      }
+
+      // Current falling dot
+      var currentStepX = numLanded * stepSize;
+      if (currentStepX < xMax && xv >= currentStepX) {
+        var fallProgress = (xv - currentStepX) / fallDuration;
+        if (fallProgress < 1 && fallProgress >= 0) {
+          drawFallingDot(currentStepX, fallProgress);
+        }
+      }
+
+      drawDerivPoints();
+      if (derivPoints.length >= 2) {
+        drawDerivLineFromPoints();
+      }
+
+      ctx.fillStyle = C_GREEN; ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('切线滑动，dy/dx 掉落中...', ox + 20, 26);
+
+      progress += 0.0018; // SLOWER
+      if (progress >= 1) {
+        progress = 1;
+        derivPoints = [];
+        for (var j = 0; j <= 14; j++) {
+          var ppx = j / 14 * xMax;
+          var pp = toScreen(ppx, fval(ppx));
+          derivPoints.push({ sx: pp.sx, sy: pp.sy });
+        }
+        state = 'idle';
+        cancelAnimationFrame(animId);
+        draw();
+        return;
+      }
+
+    } else if (state === 'integ') {
+      // === INTEGRAL: slices on f, dots fly UP to F ===
+      drawFCurveSolid();     // full f curve visible
+      // F curve NOT shown — being rebuilt from scratch
+
+      var stepSize = 0.5;
+      var flyDuration = 0.5;
+
+      var xv = progress * xMax;
+      var numLanded = Math.floor(xv / stepSize);
+      var currentStepX = numLanded * stepSize;
+
+      // Draw slices on f up to current x (vertical bars from f curve down to x-axis)
+      var sliceDx = 0.3;
+      var nSlices = Math.floor(xv / sliceDx);
+      for (var i = 0; i < nSlices; i++) {
+        var xm = i * sliceDx + sliceDx / 2;
+        var hgt = fval(xm);
+        var rx = ox + i * sliceDx * xStep;
+        var rw = sliceDx * xStep;
+        var pTop = toScreen(xm, hgt);
+        var rh = oy - pTop.sy;
+
+        // Alternating colors for visibility
+        var sliceColor = (i % 2 === 0) ? 'rgba(167,139,250,0.5)' : 'rgba(56,189,248,0.4)';
+        ctx.fillStyle = (i % 2 === 0) ? 'rgba(167,139,250,0.12)' : 'rgba(56,189,248,0.1)';
+        ctx.fillRect(rx, pTop.sy, rw, rh);
+        ctx.strokeStyle = sliceColor; ctx.lineWidth = 1.2;
+        ctx.strokeRect(rx, pTop.sy, rw, rh);
+      }
+
+      // Current slice highlight
+      if (xv > 0 && xv < xMax && nSlices > 0) {
+        var lastIdx = nSlices - 1;
+        var lxm = lastIdx * sliceDx + sliceDx / 2;
+        var lhgt = fval(lxm);
+        var lrx = ox + lastIdx * sliceDx * xStep;
+        var lrw = sliceDx * xStep;
+        var lpTop = toScreen(lxm, lhgt);
+        var lrh = oy - lpTop.sy;
+        // Highlight current slice with brighter border and glow
+        ctx.fillStyle = 'rgba(167,139,250,0.2)';
+        ctx.fillRect(lrx, lpTop.sy, lrw, lrh);
+        ctx.strokeStyle = '#a3e635'; ctx.lineWidth = 2;
+        ctx.strokeRect(lrx, lpTop.sy, lrw, lrh);
+
+        // Label
+        var cp = toScreen(lxm, lhgt);
+        ctx.fillStyle = '#a3e635'; ctx.font = 'bold 10px sans-serif';
+        ctx.fillText('f(x)·dx', cp.sx + 6, cp.sy - 8);
+      }
+
+      // Build landed F points (accumulated area)
+      integPoints = [];
+      for (var i = 0; i < numLanded; i++) {
+        var px = (i + 1) * stepSize;
+        if (px > xMax) px = xMax;
+        var sp = toScreen(px, Fval(px));
+        integPoints.push({ sx: sp.sx, sy: sp.sy });
+      }
+
+      // Current flying-up dot
+      if (currentStepX < xMax && xv >= currentStepX) {
+        var flyProgress = (xv - currentStepX) / flyDuration;
+        if (flyProgress < 1 && flyProgress >= 0) {
+          drawFlyingUpDot(currentStepX + stepSize, flyProgress);
+        }
+      }
+
+      // Draw landed points and connect
+      drawIntegPoints();
+      if (integPoints.length >= 2) {
+        drawIntegLineFromPoints();
+      }
+
+      // Arrow
+      ctx.fillStyle = C_GREEN; ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('↑ f(x)·dx → 向上飞，串回 F', ox + 120, 18);
+
+      ctx.fillStyle = C_GREEN; ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('切片 → 面积 → 飞起一个点 → 串成 F', ox + 20, 26);
+
+      progress += 0.0018; // SLOWER
+      if (progress >= 1) {
+        progress = 1;
+        integPoints = [];
+        for (var j = 0; j <= 14; j++) {
+          var ppx = j / 14 * xMax;
+          var sp = toScreen(ppx, Fval(ppx));
+          integPoints.push({ sx: sp.sx, sy: sp.sy });
+        }
+        state = 'idle';
+        cancelAnimationFrame(animId);
+        draw();
+        return;
+      }
+
+    } else {
+      // === IDLE ===
+      drawFCurve();
+      drawFCurveSolid();
+
+      ctx.fillStyle = C_GREEN; ctx.font = 'bold 14px sans-serif';
+      ctx.fillText('↕ 互逆', ox + 220, 30);
+
+      ctx.fillStyle = C_MUTED; ctx.font = '12px sans-serif';
+      ctx.fillText('点击按钮观看动画', ox + 100, 26);
+    }
+
+    if (state !== 'idle') {
+      animId = requestAnimationFrame(draw);
+    }
+  }
+
+  function startDeriv() {
+    if (animId) cancelAnimationFrame(animId);
+    state = 'deriv'; progress = 0;
+    derivPoints = []; integPoints = [];
+    animId = requestAnimationFrame(draw);
+  }
+  function startInteg() {
+    if (animId) cancelAnimationFrame(animId);
+    state = 'integ'; progress = 0;
+    derivPoints = []; integPoints = [];
+    animId = requestAnimationFrame(draw);
+  }
+  function reset() {
+    if (animId) cancelAnimationFrame(animId);
+    state = 'idle'; progress = 0;
+    derivPoints = []; integPoints = [];
+    animId = requestAnimationFrame(draw);
+  }
+
+  document.getElementById('btnDeriv').addEventListener('click', startDeriv);
+  document.getElementById('btnInteg').addEventListener('click', startInteg);
+  document.getElementById('btnReset1').addEventListener('click', reset);
+
+  animId = requestAnimationFrame(draw);
+})();
+
+// ============ Animation 2: Equivalence relationship ============
+(function(){
+  var c = document.getElementById('anim2');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height;
+  var ox = 80, oy = h-50, sc = 30;
+  var b = 3; // use b=3 so F(3)=9 fits in canvas
+  var areaVal = b * b; // ∫₀³ 2x dx = 9
+  var state = 'idle'; // 'area' | 'endpoint' | 'idle'
+  var progress = 0;
+  var animId = null;
+
+  function draw() {
+    ctx.clearRect(0,0,w,h);
+    drawAxes(ctx,w,h,ox,oy,'x','y');
+    drawGrid(ctx,w,h,ox,oy,sc);
+
+    // f(x)=2x in red
+    ctx.strokeStyle = C_RED; ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+7*sc, oy-14*sc); ctx.stroke();
+
+    // F(x)=x² in blue dashed
+    ctx.strokeStyle = C_BLUE; ctx.lineWidth = 2; ctx.setLineDash([7,4]);
+    ctx.beginPath();
+    for (var x = 0; x <= 7; x += 0.05) {
+      var sx=ox+x*sc, sy=oy-x*x*sc;
+      if (sy < 10 || sy > h-10) continue;
+      x===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // a=0, b markers on f
+    var fby = 2 * b;
+    ctx.fillStyle = C_RED;
+    ctx.beginPath(); ctx.arc(ox, oy, 4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(ox+b*sc, oy-fby*sc, 5, 0, Math.PI*2); ctx.fill();
+
+    // F endpoints
+    var Fby = b * b;
+    ctx.fillStyle = C_BLUE;
+    ctx.beginPath(); ctx.arc(ox, oy, 5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(ox+b*sc, oy-Fby*sc, 5, 0, Math.PI*2); ctx.fill();
+
+    if (state === 'area' && progress < 1) {
+      var nSlices = Math.floor(progress * 20) + 1;
+      var dx = b / 20;
+      for (var i = 0; i < nSlices; i++) {
+        var xm = i * dx + dx/2;
+        var hgt = 2 * xm;
+        var rx = ox + i * dx * sc;
+        var rw = dx * sc;
+        var rh = hgt * sc;
+        // Alternating fill
+        var isEven = (i % 2 === 0);
+        ctx.fillStyle = isEven ? 'rgba(244,114,182,0.18)' : 'rgba(167,139,250,0.14)';
+        ctx.fillRect(rx, oy - rh, rw, rh);
+        // Bold visible border for each bar
+        ctx.strokeStyle = isEven ? 'rgba(244,114,182,0.7)' : 'rgba(167,139,250,0.55)';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(rx, oy - rh, rw, rh);
+        // Small label on first few bars
+        if (i < 3) {
+          ctx.fillStyle = C_MUTED; ctx.font = '9px sans-serif';
+          ctx.fillText('2x·dx', rx + 2, oy - rh/2);
+        }
+      }
+      // Highlight current bar
+      if (nSlices > 0) {
+        var lastI = nSlices - 1;
+        var lxm = lastI * dx + dx/2;
+        var lhgt = 2 * lxm;
+        var lrx = ox + lastI * dx * sc;
+        var lrw = dx * sc;
+        var lrh = lhgt * sc;
+        ctx.fillStyle = 'rgba(244,114,182,0.25)';
+        ctx.fillRect(lrx, oy - lrh, lrw, lrh);
+        ctx.strokeStyle = '#a3e635'; ctx.lineWidth = 2;
+        ctx.strokeRect(lrx, oy - lrh, lrw, lrh);
+      }
+      var resultAlpha = Math.min(1, progress * 2);
+      ctx.fillStyle = 'rgba(244,114,182,'+resultAlpha+')';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.fillText('面积 = ' + areaVal, ox+b/2*sc, oy-fby*sc-16);
+    } else if (state === 'endpoint' && progress < 1) {
+      var pulseAlpha = 0.5 + 0.5 * Math.sin(Date.now()/150);
+      ctx.fillStyle = 'rgba(56,189,248,'+pulseAlpha+')';
+      ctx.font = 'bold 13px sans-serif';
+      ctx.fillText('F(0)=0', ox-45, oy+16);
+      ctx.fillText('F('+b+')='+Fby, ox+b*sc+6, oy-Fby*sc-6);
+      ctx.strokeStyle = 'rgba(167,139,250,0.5)'; ctx.lineWidth = 1; ctx.setLineDash([4,3]);
+      ctx.beginPath();
+      ctx.moveTo(ox+b*sc, oy-fby*sc); ctx.lineTo(ox+b*sc, oy-Fby*sc); ctx.stroke();
+      ctx.setLineDash([]);
+      var resultAlpha = Math.min(1, progress * 2);
+      ctx.fillStyle = 'rgba(56,189,248,'+resultAlpha+')';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.fillText('F('+b+')−F(0) = '+Fby+'−0 = '+areaVal, ox+1*sc, oy-Fby*sc-20);
+    } else if (state === 'idle') {
+      ctx.fillStyle = C_RED; ctx.font = 'bold 12px sans-serif';
+      ctx.fillText('f(x)=2x', ox+4*sc, oy-9*sc-6);
+      ctx.fillStyle = C_BLUE; ctx.font = 'bold 12px sans-serif';
+      ctx.fillText('F(x)=x²', ox+5*sc, oy-Fby*sc-16);
+      ctx.fillStyle = C_GREEN; ctx.font = 'bold 13px sans-serif';
+      ctx.fillText('等价：面积 = F(b)−F(a)', ox+2*sc, oy-Fby*sc-40);
+    }
+
+    ctx.fillStyle = C_TEXT; ctx.font = 'bold 13px sans-serif';
+    ctx.fillText('等价：定积分 = 原函数端点差', ox+1*sc, 24);
+    ctx.fillStyle = C_MUTED; ctx.font = '11px sans-serif';
+    ctx.fillText('a=0', ox-18, oy+18);
+    ctx.fillText('b='+b, ox+b*sc-10, oy-fby*sc-10);
+
+    if ((state === 'area' || state === 'endpoint') && progress < 1) {
+      progress += 0.008;
+      if (progress >= 1) { progress = 1; state = 'idle'; }
+      animId = requestAnimationFrame(draw);
+    }
+  }
+
+  function startArea() {
+    if (animId) cancelAnimationFrame(animId);
+    state = 'area'; progress = 0;
+    animId = requestAnimationFrame(draw);
+  }
+  function startEndpoint() {
+    if (animId) cancelAnimationFrame(animId);
+    state = 'endpoint'; progress = 0;
+    animId = requestAnimationFrame(draw);
+  }
+  function reset() {
+    if (animId) cancelAnimationFrame(animId);
+    state = 'idle'; progress = 0;
+    animId = requestAnimationFrame(draw);
+  }
+
+  document.getElementById('btnArea').addEventListener('click', startArea);
+  document.getElementById('btnEndpoint').addEventListener('click', startEndpoint);
+  document.getElementById('btnReset2').addEventListener('click', reset);
+
+  animId = requestAnimationFrame(draw);
+})();
+</script>
+
+</body>
+</html>

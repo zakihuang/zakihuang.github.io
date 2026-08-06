@@ -97,6 +97,7 @@ pt:
 zh-cn:
   menu_index: "首页"
   menu_category: "分类"
+  menu_science: "科普"
   menu_about: "关于我"
   paginator_previous: "前一页"
   paginator_pages: "页数："
